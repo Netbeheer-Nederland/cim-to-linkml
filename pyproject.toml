@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "cim-to-linkml"
+version = "0.1.0"
+description = ""
+authors = ["Bart Kleijngeld <bartkl@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+linkml-runtime = "^1.7.5"
+
+
+[tool.poetry.group.dev.dependencies]
+pyright = "^1.1.356"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
