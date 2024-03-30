@@ -1,12 +1,38 @@
 from typing import Iterable
 
 from linkml_runtime import linkml_model
-from linkml_runtime.utils.metamodelcore import Curie, empty_list
+from linkml_runtime.utils.metamodelcore import Curie
 
 import cim_to_linkml.uml_model as uml_model
 
 
 CIM_PREFIX = "cim"
+
+
+def map_primitive_data_type(val):
+    match val:
+        case "Float":
+            return "float"
+        case "Integer":
+            return "integer"
+        case "DateTime":
+            return "date"
+        case "String":
+            return "string"
+        case "Boolean":
+            return "boolean"
+        case "Decimal":
+            return "double"  # Is this right?
+        case "MonthDay":
+            return "date"  # Is this right?
+        case "Date":
+            return "date"
+        case "Time":
+            return "time"
+        case "Duration":
+            return "int"
+        case _:
+            raise TypeError(f"Data type `{val}` is not a CIM Primitive.")
 
 
 def gen_safe_name(name: str) -> str:  # TODO: Implement and move.
@@ -35,7 +61,7 @@ def gen_schema(
     )
 
     # Initialize `enums` and `classes` dicts to fix typing issues.
-    schema.enums = {}  
+    schema.enums = {}
     schema.classes = {}
 
     for uml_class in uml_classes:
@@ -76,15 +102,43 @@ def get_super_class(
             return super_class
 
 
+def generate_slot_from_attr(
+    uml_attr: uml_model.Attribute, uml_class: uml_model.Class
+) -> linkml_model.SlotDefinition:
+    return linkml_model.SlotDefinition(
+        name=convert_camel_to_snake(gen_safe_name(uml_attr.name)),
+        range=(
+            map_primitive_data_type(uml_attr.type)
+            if uml_attr.type.stereotype == uml_model.ClassStereotype.PRIMITIVE
+            else uml_attr.type.name
+        ),
+        description=uml_attr.notes,
+        required=True if uml_attr.lower_bound == "*" or uml_attr.lower_bound > 0 else False,
+        multivalued=True if uml_attr.upper_bound == "*" or uml_attr.lower_bound > 1 else False,
+        slot_uri=gen_curie(f"{uml_class.name}.{uml_attr.name}", CIM_PREFIX),
+    )
+
+
+def generate_slot_from_relation(
+    uml_relation: uml_model.Relation, uml_class: uml_model.Class
+) -> linkml_model.SlotDefinition: ...  # TODO
+
+
 def gen_class(
     uml_class: uml_model.Class, uml_relations: list[uml_model.Relation]
 ) -> linkml_model.ClassDefinition:
     super_class = get_super_class(uml_class, uml_relations)
+
+    attr_slots = {
+        convert_camel_to_snake(gen_safe_name(attr.name)): generate_slot_from_attr(attr, uml_class)
+        for attr in uml_class.attributes.values()
+    }
+    relation_slots = {}  # TODO.
 
     return linkml_model.ClassDefinition(
         name=gen_safe_name(uml_class.name),
         class_uri=gen_curie(uml_class.name, CIM_PREFIX),
         is_a=super_class.name if super_class else None,
         description=uml_class.note,
-        attributes={},  # TODO
+        attributes=attr_slots | relation_slots,
     )

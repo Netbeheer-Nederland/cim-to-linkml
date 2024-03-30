@@ -64,7 +64,7 @@ class Attribute:
     name: AttributeName
     lower_bound: int
     upper_bound: int
-    type: str
+    type: "Class"
     default: str | None
     notes: str | None
     stereotype: AttributeStereotype | None
