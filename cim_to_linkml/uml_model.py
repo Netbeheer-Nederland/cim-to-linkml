@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Literal, Self
+from typing import Literal, Self, NamedTuple
 
 ObjectID = int
 ConnectorID = int
@@ -11,7 +11,11 @@ RelationName = str
 ClassName = str
 PackageName = str
 CardinalityValue = int | Literal["*"]
-Cardinality = tuple[CardinalityValue, CardinalityValue]
+
+
+class Cardinality(NamedTuple):
+    lower_bound: CardinalityValue = 0
+    upper_bound: CardinalityValue = 1
 
 
 class RelationSubType(Enum):
@@ -62,8 +66,8 @@ class Attribute:
     id: AttributeID
     domain: "Class"
     name: AttributeName
-    lower_bound: int
-    upper_bound: int
+    lower_bound: CardinalityValue
+    upper_bound: CardinalityValue
     type: "Class"
     default: str | None
     notes: str | None
@@ -81,7 +85,7 @@ class Class:
     name: ClassName
     author: str
     package: Package
-    attributes: dict[AttributeName, Attribute]
+    attributes: dict[AttributeName, Attribute]  # TODO: Make list?
     created_date: datetime
     modified_date: datetime
     note: str | None
@@ -111,7 +115,7 @@ class Relation:
     dest_class: Class
     direction: RelationDirection | None
     sub_type: RelationSubType | None
-    source_card: Cardinality | None
+    source_card: Cardinality
     source_role: str | None
     source_role_note: str | None
     dest_card: Cardinality | None

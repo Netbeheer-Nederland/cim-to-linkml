@@ -110,18 +110,39 @@ def generate_slot_from_attr(
         range=(
             map_primitive_data_type(uml_attr.type)
             if uml_attr.type.stereotype == uml_model.ClassStereotype.PRIMITIVE
-            else uml_attr.type.name
+            else convert_camel_to_snake(gen_safe_name(uml_attr.type.name))
         ),
         description=uml_attr.notes,
-        required=True if uml_attr.lower_bound == "*" or uml_attr.lower_bound > 0 else False,
-        multivalued=True if uml_attr.upper_bound == "*" or uml_attr.lower_bound > 1 else False,
+        required=_slot_required(uml_attr.lower_bound),
+        multivalued=_slot_multivalued(uml_attr.lower_bound),
         slot_uri=gen_curie(f"{uml_class.name}.{uml_attr.name}", CIM_PREFIX),
     )
 
 
+def _slot_required(lower_bound: uml_model.CardinalityValue) -> bool:
+    return lower_bound == "*" or lower_bound > 0
+
+
+def _slot_multivalued(upper_bound: uml_model.CardinalityValue) -> bool:
+    return upper_bound == "*" or upper_bound > 1
+
+
 def generate_slot_from_relation(
     uml_relation: uml_model.Relation, uml_class: uml_model.Class
-) -> linkml_model.SlotDefinition: ...  # TODO
+) -> linkml_model.SlotDefinition:
+    return linkml_model.SlotDefinition(
+        name=convert_camel_to_snake(
+            gen_safe_name(uml_relation.dest_role or uml_relation.dest_class.name)
+        ),
+        range=convert_camel_to_snake(gen_safe_name(uml_relation.dest_class.name)),
+        description=uml_relation.source_role_note,  # TODO: Is this the right one?
+        required=_slot_required(uml_relation.source_card.lower_bound),
+        multivalued=_slot_multivalued(uml_relation.source_card.upper_bound),
+        slot_uri=gen_curie(
+            f"{uml_class.name}.{uml_relation.source_role or uml_relation.source_class.name}",
+            CIM_PREFIX,
+        ),
+    )
 
 
 def gen_class(
@@ -133,7 +154,14 @@ def gen_class(
         convert_camel_to_snake(gen_safe_name(attr.name)): generate_slot_from_attr(attr, uml_class)
         for attr in uml_class.attributes.values()
     }
-    relation_slots = {}  # TODO.
+    relation_slots = {
+        convert_camel_to_snake(
+            gen_safe_name(rel.dest_role or rel.dest_class.name)
+        ): generate_slot_from_relation(rel, uml_class)
+        for rel in uml_relations
+        if rel.source_class.id == uml_class.id
+        if rel.connector_type != uml_model.RelationType.GENERALIZATION
+    }
 
     return linkml_model.ClassDefinition(
         name=gen_safe_name(uml_class.name),
