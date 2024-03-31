@@ -94,7 +94,7 @@ def get_super_class(
             return super_class
 
 
-def generate_slot_from_attr(
+def gen_slot_from_attr(
     uml_attr: uml_model.Attribute, uml_class: uml_model.Class
 ) -> linkml_model.SlotDefinition:
     return linkml_model.SlotDefinition(
@@ -119,7 +119,7 @@ def _slot_multivalued(upper_bound: uml_model.CardinalityValue) -> bool:
     return upper_bound == "*" or upper_bound > 1
 
 
-def generate_slot_from_relation(
+def gen_slot_from_relation(
     uml_relation: uml_model.Relation, uml_class: uml_model.Class
 ) -> linkml_model.SlotDefinition:
     return linkml_model.SlotDefinition(
@@ -143,13 +143,13 @@ def gen_class(
     super_class = get_super_class(uml_class, uml_relations)
 
     attr_slots = {
-        convert_camel_to_snake(gen_safe_name(attr.name)): generate_slot_from_attr(attr, uml_class)
+        convert_camel_to_snake(gen_safe_name(attr.name)): gen_slot_from_attr(attr, uml_class)
         for attr in uml_class.attributes.values()
     }
     relation_slots = {
         convert_camel_to_snake(
             gen_safe_name(rel.dest_role or rel.dest_class.name)
-        ): generate_slot_from_relation(rel, uml_class)
+        ): gen_slot_from_relation(rel, uml_class)
         for rel in uml_relations
         if rel.source_class.id == uml_class.id
         if rel.connector_type != uml_model.RelationType.GENERALIZATION
