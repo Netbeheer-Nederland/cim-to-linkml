@@ -10,29 +10,21 @@ CIM_PREFIX = "cim"
 
 
 def map_primitive_data_type(val):
-    match val:
-        case "Float":
-            return "float"
-        case "Integer":
-            return "integer"
-        case "DateTime":
-            return "date"
-        case "String":
-            return "string"
-        case "Boolean":
-            return "boolean"
-        case "Decimal":
-            return "double"  # Is this right?
-        case "MonthDay":
-            return "date"  # Is this right?
-        case "Date":
-            return "date"
-        case "Time":
-            return "time"
-        case "Duration":
-            return "int"
-        case _:
-            raise TypeError(f"Data type `{val}` is not a CIM Primitive.")
+    try:
+        return {
+            "Float": "float",
+            "Integer": "integer",
+            "DateTime": "date",
+            "String": "string",
+            "Boolean": "boolean",
+            "Decimal": "double",  # Is this right?
+            "MonthDay": "date",  # Is this right?
+            "Date": "date",
+            "Time": "time",
+            "Duration": "int",
+        }[val]
+    except KeyError:
+        raise TypeError(f"Data type `{val}` is not a CIM Primitive.")
 
 
 def gen_safe_name(name: str) -> str:  # TODO: Implement and move.
