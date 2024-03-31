@@ -52,10 +52,6 @@ def gen_schema(
         name=uml_package_name,
     )
 
-    # Initialize `enums` and `classes` dicts to fix typing issues.
-    schema.enums = {}
-    schema.classes = {}
-
     for uml_class in uml_classes:
         match uml_class.stereotype:
             case uml_model.ClassStereotype.ENUMERATION:
