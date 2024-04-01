@@ -30,3 +30,4 @@
     - Underscoring in a better way than LinkML does.
     - Escaping/removing/replacing dangerous characters.
     - Compact notation of annotations
+- Tidy up all the gen_safe() and camel_case stuff all over the place. Lots of repetition.

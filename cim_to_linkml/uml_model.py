@@ -55,7 +55,7 @@ class Package:
     id: ObjectID
     name: PackageName
     author: str
-    parent: Self
+    parent: Self | None
     created_date: datetime
     modified_date: datetime
     notes: str

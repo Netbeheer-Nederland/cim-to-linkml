@@ -1,5 +1,3 @@
-from typing import Iterable
-
 from linkml_runtime import linkml_model
 from linkml_runtime.utils.metamodelcore import Curie
 
@@ -42,21 +40,27 @@ def gen_curie(name: str, prefix: str) -> Curie:  # TODO: Implement and move.
 
 
 def gen_schema(
-    uml_classes: Iterable[uml_model.Class],
-    uml_relations: Iterable[uml_model.Relation],
-    uml_packages: Iterable[uml_model.Package],
+    uml_classes: list[uml_model.Class],
+    uml_relations: list[uml_model.Relation],
+    uml_packages: list[uml_model.Package],
     uml_package_name: uml_model.PackageName,
 ) -> linkml_model.SchemaDefinition:
     schema = linkml_model.SchemaDefinition(
-        id=gen_curie(uml_package_name, "cim"),
-        name=uml_package_name,
+        id=gen_curie(uml_package_name, "cim"), name=uml_package_name
     )
 
     for uml_class in uml_classes:
         match uml_class.stereotype:
+            case uml_model.ClassStereotype.PRIMITIVE:
+                continue
             case uml_model.ClassStereotype.ENUMERATION:
                 enum = gen_enum(uml_class)
-                schema.enums[enum.name] = enum
+                schema.enums[gen_safe_name(enum.name)] = enum
+            # case uml_model.ClassStereotype.CIMDATATYPE:
+            #     ... # TODO
+            case None | _:
+                class_ = gen_class(uml_class, uml_relations)
+                schema.classes[gen_safe_name(class_.name)] = class_
 
     return schema
 
