@@ -23,7 +23,9 @@ def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
             DestRoleNote AS dest_role_note
         FROM t_connector
 
-        ORDER BY Start_Object_ID
+        WHERE type != "Dependency"
+
+        ORDER BY start_object_id
         """
     )
     rows = cur.execute(query)

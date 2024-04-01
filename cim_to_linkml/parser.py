@@ -26,7 +26,7 @@ def parse_cardinality(val: str | None) -> uml_model.Cardinality:
 def parse_cardinality_val(val: str | None) -> uml_model.CardinalityValue | None:
     match val:
         case "" | None:
-            return None
+            return 0
         case "n" | "*":
             return "*"
         case _:
@@ -84,6 +84,7 @@ def parse_uml_class_attr(attr: dict) -> uml_model.Attribute:
 
     return uml_model.Attribute(
         id=attr["attr_id"],
+        class_=attr["class_id"],
         name=attr["attr_name"],
         lower_bound=parse_cardinality_val(attr["attr_lower_bound"]),
         upper_bound=parse_cardinality_val(attr["attr_upper_bound"]),
@@ -106,8 +107,10 @@ def parse_uml_class(class_rows: list[sqlite3.Cursor]) -> uml_model.Class:
         author=class_rows[0]["class_author"],
         package=class_rows[0]["class_package_id"],
         attributes={
-            attr_name: parse_uml_class_attr(next(attr))
-            for attr_name, attr in groupby(class_rows, itemgetter("attr_name"))
+            attr_name: parse_uml_class_attr(attr)
+            for attr_name, attr_ in groupby(class_rows, itemgetter("attr_name"))
+            if (attr := next(attr_))
+            if attr["attr_id"] is not None
         },
         created_date=parse_iso_datetime_val(class_rows[0]["class_created_date"]),
         modified_date=parse_iso_datetime_val(class_rows[0]["class_modified_date"]),

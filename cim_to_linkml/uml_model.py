@@ -68,6 +68,7 @@ class Package:
 @dataclass
 class Attribute:
     id: AttributeID
+    class_: ObjectID
     name: AttributeName
     lower_bound: Optional[CardinalityValue] = 0
     upper_bound: Optional[CardinalityValue] = 1
@@ -86,7 +87,7 @@ class EnumerationValue(Attribute):
 class Class:
     id: ObjectID
     name: ClassName
-    package: Package
+    package: ObjectID
     attributes: dict[AttributeName, Attribute]  # TODO: Make list?
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()
