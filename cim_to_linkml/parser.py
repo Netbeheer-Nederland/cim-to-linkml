@@ -61,7 +61,7 @@ def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
 
     return uml_model.Relation(
         id=uml_relation["id"],
-        connector_type=uml_model.RelationType(uml_relation["type"]),
+        type=uml_model.RelationType(uml_relation["type"]),
         source_class=uml_relation["start_object_id"],
         dest_class=uml_relation["end_object_id"],
         direction=direction,

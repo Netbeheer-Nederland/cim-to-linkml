@@ -113,7 +113,7 @@ class Class:
 @dataclass
 class Relation:
     id: ConnectorID
-    connector_type: RelationType
+    type: RelationType
     source_class: ObjectID
     dest_class: ObjectID
     direction: Optional[RelationDirection] = None

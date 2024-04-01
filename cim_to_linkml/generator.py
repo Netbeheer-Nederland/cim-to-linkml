@@ -87,7 +87,7 @@ def get_super_class(
 ) -> uml_model.Class | None:
     for uml_relation in uml_relations:
         if (
-            uml_relation.connector_type == uml_model.RelationType.GENERALIZATION
+            uml_relation.type == uml_model.RelationType.GENERALIZATION
             and uml_relation.source_class.id == uml_class.id
         ):
             super_class = uml_relation.dest_class
@@ -152,7 +152,7 @@ def gen_class(
         ): gen_slot_from_relation(rel, uml_class)
         for rel in uml_relations
         if rel.source_class.id == uml_class.id
-        if rel.connector_type != uml_model.RelationType.GENERALIZATION
+        if rel.type != uml_model.RelationType.GENERALIZATION
     }
 
     return linkml_model.ClassDefinition(
