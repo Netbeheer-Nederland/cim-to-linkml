@@ -24,4 +24,5 @@ if __name__ == "__main__":
     uml_relations = {rel_row["start_object_id"]: parse_uml_relation(rel_row) for rel_row in uml_relation_results}
     uml_project = uml_model.Project(classes=uml_classes, packages=uml_packages, relations=uml_relations)
 
-    pprint(uml_project.relations)
+    pprint(uml_project.packages)
+    

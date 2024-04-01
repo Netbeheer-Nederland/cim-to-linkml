@@ -8,23 +8,26 @@ from pprint import pprint
 import cim_to_linkml.uml_model as uml_model
 
 
-def parse_cardinality_tuple(val: str | None) -> uml_model.Cardinality:
+def parse_cardinality(val: str | None) -> uml_model.Cardinality:
     if val is None:
         return uml_model.Cardinality()
 
     lb, _, ub = val.partition("..")
 
-    lb.replace("n", "*")
-    ub.replace("n", "*")
+    lower_bound = parse_cardinality_val(lb)
+    upper_bound = parse_cardinality_val(ub)
 
-    return uml_model.Cardinality(lower_bound=lb, upper_bound=ub)
+    return uml_model.Cardinality(
+        lower_bound=parse_cardinality_val(lower_bound),
+        upper_bound=parse_cardinality_val(upper_bound),
+    )
 
 
 def parse_cardinality_val(val: str | None) -> uml_model.CardinalityValue | None:
     match val:
-        case None:
+        case "" | None:
             return None
-        case "*":
+        case "n" | "*":
             return "*"
         case _:
             return int(val)
@@ -65,10 +68,10 @@ def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
         source_class=uml_relation["start_object_id"],
         dest_class=uml_relation["end_object_id"],
         direction=direction,
-        source_card=parse_cardinality_tuple(uml_relation["source_card"]),
+        source_card=parse_cardinality(uml_relation["source_card"]),
         source_role=uml_relation["source_role"],
         source_role_note=uml_relation["source_role_note"],
-        dest_card=parse_cardinality_tuple(uml_relation["dest_card"]),
+        dest_card=parse_cardinality(uml_relation["dest_card"]),
         dest_role=uml_relation["dest_role"],
         dest_role_note=uml_relation["dest_role_note"],
     )
