@@ -44,15 +44,12 @@ def gen_curie(name: str, prefix: str) -> Curie:  # TODO: Implement and move.
 def _get_package_hierarchy(
     pkg_id: uml_model.ObjectID, pkgs: dict[uml_model.ObjectID, uml_model.Package]
 ) -> list[uml_model.Package]:
-    package_hierarchy = []
-
     pkg = pkgs[pkg_id]
-    cur_pkg = pkg
-    while cur_pkg.parent not in [None, 0]:
-        cur_pkg = pkgs[cur_pkg.parent]
-        package_hierarchy.append(cur_pkg)
 
-    return package_hierarchy
+    if pkg.parent in [None, 0]:
+        return []
+
+    return [pkgs[pkg.parent]] + _get_package_hierarchy(pkg.parent, pkgs)
 
 
 def gen_schema(
