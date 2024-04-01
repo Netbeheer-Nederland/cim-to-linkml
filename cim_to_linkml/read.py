@@ -1,9 +1,5 @@
 import sqlite3
 import textwrap
-from itertools import groupby
-from operator import itemgetter
-
-import cim_to_linkml.uml_model as uml_model
 
 
 def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
@@ -30,13 +26,12 @@ def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
         ORDER BY Start_Object_ID
         """
     )
-
     rows = cur.execute(query)
 
     return rows
 
 
-def read_uml_packages(conn: sqlite3.Connection) -> dict[uml_model.ObjectID, dict]:
+def read_uml_packages(conn: sqlite3.Connection) -> sqlite3.Cursor:
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
@@ -58,15 +53,12 @@ def read_uml_packages(conn: sqlite3.Connection) -> dict[uml_model.ObjectID, dict
         AND Object.Object_Type = "Package"
         """
     )
-
     rows = cur.execute(query)
 
-    return {pkg["id"]: dict(pkg) for pkg in rows}
+    return rows
 
 
-def read_uml_classes(
-    conn: sqlite3.Connection,
-) -> dict[uml_model.ObjectID, dict]:
+def read_uml_classes(conn: sqlite3.Connection) -> sqlite3.Cursor:
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
@@ -96,21 +88,9 @@ def read_uml_classes(
 
         WHERE Class.Object_Type = "Class"
         -- AND Class.Object_ID = 84
-        ORDER BY Class.Object_ID, Attribute.ID
+        ORDER BY Class.Object_ID, Attribute.Name
         """
     )
     rows = cur.execute(query)
 
-    return {
-        class_id: {
-            **{k: v for k, v in dict(class_rows[0]).items() if k.startswith("class_")},
-            "attributes": {
-                attr_id: {k: v for k, v in attr.items() if k.startswith("attr_")}
-                for attr_id, attr_ in groupby(class_rows, itemgetter("attr_id"))
-                if attr_id is not None
-                if (attr := dict(next(attr_)))
-            },
-        }
-        for class_id, class_rows_ in groupby(rows, itemgetter("class_id"))
-        if (class_rows := list(class_rows_))
-    }
+    return rows

@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Literal, Self, NamedTuple, Optional
+from typing import Literal, NamedTuple, Optional
 
 ObjectID = int
 ConnectorID = int
@@ -11,7 +11,8 @@ AttributeName = str
 RelationName = str
 ClassName = str
 PackageName = str
-CardinalityValue = int | Literal["*"]
+Many = Literal["*"]
+CardinalityValue = int | Many
 
 QEAFile = os.PathLike | str
 
@@ -61,16 +62,16 @@ class Package:
     author: Optional[str] = None
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()
-    parent: Optional[Self] = None
+    parent: Optional[ObjectID] = None
 
 
 @dataclass
 class Attribute:
     id: AttributeID
     name: AttributeName
-    lower_bound: CardinalityValue
-    upper_bound: CardinalityValue
-    type: Optional[ObjectID] = None  # `NULL` for enumeration values, a class ID otherwise.
+    lower_bound: Optional[CardinalityValue] = 0
+    upper_bound: Optional[CardinalityValue] = 1
+    type: Optional[ClassName] = None  # `NULL` for enumeration values, a class name otherwise.
     default: Optional[str] = None
     notes: Optional[str] = None
     stereotype: Optional[AttributeStereotype] = None
@@ -116,10 +117,17 @@ class Relation:
     source_class: ObjectID
     dest_class: ObjectID
     direction: Optional[RelationDirection] = None
-    sub_type: Optional[RelationSubType] = None
+    # sub_type: Optional[RelationSubType] = None
     source_card: Optional[Cardinality] = None
     source_role: Optional[str] = None
     source_role_note: Optional[str] = None
     dest_card: Optional[Cardinality] = None
     dest_role: Optional[str] = None
     dest_role_note: Optional[str] = None
+
+
+@dataclass
+class Project:
+    packages: dict[ObjectID, Package]
+    classes: dict[ObjectID, Class]
+    relations: dict[ObjectID, Relation]
