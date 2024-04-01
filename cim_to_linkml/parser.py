@@ -23,18 +23,36 @@ def parse_uml_package(
     )
 
 
-def parse_uml_class(
-    class_id: uml_model.ObjectID,
-    classes: dict[uml_model.ObjectID, dict],
-):
-    class_ = classes[class_id]
-    print(class_)
+def parse_uml_class_attr(
+    attr: dict, classes: dict[uml_model.ObjectID, dict]
+) -> uml_model.Attribute:
+    try:
+        type_class = [c for c in classes.values() if c["class_name"] == attr["attr_type"]][0]
+    except IndexError as e:
+        type_class = None
+
+    return uml_model.Attribute(
+        id=attr["attr_id"],
+        name=attr["attr_name"],
+        lower_bound=int(attr["attr_lower_bound"] if attr["attr_lower_bound"] is not None else "0"),
+        upper_bound=int(attr["attr_upper_bound"] if attr["attr_upper_bound"] is not None else "1"),
+        type=type_class,
+        default=attr["attr_default"],
+        notes=attr["attr_notes"],
+        stereotype=attr["attr_stereotype"],
+    )
+
+
+def parse_uml_class(class_: dict, classes: dict[uml_model.ObjectID, dict]) -> uml_model.Class:
     return uml_model.Class(
-        id=class_id,
+        id=class_["class_id"],
         name=class_["class_name"],
         author=class_["class_author"],
         package=class_["class_package_id"],
-        attributes={},
+        attributes={
+            attr_id: parse_uml_class_attr(attr, classes)
+            for attr_id, attr in class_["attributes"].items()
+        },
         created_date=class_["class_created_date"],
         modified_date=class_["class_modified_date"],
         note=class_["class_note"],

@@ -1,7 +1,8 @@
+import os
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Literal, Self, NamedTuple
+from typing import Literal, Self, NamedTuple, Optional
 
 ObjectID = int
 ConnectorID = int
@@ -11,6 +12,8 @@ RelationName = str
 ClassName = str
 PackageName = str
 CardinalityValue = int | Literal["*"]
+
+QEAFile = os.PathLike | str
 
 
 class Cardinality(NamedTuple):
@@ -54,24 +57,23 @@ class AttributeStereotype(Enum):
 class Package:
     id: ObjectID
     name: PackageName
-    author: str
-    parent: Self | None
-    created_date: datetime
-    modified_date: datetime
-    notes: str
+    notes: Optional[str] = None
+    author: Optional[str] = None
+    created_date: datetime = datetime.now()
+    modified_date: datetime = datetime.now()
+    parent: Optional[Self] = None
 
 
 @dataclass
 class Attribute:
     id: AttributeID
-    domain: "Class"
     name: AttributeName
     lower_bound: CardinalityValue
     upper_bound: CardinalityValue
-    type: "Class"
-    default: str | None
-    notes: str | None
-    stereotype: AttributeStereotype | None
+    type: Optional[ObjectID] = None  # `NULL` for enumeration values, a class ID otherwise.
+    default: Optional[str] = None
+    notes: Optional[str] = None
+    stereotype: Optional[AttributeStereotype] = None
 
 
 @dataclass
@@ -83,13 +85,13 @@ class EnumerationValue(Attribute):
 class Class:
     id: ObjectID
     name: ClassName
-    author: str
     package: Package
     attributes: dict[AttributeName, Attribute]  # TODO: Make list?
-    created_date: datetime
-    modified_date: datetime
-    note: str | None
-    stereotype: ClassStereotype | None
+    created_date: datetime = datetime.now()
+    modified_date: datetime = datetime.now()
+    author: Optional[str] = None
+    note: Optional[str] = None
+    stereotype: Optional[ClassStereotype] = None
 
 
 # @dataclass
@@ -111,13 +113,13 @@ class Class:
 class Relation:
     id: ConnectorID
     connector_type: RelationType
-    source_class: Class
-    dest_class: Class
-    direction: RelationDirection | None
-    sub_type: RelationSubType | None
-    source_card: Cardinality
-    source_role: str | None
-    source_role_note: str | None
-    dest_card: Cardinality | None
-    dest_role: str | None
-    dest_role_note: str | None
+    source_class: ObjectID
+    dest_class: ObjectID
+    direction: Optional[RelationDirection] = None
+    sub_type: Optional[RelationSubType] = None
+    source_card: Optional[Cardinality] = None
+    source_role: Optional[str] = None
+    source_role_note: Optional[str] = None
+    dest_card: Optional[Cardinality] = None
+    dest_role: Optional[str] = None
+    dest_role_note: Optional[str] = None

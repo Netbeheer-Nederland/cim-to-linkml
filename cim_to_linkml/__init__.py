@@ -13,9 +13,8 @@ if __name__ == "__main__":
         uml_relation_results = read_uml_relations(conn)
         uml_package_results = read_uml_packages(conn)
 
-    pprint(uml_class_results)
     # uml_packages = {id: parse_uml_package(id, uml_package_rows) for id in uml_package_rows}
     # pprint(uml_class_results)
-    # uml_classes = {id: parse_uml_class(id, uml_class_results) for id in uml_class_results}
+    uml_classes = {i: parse_uml_class(c, uml_class_results) for i, c in uml_class_results.items()}
 
-    # pprint(uml_classes)
+    pprint(uml_classes)

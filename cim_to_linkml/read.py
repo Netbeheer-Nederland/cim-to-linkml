@@ -66,7 +66,7 @@ def read_uml_packages(conn: sqlite3.Connection) -> dict[uml_model.ObjectID, dict
 
 def read_uml_classes(
     conn: sqlite3.Connection,
-) -> dict[uml_model.ObjectID, dict[uml_model.AttributeID, dict]]:
+) -> dict[uml_model.ObjectID, dict]:
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
@@ -85,7 +85,7 @@ def read_uml_classes(
             Attribute.Name AS attr_name,
             Attribute.LowerBound AS attr_lower_bound,
             Attribute.UpperBound AS attr_upper_bound,
-            Attribute.Type AS attr_range,
+            Attribute.Type AS attr_type,
             Attribute.Notes AS attr_notes,
             Attribute.Stereotype AS attr_stereotype,
             Attribute."Default" AS attr_default
@@ -101,20 +101,13 @@ def read_uml_classes(
     )
     rows = cur.execute(query)
 
-    # return {
-    #     class_id: list(map(dict, class_rows))
-    #     for class_id, class_rows in groupby(rows, itemgetter("class_id"))
-    # }
-
-    # for class_id, class_rows in groupby(rows, itemgetter("class_id")):
-    #     print(list(map(dict, class_rows)))
-
     return {
         class_id: {
             **{k: v for k, v in dict(class_rows[0]).items() if k.startswith("class_")},
             "attributes": {
                 attr_id: {k: v for k, v in attr.items() if k.startswith("attr_")}
                 for attr_id, attr_ in groupby(class_rows, itemgetter("attr_id"))
+                if attr_id is not None
                 if (attr := dict(next(attr_)))
             },
         }
