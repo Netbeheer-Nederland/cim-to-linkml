@@ -55,7 +55,6 @@ def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
 
 def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
     uml_relation: dict = dict(relation_row)
-    pprint(uml_relation)
 
     try:
         direction = uml_model.RelationDirection(uml_relation["direction"])

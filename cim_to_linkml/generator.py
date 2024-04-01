@@ -1,3 +1,4 @@
+from pprint import pprint
 from linkml_runtime import linkml_model
 from linkml_runtime.utils.metamodelcore import Curie
 
@@ -36,31 +37,47 @@ def convert_camel_to_snake(name: str) -> str:  # TODO: Implement and move.
 
 def gen_curie(name: str, prefix: str) -> Curie:  # TODO: Implement and move.
     # Also escape characters.
-    return Curie(name)
+    # return Curie(name)
+    return f"{prefix}:{name}"
+
+
+def _get_package_hierarchy(
+    pkg_id: uml_model.ObjectID, pkgs: dict[uml_model.ObjectID, uml_model.Package]
+) -> list[uml_model.Package]:
+    package_hierarchy = []
+
+    pkg = pkgs[pkg_id]
+    cur_pkg = pkg
+    while cur_pkg.parent not in [None, 0]:
+        cur_pkg = pkgs[cur_pkg.parent]
+        package_hierarchy.append(cur_pkg)
+
+    return package_hierarchy
 
 
 def gen_schema(
-    uml_classes: list[uml_model.Class],
-    uml_relations: list[uml_model.Relation],
-    uml_packages: list[uml_model.Package],
-    uml_package_name: uml_model.PackageName,
+    uml_package_id: uml_model.ObjectID, uml_project: uml_model.Project
 ) -> linkml_model.SchemaDefinition:
+    uml_package = uml_project.packages[uml_package_id]
     schema = linkml_model.SchemaDefinition(
-        id=gen_curie(uml_package_name, "cim"), name=uml_package_name
+        id=gen_curie(uml_package.name, "cim"),
+        name=uml_package.name,
     )
+    package_hierarchy = _get_package_hierarchy(uml_package_id, uml_project.packages)
+    pprint(package_hierarchy)
 
-    for uml_class in uml_classes:
-        match uml_class.stereotype:
-            case uml_model.ClassStereotype.PRIMITIVE:
-                continue
-            case uml_model.ClassStereotype.ENUMERATION:
-                enum = gen_enum(uml_class)
-                schema.enums[gen_safe_name(enum.name)] = enum
-            # case uml_model.ClassStereotype.CIMDATATYPE:
-            #     ... # TODO
-            case None | _:
-                class_ = gen_class(uml_class, uml_relations)
-                schema.classes[gen_safe_name(class_.name)] = class_
+    # for uml_class in uml_classes:
+    #    match uml_class.stereotype:
+    #        case uml_model.ClassStereotype.PRIMITIVE:
+    #            continue
+    #        case uml_model.ClassStereotype.ENUMERATION:
+    #            enum = gen_enum(uml_class)
+    #            schema.enums[gen_safe_name(enum.name)] = enum
+    #        # case uml_model.ClassStereotype.CIMDATATYPE:
+    #        #     ... # TODO
+    #        case None | _:
+    #            class_ = gen_class(uml_class, uml_relations)
+    #            schema.classes[gen_safe_name(class_.name)] = class_
 
     return schema
 
