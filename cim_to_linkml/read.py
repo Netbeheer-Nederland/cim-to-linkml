@@ -1,5 +1,7 @@
 import sqlite3
 import textwrap
+from itertools import groupby
+from operator import itemgetter
 
 import cim_to_linkml.uml_model as uml_model
 
@@ -62,61 +64,60 @@ def read_uml_packages(conn: sqlite3.Connection) -> dict[uml_model.ObjectID, dict
     return {pkg["id"]: dict(pkg) for pkg in rows}
 
 
-# TODO: Make type indicate that results are sorted.
-def read_uml_classes(conn: sqlite3.Connection, include_attrs: bool = True) -> sqlite3.Cursor:
+def read_uml_classes(
+    conn: sqlite3.Connection,
+) -> dict[uml_model.ObjectID, dict[uml_model.AttributeID, dict]]:
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
-    if include_attrs:
-        query = textwrap.dedent(
-            """
-            SELECT
-                Class.Object_ID AS class_id,
-                Class.Name AS class_name,
-                Class.Author AS class_author,
-                Class.Package_ID AS class_package_id,
-                Class.CreatedDate AS class_created_date,
-                Class.ModifiedDate AS class_modified_date,
-                Class.Stereotype AS class_stereotype,
-                Class.Note AS class_note,
-                Attribute.ID AS attr_id,
-                Attribute.Name AS attr_name,
-                Attribute.LowerBound AS attr_lower_bound,
-                Attribute.UpperBound AS attr_upper_bound,
-                Attribute.Type AS attr_range,
-                Attribute.Notes AS attr_notes,
-                Attribute.Stereotype AS attr_stereotype,
-                Attribute."Default" AS attr_default
-            FROM t_object AS Class
+    query = textwrap.dedent(
+        """
+        SELECT
+            Class.Object_ID AS class_id,
+            Class.Name AS class_name,
+            Class.Author AS class_author,
+            Class.Package_ID AS class_package_id,
+            Class.CreatedDate AS class_created_date,
+            Class.ModifiedDate AS class_modified_date,
+            Class.Stereotype AS class_stereotype,
+            Class.Note AS class_note,
+            Attribute.ID AS attr_id,
+            Attribute.Name AS attr_name,
+            Attribute.LowerBound AS attr_lower_bound,
+            Attribute.UpperBound AS attr_upper_bound,
+            Attribute.Type AS attr_range,
+            Attribute.Notes AS attr_notes,
+            Attribute.Stereotype AS attr_stereotype,
+            Attribute."Default" AS attr_default
+        FROM t_object AS Class
 
-            LEFT JOIN t_attribute AS Attribute
-            ON Class.Object_ID = Attribute.Object_ID
+        LEFT JOIN t_attribute AS Attribute
+        ON Class.Object_ID = Attribute.Object_ID
 
-            WHERE Class.Object_Type = "Class"
-            -- AND Class.Object_ID = 84
-            ORDER BY Class.Object_ID, Attribute.ID
-            """
-        )
-    else:
-        query = textwrap.dedent(
-            """
-            SELECT
-                Class.Object_ID AS class_id,
-                Class.Name AS class_name,
-                Class.Author AS class_author,
-                Class.Package_ID AS class_package_id,
-                Class.CreatedDate AS class_created_date,
-                Class.ModifiedDate AS class_modified_date,
-                Class.Stereotype AS class_stereotype,
-                Class.Note AS class_note
-            FROM t_object AS Class
-
-            WHERE Class.Object_Type = "Class"
-            -- AND Class.Object_ID = 84
-            ORDER BY Class.Object_ID
-            """
-        )
-
+        WHERE Class.Object_Type = "Class"
+        -- AND Class.Object_ID = 84
+        ORDER BY Class.Object_ID, Attribute.ID
+        """
+    )
     rows = cur.execute(query)
 
-    return rows
+    # return {
+    #     class_id: list(map(dict, class_rows))
+    #     for class_id, class_rows in groupby(rows, itemgetter("class_id"))
+    # }
+
+    # for class_id, class_rows in groupby(rows, itemgetter("class_id")):
+    #     print(list(map(dict, class_rows)))
+
+    return {
+        class_id: {
+            **{k: v for k, v in dict(class_rows[0]).items() if k.startswith("class_")},
+            "attributes": {
+                attr_id: {k: v for k, v in attr.items() if k.startswith("attr_")}
+                for attr_id, attr_ in groupby(class_rows, itemgetter("attr_id"))
+                if (attr := dict(next(attr_)))
+            },
+        }
+        for class_id, class_rows_ in groupby(rows, itemgetter("class_id"))
+        if (class_rows := list(class_rows_))
+    }
