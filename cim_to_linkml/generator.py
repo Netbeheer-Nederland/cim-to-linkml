@@ -57,8 +57,12 @@ def _get_package_hierarchy(
 
 
 def _gen_class_deps(
-    uml_class: uml_model.Class, uml_project: uml_model.Project
+    uml_class: uml_model.Class,
+    uml_project: uml_model.Project,
+    processed_obj_ids: set[uml_model.ObjectID] | None = None,
 ) -> tuple[list[linkml_model.ClassDefinition], list[linkml_model.EnumDefinition]]:
+    if processed_obj_ids is None:
+        processed_obj_ids = set()
     classes = []
     enums = []
 
@@ -67,32 +71,39 @@ def _gen_class_deps(
         uml_class, uml_project
     )
 
-    if not (uml_super_class or uml_type_classes):
+    if not (
+        set([uml_super_class.id] if uml_super_class is not None else []) | set(uml_type_classes)
+    ) - processed_obj_ids:
         return classes, enums
 
     if uml_super_class:
         super_class = gen_class(uml_super_class, uml_project)
         classes.append(super_class)
-        super_class_deps = _gen_class_deps(uml_super_class, uml_project)
+        processed_obj_ids.add(uml_super_class.id)
+        super_class_deps = _gen_class_deps(uml_super_class, uml_project, processed_obj_ids)
     else:
         super_class_deps = ([], [])
 
-    for type_class in uml_type_classes.values():
-        if type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
-            type_enum = gen_enum(type_class)
+    for uml_type_class in uml_type_classes.values():
+        if uml_type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
+            type_enum = gen_enum(uml_type_class)
             enums.append(type_enum)
+            processed_obj_ids.add(uml_type_class.id)
         else:  # Class.
-            type_class = gen_class(type_class, uml_project)
+            type_class = gen_class(uml_type_class, uml_project)
             classes.append(type_class)
+            processed_obj_ids.add(uml_type_class.id)
 
     if len(uml_type_classes) == 0:
         uml_type_classes_deps = ([], [])
     elif len(uml_type_classes) == 1:
-        uml_type_classes_deps = _gen_class_deps(list(uml_type_classes.values())[0], uml_project)
+        uml_type_classes_deps = _gen_class_deps(
+            list(uml_type_classes.values())[0], uml_project, processed_obj_ids
+        )
     else:
         uml_type_classes_deps = ([], [])
         for type_class in uml_type_classes.values():
-            deps = _gen_class_deps(type_class, uml_project)
+            deps = _gen_class_deps(type_class, uml_project, processed_obj_ids)
             uml_type_classes = (
                 uml_type_classes_deps[0] + deps[0],
                 uml_type_classes_deps[1] + deps[1],

@@ -29,10 +29,6 @@ if __name__ == "__main__":
         classes=uml_classes, packages=uml_packages, relations=uml_relations
     )
 
-    # psr = uml_project.classes[84]
-    # type_classes = get_rel_type_classes(psr, uml_project)
-    # pprint(type_classes)
-
     schema = gen_schema(11, uml_project)
     with open("out.yml", "wt") as f:
         f.write(schema_as_yaml_dump(schema))
