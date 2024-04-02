@@ -42,6 +42,7 @@ def parse_iso_datetime_val(val: str | None) -> datetime:
 
 def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
     uml_package: dict = dict(package_row)
+
     return uml_model.Package(
         id=uml_package["id"],
         name=uml_package["name"],

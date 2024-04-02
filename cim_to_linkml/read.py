@@ -25,7 +25,7 @@ def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
 
         WHERE type != "Dependency"
 
-        ORDER BY start_object_id
+        ORDER BY id, start_object_id, end_object_id
         """
     )
     rows = cur.execute(query)
