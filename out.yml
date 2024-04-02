@@ -1,32 +1,6 @@
-id: http://iec.ch/TC57/ns/CIM/Wires
 name: Wires
-description: This vocabulary is describing the steady state hypothesis profile from
-  IEC 61970-600-2.
-title: Wires
-prefixes:
-  linkml: https://w3id.org/linkml/
-  cim: http://iec.ch/TC57/CIM100#
-  cims: http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#
-  dc: http://purl.org/dc/elements/1.1/
-  dcat: http://www.w3.org/ns/dcat#
-  dct: http://purl.org/dc/terms/
-  eu: http://iec.ch/TC57/CIM100-European#
-  owl: http://www.w3.org/2002/07/owl#
-  profcim: http://iec.ch/TC57/ns/CIM/prof-cim#
-  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-  rdfs: http://www.w3.org/2000/01/rdf-schema#
-  sh: http://www.w3.org/ns/shacl#
-  skos: http://www.w3.org/2004/02/skos/core#
-  xsd: http://www.w3.org/2001/XMLSchema#
-  ssh: http://iec.ch/TC57/ns/CIM/SteadyStateHypothesis-EU#
-  this: http://iec.ch/TC57/ns/CIM/SteadyStateHypothesis-EU#Package_SteadyStateHypothesisProfile
-imports:
-- linkml:types
-default_curi_maps:
-- semweb_context
-default_range: string
-default_prefix: this
-
+id: cim:Wires
+default_prefix: cim:Wires/
 enums:
   SinglePhaseKind:
     description: "Enumeration of single phase identifiers. Allows designation of single\
@@ -699,6 +673,13 @@ classes:
   PerLengthImpedance:
     description: "Common type for per-length impedance electrical catalogues.\r\n"
     is_a: PerLengthLineParameter
+    attributes:
+      ACLineSegments:
+        description: All line segments described by this per-length impedance.
+        slot_uri: cim:PerLengthImpedance.ACLineSegments
+        multivalued: true
+        range: ACLineSegment
+        required: false
     class_uri: cim:PerLengthImpedance
   SusceptancePerLength:
     description: "Imaginary part of admittance per unit of length.\r\n"
@@ -781,6 +762,12 @@ classes:
     description: Common type for per-length electrical catalogues describing line
       parameters.
     is_a: IdentifiedObject
+    attributes:
+      WireAssemblyInfo:
+        slot_uri: cim:PerLengthLineParameter.WireAssemblyInfo
+        multivalued: false
+        range: WireAssemblyInfo
+        required: false
     class_uri: cim:PerLengthLineParameter
   IdentifiedObject:
     description: This is a root class to provide common identification for all classes
@@ -815,6 +802,36 @@ classes:
         multivalued: false
         range: string
         required: false
+      DiagramObjects:
+        description: The diagram objects that are associated with the domain object.
+        slot_uri: cim:IdentifiedObject.DiagramObjects
+        multivalued: true
+        range: DiagramObject
+        required: false
+      InstanceSet:
+        description: Dataset containing the data objects.
+        slot_uri: cim:IdentifiedObject.InstanceSet
+        multivalued: false
+        range: InstanceSet
+        required: true
+      Names:
+        description: All names of this identified object.
+        slot_uri: cim:IdentifiedObject.Names
+        multivalued: true
+        range: Name
+        required: false
+      PropertiesCIMDataObject:
+        description: The single CIM data object in the appropriate dataset context.
+        slot_uri: cim:IdentifiedObject.PropertiesCIMDataObject
+        multivalued: false
+        range: ChangeSetMember
+        required: false
+      TargetingCIMDataObject:
+        description: Data objects registered.
+        slot_uri: cim:IdentifiedObject.TargetingCIMDataObject
+        multivalued: true
+        range: ChangeSetMember
+        required: false
     class_uri: cim:IdentifiedObject
   String:
     description: A string consisting of a sequence of characters. The character encoding
@@ -833,6 +850,12 @@ classes:
         multivalued: false
         range: integer
         required: false
+      PhaseImpedanceData:
+        description: All data that belong to this conductor phase impedance.
+        slot_uri: cim:PerLengthPhaseImpedance.PhaseImpedanceData
+        multivalued: true
+        range: PhaseImpedanceData
+        required: true
     class_uri: cim:PerLengthPhaseImpedance
   Integer:
     description: "An integer number. The range is unspecified and not limited.\r\n"
@@ -884,6 +907,12 @@ classes:
         multivalued: false
         range: float
         required: false
+      ShuntCompensator:
+        description: Shunt compensator of this shunt compensator phase.
+        slot_uri: cim:ShuntCompensatorPhase.ShuntCompensator
+        multivalued: false
+        range: ShuntCompensator
+        required: true
     class_uri: cim:ShuntCompensatorPhase
   PowerSystemResource:
     description: A power system resource (PSR) can be an item of equipment such as
@@ -891,6 +920,96 @@ classes:
       such as a substation, or an organisational entity such as sub-control area.
       Power system resources can have measurements associated.
     is_a: IdentifiedObject
+    attributes:
+      Controls:
+        description: The controller outputs used to actually govern a regulating device,
+          e.g. the magnetization of a synchronous machine or capacitor bank breaker
+          actuator.
+        slot_uri: cim:PowerSystemResource.Controls
+        multivalued: true
+        range: Control
+        required: false
+      Measurements:
+        description: The measurements associated with this power system resource.
+        slot_uri: cim:PowerSystemResource.Measurements
+        multivalued: true
+        range: Measurement
+        required: false
+      PSRType:
+        description: Custom classification for this power system resource.
+        slot_uri: cim:PowerSystemResource.PSRType
+        multivalued: false
+        range: PSRType
+        required: false
+      ConfigurationEvent:
+        description: All configuration events created for this Power System resource.
+        slot_uri: cim:PowerSystemResource.ConfigurationEvent
+        multivalued: true
+        range: ConfigurationEvent
+        required: false
+      ReportingGroup:
+        description: Reporting groups to which this power system resource belongs.
+        slot_uri: cim:PowerSystemResource.ReportingGroup
+        multivalued: true
+        range: ReportingGroup
+        required: false
+      OperatingShare:
+        description: The operating shares of this power system resource.
+        slot_uri: cim:PowerSystemResource.OperatingShare
+        multivalued: true
+        range: OperatingShare
+        required: false
+      AssetDatasheet:
+        description: Datasheet information for this power system resource.
+        slot_uri: cim:PowerSystemResource.AssetDatasheet
+        multivalued: false
+        range: AssetInfo
+        required: false
+      VerificationAction:
+        description: The verification action that is performed on the power system
+          resource
+        slot_uri: cim:PowerSystemResource.VerificationAction
+        multivalued: true
+        range: VerificationAction
+        required: false
+      Clearances:
+        description: All clearances applicable to this power system resource.
+        slot_uri: cim:PowerSystemResource.Clearances
+        multivalued: true
+        range: ClearanceDocument
+        required: false
+      GenericAction:
+        description: The generic action that is performed on the power system resource
+        slot_uri: cim:PowerSystemResource.GenericAction
+        multivalued: true
+        range: GenericAction
+        required: false
+      PSREvents:
+        description: All events associated with this power system resource.
+        slot_uri: cim:PowerSystemResource.PSREvents
+        multivalued: true
+        range: PSREvent
+        required: false
+      Assets:
+        description: All assets represented by this power system resource. For example,
+          multiple conductor assets are electrically modelled as a single AC line
+          segment.
+        slot_uri: cim:PowerSystemResource.Assets
+        multivalued: true
+        range: Asset
+        required: false
+      Location:
+        description: Location of this power system resource.
+        slot_uri: cim:PowerSystemResource.Location
+        multivalued: false
+        range: Location
+        required: false
+      OperationalTags:
+        description: All operational tags placed on this power system resource.
+        slot_uri: cim:PowerSystemResource.OperationalTags
+        multivalued: true
+        range: OperationalTag
+        required: false
     class_uri: cim:PowerSystemResource
   Float:
     description: "A floating point number. The range is unspecified and not limited.\r\
@@ -919,6 +1038,18 @@ classes:
         multivalued: false
         range: TransformerControlMode
         required: false
+      RatioTapChangerTable:
+        description: The tap ratio table for this ratio  tap changer.
+        slot_uri: cim:RatioTapChanger.RatioTapChangerTable
+        multivalued: false
+        range: RatioTapChangerTable
+        required: false
+      TransformerEnd:
+        description: Transformer end to which this ratio tap changer belongs.
+        slot_uri: cim:RatioTapChanger.TransformerEnd
+        multivalued: false
+        range: TransformerEnd
+        required: true
     class_uri: cim:RatioTapChanger
   TapChanger:
     description: Mechanism for changing transformer winding tap positions.
@@ -1008,6 +1139,24 @@ classes:
         multivalued: false
         range: Seconds
         required: false
+      TapChangerControl:
+        description: The regulating control scheme in which this tap changer participates.
+        slot_uri: cim:TapChanger.TapChangerControl
+        multivalued: false
+        range: TapChangerControl
+        required: false
+      SvTapStep:
+        description: The tap step state associated with the tap changer.
+        slot_uri: cim:TapChanger.SvTapStep
+        multivalued: false
+        range: SvTapStep
+        required: false
+      TapSchedules:
+        description: A TapChanger can have TapSchedules.
+        slot_uri: cim:TapChanger.TapSchedules
+        multivalued: true
+        range: TapSchedule
+        required: false
     class_uri: cim:TapChanger
   PerCent:
     description: "Percentage on a defined base.   For example, specify as 100 to indicate\
@@ -1088,6 +1237,12 @@ classes:
         multivalued: false
         range: CurrentFlow
         required: false
+      VoltageControlZone:
+        description: A VoltageControlZone is controlled by a designated BusbarSection.
+        slot_uri: cim:BusbarSection.VoltageControlZone
+        multivalued: false
+        range: VoltageControlZone
+        required: false
     class_uri: cim:BusbarSection
   Connector:
     description: A conductor, or group of conductors, with negligible impedance, that
@@ -1119,6 +1274,63 @@ classes:
     description: The parts of the AC power system that are designed to carry current
       or that are conductively connected through terminals.
     is_a: Equipment
+    attributes:
+      ProtectiveActionAdjustment:
+        description: 'The operating condition to the Conducting Equipment is changed
+          when protective action adjustment is activated. For ShuntCompensator or
+          other conducting equipment that operates on discrete values (integer), the
+          values given in float will be rounded. '
+        slot_uri: cim:ConductingEquipment.ProtectiveActionAdjustment
+        multivalued: true
+        range: ProtectiveActionAdjustment
+        required: false
+      SvStatus:
+        description: The status state variable associated with this conducting equipment.
+        slot_uri: cim:ConductingEquipment.SvStatus
+        multivalued: true
+        range: SvStatus
+        required: false
+      ProtectionEquipments:
+        description: 'Protection equipment  used to protect specific conducting equipment. '
+        slot_uri: cim:ConductingEquipment.ProtectionEquipments
+        multivalued: true
+        range: ProtectionEquipment
+        required: false
+      BaseVoltage:
+        description: Base voltage of this conducting equipment.  Use only when there
+          is no voltage level container used and only one base voltage applies.  For
+          example, not used for transformers.
+        slot_uri: cim:ConductingEquipment.BaseVoltage
+        multivalued: false
+        range: BaseVoltage
+        required: false
+      Terminals:
+        description: Conducting equipment have terminals that may be connected to
+          other conducting equipment terminals via connectivity nodes or topological
+          nodes.
+        slot_uri: cim:ConductingEquipment.Terminals
+        multivalued: true
+        range: Terminal
+        required: false
+      JumpingAction:
+        description: Jumper action involving jumping operation on this conducting
+          equipment.
+        slot_uri: cim:ConductingEquipment.JumpingAction
+        multivalued: false
+        range: JumperAction
+        required: false
+      GroundingAction:
+        description: Action involving grounding operation on this conducting equipment.
+        slot_uri: cim:ConductingEquipment.GroundingAction
+        multivalued: false
+        range: GroundAction
+        required: false
+      Outage:
+        description: The outage that is isolated by the outage isolation equipment.
+        slot_uri: cim:ConductingEquipment.Outage
+        multivalued: false
+        range: Outage
+        required: false
     class_uri: cim:ConductingEquipment
   Equipment:
     description: The parts of a power system that are physical devices, electronic
@@ -1167,6 +1379,94 @@ classes:
         multivalued: false
         range: boolean
         required: false
+      WeatherStation:
+        slot_uri: cim:Equipment.WeatherStation
+        multivalued: true
+        range: WeatherStation
+        required: false
+      OperationalLimitSet:
+        description: The operational limit sets associated with this equipment.
+        slot_uri: cim:Equipment.OperationalLimitSet
+        multivalued: true
+        range: OperationalLimitSet
+        required: false
+      ContingencyEquipment:
+        description: The contingency equipments in which this equipment participates.
+        slot_uri: cim:Equipment.ContingencyEquipment
+        multivalued: true
+        range: ContingencyEquipment
+        required: false
+      EquipmentContainer:
+        description: Container of this equipment.
+        slot_uri: cim:Equipment.EquipmentContainer
+        multivalued: false
+        range: EquipmentContainer
+        required: false
+      Faults:
+        description: All faults on this equipment.
+        slot_uri: cim:Equipment.Faults
+        multivalued: true
+        range: Fault
+        required: false
+      LimitDependencyModel:
+        description: Limit dependencymodels organized under this equipment as a means
+          for organizing the model in a tree view.
+        slot_uri: cim:Equipment.LimitDependencyModel
+        multivalued: true
+        range: LimitDependency
+        required: false
+      EqiupmentLimitSeriesComponent:
+        description: Equipment limit series calculation component to which this equipment
+          contributes.
+        slot_uri: cim:Equipment.EqiupmentLimitSeriesComponent
+        multivalued: true
+        range: EquipmentLimitSeriesComponent
+        required: false
+      ProtectiveActionEquipment:
+        description: Protective action is controlling equipment. This can be direct
+          signals from the control center, or emulation of action done by protection
+          equipment.
+        slot_uri: cim:Equipment.ProtectiveActionEquipment
+        multivalued: true
+        range: ProtectiveActionEquipment
+        required: false
+      PinEquipment:
+        slot_uri: cim:Equipment.PinEquipment
+        multivalued: true
+        range: PinEquipment
+        required: false
+      EquipmentUnavailabilitySchedule:
+        slot_uri: cim:Equipment.EquipmentUnavailabilitySchedule
+        multivalued: true
+        range: EquipmentUnavailabilitySchedule
+        required: false
+      AdditionalEquipmentContainer:
+        description: Additional equipment container beyond the primary equipment container.  The
+          equipment is contained in another equipment container, but also grouped
+          with this equipment container.
+        slot_uri: cim:Equipment.AdditionalEquipmentContainer
+        multivalued: true
+        range: EquipmentContainer
+        required: false
+      UsagePoints:
+        description: All usage points connected to the electrical grid through this
+          equipment.
+        slot_uri: cim:Equipment.UsagePoints
+        multivalued: true
+        range: UsagePoint
+        required: false
+      Outages:
+        description: All outages in which this equipment is involved.
+        slot_uri: cim:Equipment.Outages
+        multivalued: true
+        range: Outage
+        required: false
+      OperationalRestrictions:
+        description: All operational restrictions for this equipment.
+        slot_uri: cim:Equipment.OperationalRestrictions
+        multivalued: true
+        range: OperationalRestriction
+        required: false
     class_uri: cim:Equipment
   TransformerTank:
     description: An assembly of two or more coupled windings that transform electrical
@@ -1174,6 +1474,24 @@ classes:
       placed in the same tank. Transformer tank can be used to model both single-phase
       and 3-phase transformers.
     is_a: Equipment
+    attributes:
+      PowerTransformer:
+        description: Bank this transformer belongs to.
+        slot_uri: cim:TransformerTank.PowerTransformer
+        multivalued: false
+        range: PowerTransformer
+        required: false
+      TransformerTankEnds:
+        description: All windings of this transformer.
+        slot_uri: cim:TransformerTank.TransformerTankEnds
+        multivalued: true
+        range: TransformerTankEnd
+        required: true
+      TransformerObservations:
+        slot_uri: cim:TransformerTank.TransformerObservations
+        multivalued: true
+        range: TransformerObservation
+        required: false
     class_uri: cim:TransformerTank
   Disconnector:
     description: 'A manually operated or motor operated mechanical switching device
@@ -1243,6 +1561,46 @@ classes:
         multivalued: false
         range: date
         required: false
+      SwitchPhase:
+        description: The individual switch phases for the switch.
+        slot_uri: cim:Switch.SwitchPhase
+        multivalued: true
+        range: SwitchPhase
+        required: false
+      SwitchSchedules:
+        description: A Switch can be associated with SwitchSchedules.
+        slot_uri: cim:Switch.SwitchSchedules
+        multivalued: true
+        range: SwitchSchedule
+        required: false
+      CompositeSwitch:
+        description: Composite switch to which this Switch belongs.
+        slot_uri: cim:Switch.CompositeSwitch
+        multivalued: false
+        range: CompositeSwitch
+        required: false
+      UnavailabilitySwitchAction:
+        slot_uri: cim:Switch.UnavailabilitySwitchAction
+        multivalued: true
+        range: UnavailabilitySwitchAction
+        required: false
+      SvSwitch:
+        description: The switch state associated with the switch.
+        slot_uri: cim:Switch.SvSwitch
+        multivalued: true
+        range: SvSwitch
+        required: false
+      ConnectDisconnectFunctions:
+        slot_uri: cim:Switch.ConnectDisconnectFunctions
+        multivalued: true
+        range: ConnectDisconnectFunction
+        required: false
+      SwitchAction:
+        description: Action changing status of this switch.
+        slot_uri: cim:Switch.SwitchAction
+        multivalued: false
+        range: SwitchAction
+        required: false
     class_uri: cim:Switch
   DateTime:
     description: Date and time as "yyyy-mm-ddThh:mm:ss.sss", which conforms with ISO
@@ -1256,15 +1614,42 @@ classes:
       be manually removed and replaced if the circuit is de-energized. Note that zero-impedance
       branches can potentially be modelled by other equipment types.
     is_a: Switch
+    attributes:
+      JumperAction:
+        description: Action taken with this jumper.
+        slot_uri: cim:Jumper.JumperAction
+        multivalued: false
+        range: JumperAction
+        required: false
     class_uri: cim:Jumper
   TapSchedule:
     description: A pre-established pattern over time for a tap step.
     is_a: SeasonDayTypeSchedule
+    attributes:
+      TapChanger:
+        description: A TapSchedule is associated with a TapChanger.
+        slot_uri: cim:TapSchedule.TapChanger
+        multivalued: false
+        range: TapChanger
+        required: true
     class_uri: cim:TapSchedule
   SeasonDayTypeSchedule:
     description: "A time schedule covering a 24 hour period, with curve data for a\
       \ specific type of season and day.\r\n"
     is_a: RegularIntervalSchedule
+    attributes:
+      DayType:
+        description: DayType for the Schedule.
+        slot_uri: cim:SeasonDayTypeSchedule.DayType
+        multivalued: false
+        range: DayType
+        required: false
+      Season:
+        description: Season for the Schedule.
+        slot_uri: cim:SeasonDayTypeSchedule.Season
+        multivalued: false
+        range: Season
+        required: false
     class_uri: cim:SeasonDayTypeSchedule
   RegularIntervalSchedule:
     description: "The schedule has time points where the time between them is constant.\r\
@@ -1285,6 +1670,13 @@ classes:
         multivalued: false
         range: Seconds
         required: false
+      TimePoints:
+        description: The regular interval time point data values that define this
+          schedule.
+        slot_uri: cim:RegularIntervalSchedule.TimePoints
+        multivalued: true
+        range: RegularTimePoint
+        required: true
     class_uri: cim:RegularIntervalSchedule
   BasicIntervalSchedule:
     description: Schedule of values at points in time.
@@ -1352,6 +1744,18 @@ classes:
         slot_uri: cim:TransformerCoreAdmittance.g0
         multivalued: false
         range: Conductance
+        required: false
+      TransformerEnd:
+        description: All transformer ends having this core admittance.
+        slot_uri: cim:TransformerCoreAdmittance.TransformerEnd
+        multivalued: true
+        range: TransformerEnd
+        required: false
+      TransformerEndInfo:
+        description: Transformer end datasheet used to calculate this core admittance.
+        slot_uri: cim:TransformerCoreAdmittance.TransformerEndInfo
+        multivalued: false
+        range: TransformerEndInfo
         required: false
     class_uri: cim:TransformerCoreAdmittance
   Susceptance:
@@ -1453,6 +1857,12 @@ classes:
         multivalued: false
         range: PerCent
         required: false
+      EnergyConsumer:
+        description: The energy consumer to which this phase belongs.
+        slot_uri: cim:EnergyConsumerPhase.EnergyConsumer
+        multivalued: false
+        range: EnergyConsumer
+        required: true
     class_uri: cim:EnergyConsumerPhase
   ActivePower:
     description: Product of RMS value of the voltage and the RMS value of the in-phase
@@ -1540,6 +1950,13 @@ classes:
         multivalued: false
         range: Reactance
         required: false
+      TapChanger:
+        description: The tap changers that participates in this regulating tap control
+          scheme.
+        slot_uri: cim:TapChangerControl.TapChanger
+        multivalued: true
+        range: TapChanger
+        required: true
     class_uri: cim:TapChangerControl
   RegulatingControl:
     description: "Specifies a set of equipment that works together to control a power\
@@ -1637,6 +2054,33 @@ classes:
         multivalued: false
         range: UnitMultiplier
         required: false
+      RegulatingCondEq:
+        description: The equipment that participates in this regulating control scheme.
+        slot_uri: cim:RegulatingControl.RegulatingCondEq
+        multivalued: true
+        range: RegulatingCondEq
+        required: false
+      RegulationSchedule:
+        description: Schedule for this regulating control.
+        slot_uri: cim:RegulatingControl.RegulationSchedule
+        multivalued: true
+        range: RegulationSchedule
+        required: false
+      Terminal:
+        description: 'The terminal associated with this regulating control.  The terminal
+          is associated instead of a node, since the terminal could connect into either
+          a topological node or a connectivity node.  Sometimes it is useful to model
+          regulation at a terminal of a bus bar object. '
+        slot_uri: cim:RegulatingControl.Terminal
+        multivalued: false
+        range: Terminal
+        required: false
+      ProtectiveActionRegulation:
+        description: Enable/disable a regulating control or set new target value.
+        slot_uri: cim:RegulatingControl.ProtectiveActionRegulation
+        multivalued: true
+        range: ProtectiveActionRegulation
+        required: false
     class_uri: cim:RegulatingControl
   Resistance:
     description: "Resistance (real part of impedance).\r\n"
@@ -1680,6 +2124,19 @@ classes:
     description: Describes a tabular curve for how the phase angle difference and
       impedance varies with the tap step.
     is_a: IdentifiedObject
+    attributes:
+      PhaseTapChangerTabular:
+        description: The phase tap changers to which this phase tap table applies.
+        slot_uri: cim:PhaseTapChangerTable.PhaseTapChangerTabular
+        multivalued: true
+        range: PhaseTapChangerTabular
+        required: false
+      PhaseTapChangerTablePoint:
+        description: The points of this table.
+        slot_uri: cim:PhaseTapChangerTable.PhaseTapChangerTablePoint
+        multivalued: true
+        range: PhaseTapChangerTablePoint
+        required: true
     class_uri: cim:PhaseTapChangerTable
   TransformerStarImpedance:
     description: "Transformer star impedance (Pi-model) that accurately reflects impedance\
@@ -1713,6 +2170,19 @@ classes:
         multivalued: false
         range: Reactance
         required: false
+      TransformerEnd:
+        description: All transformer ends having this star impedance.
+        slot_uri: cim:TransformerStarImpedance.TransformerEnd
+        multivalued: true
+        range: TransformerEnd
+        required: false
+      TransformerEndInfo:
+        description: Transformer end datasheet used to calculate this transformer
+          star impedance.
+        slot_uri: cim:TransformerStarImpedance.TransformerEndInfo
+        multivalued: false
+        range: TransformerEndInfo
+        required: false
     class_uri: cim:TransformerStarImpedance
   Breaker:
     description: A mechanical switching device capable of making, carrying, and breaking
@@ -1739,6 +2209,19 @@ classes:
         multivalued: false
         range: CurrentFlow
         required: false
+      OperatedByProtectionEquipment:
+        description: Protection equipments that operate this ProtectedSwitch.
+        slot_uri: cim:ProtectedSwitch.OperatedByProtectionEquipment
+        multivalued: true
+        range: ProtectionEquipment
+        required: false
+      RecloseSequences:
+        description: A breaker may have zero or more automatic reclosures after a
+          trip occurs.
+        slot_uri: cim:ProtectedSwitch.RecloseSequences
+        multivalued: true
+        range: RecloseSequence
+        required: false
     class_uri: cim:ProtectedSwitch
   GroundDisconnector:
     description: A manually operated or motor operated mechanical switching device
@@ -1749,6 +2232,13 @@ classes:
     description: 'A schedule of switch positions.  If RegularTimePoint.value1 is 0,
       the switch is open.  If 1, the switch is closed.  '
     is_a: SeasonDayTypeSchedule
+    attributes:
+      Switch:
+        description: A SwitchSchedule is associated with a Switch.
+        slot_uri: cim:SwitchSchedule.Switch
+        multivalued: false
+        range: Switch
+        required: true
     class_uri: cim:SwitchSchedule
   PowerTransformer:
     description: "An electrical device consisting of  two or more coupled windings,\
@@ -1846,6 +2336,18 @@ classes:
         multivalued: false
         range: string
         required: false
+      PowerTransformerEnd:
+        description: The ends of this power transformer.
+        slot_uri: cim:PowerTransformer.PowerTransformerEnd
+        multivalued: true
+        range: PowerTransformerEnd
+        required: false
+      TransformerTanks:
+        description: All transformers that belong to this bank.
+        slot_uri: cim:PowerTransformer.TransformerTanks
+        multivalued: true
+        range: TransformerTank
+        required: false
     class_uri: cim:PowerTransformer
   AngleDegrees:
     description: "Measurement of angle in degrees.\r\n"
@@ -1930,25 +2432,78 @@ classes:
       through the power transformer.  This phase tap model may also impact the voltage
       magnitude.
     is_a: TapChanger
+    attributes:
+      TransformerEnd:
+        description: Transformer end to which this phase tap changer belongs.
+        slot_uri: cim:PhaseTapChanger.TransformerEnd
+        multivalued: false
+        range: TransformerEnd
+        required: true
     class_uri: cim:PhaseTapChanger
   Ground:
     description: A point where the system is grounded used for connecting conducting
       equipment to ground. The power system model can have any number of grounds.
     is_a: ConductingEquipment
+    attributes:
+      GroundAction:
+        description: Action taken with this ground.
+        slot_uri: cim:Ground.GroundAction
+        multivalued: false
+        range: GroundAction
+        required: false
     class_uri: cim:Ground
   Line:
     description: 'Contains equipment beyond a substation belonging to a power transmission
       line. '
     is_a: EquipmentContainer
+    attributes:
+      Region:
+        description: The sub-geographical region of the line.
+        slot_uri: cim:Line.Region
+        multivalued: false
+        range: SubGeographicalRegion
+        required: false
     class_uri: cim:Line
   EquipmentContainer:
     description: 'A modelling construct to provide a root class for containing equipment. '
     is_a: ConnectivityNodeContainer
+    attributes:
+      Equipments:
+        description: Contained equipment.
+        slot_uri: cim:EquipmentContainer.Equipments
+        multivalued: true
+        range: Equipment
+        required: false
+      AdditionalGroupedEquipment:
+        description: The additonal contained equipment.  The equipment belong to the
+          equipment container. The equipment is contained in another equipment container,
+          but also grouped with this equipment container.  Examples include when a
+          switch contained in a substation is also desired to be grouped with a line
+          contianer or when a switch is included in a secondary substation and also
+          grouped in a feeder.
+        slot_uri: cim:EquipmentContainer.AdditionalGroupedEquipment
+        multivalued: true
+        range: Equipment
+        required: false
     class_uri: cim:EquipmentContainer
   ConnectivityNodeContainer:
     description: "A base class for all objects that may contain connectivity nodes\
       \ or topological nodes.\r\n"
     is_a: PowerSystemResource
+    attributes:
+      TopologicalNode:
+        description: The topological nodes which belong to this connectivity node
+          container.
+        slot_uri: cim:ConnectivityNodeContainer.TopologicalNode
+        multivalued: true
+        range: TopologicalNode
+        required: false
+      ConnectivityNodes:
+        description: Connectivity nodes which belong to this connectivity node container.
+        slot_uri: cim:ConnectivityNodeContainer.ConnectivityNodes
+        multivalued: true
+        range: ConnectivityNode
+        required: false
     class_uri: cim:ConnectivityNodeContainer
   PhaseTapChangerSymmetrical:
     description: Describes a symmetrical phase shifting transformer tap model in which
@@ -1962,6 +2517,19 @@ classes:
     description: A pre-established pattern over time for a controlled variable, e.g.,
       busbar voltage.
     is_a: SeasonDayTypeSchedule
+    attributes:
+      RegulatingControl:
+        description: Regulating controls that have this schedule.
+        slot_uri: cim:RegulationSchedule.RegulatingControl
+        multivalued: false
+        range: RegulatingControl
+        required: true
+      VoltageControlZones:
+        description: A VoltageControlZone may have a  voltage regulation schedule.
+        slot_uri: cim:RegulationSchedule.VoltageControlZones
+        multivalued: true
+        range: VoltageControlZone
+        required: false
     class_uri: cim:RegulationSchedule
   Fuse:
     description: An overcurrent protective device with a circuit opening fusible part
@@ -2004,6 +2572,33 @@ classes:
         slot_uri: cim:TransformerMeshImpedance.x0
         multivalued: false
         range: Reactance
+        required: false
+      ToTransformerEnd:
+        description: All transformer ends this mesh impedance is connected to.
+        slot_uri: cim:TransformerMeshImpedance.ToTransformerEnd
+        multivalued: true
+        range: TransformerEnd
+        required: true
+      FromTransformerEnd:
+        description: From end this mesh impedance is connected to. It determines the
+          voltage reference.
+        slot_uri: cim:TransformerMeshImpedance.FromTransformerEnd
+        multivalued: false
+        range: TransformerEnd
+        required: true
+      ToTransformerEndInfos:
+        description: All 'to' transformer end datasheets this mesh impedance for 'from'
+          transformer end is calculated from.
+        slot_uri: cim:TransformerMeshImpedance.ToTransformerEndInfos
+        multivalued: true
+        range: TransformerEndInfo
+        required: false
+      FromTransformerEndInfo:
+        description: '''from'' transformer end datasheet this mesh impedance is calculated
+          from. It determines the voltage reference.'
+        slot_uri: cim:TransformerMeshImpedance.FromTransformerEndInfo
+        multivalued: false
+        range: TransformerEndInfo
         required: false
     class_uri: cim:TransformerMeshImpedance
   SwitchPhase:
@@ -2050,6 +2645,12 @@ classes:
         multivalued: false
         range: CurrentFlow
         required: false
+      Switch:
+        description: The switch of the switch phase.
+        slot_uri: cim:SwitchPhase.Switch
+        multivalued: false
+        range: Switch
+        required: true
     class_uri: cim:SwitchPhase
   PowerTransformerEnd:
     description: "A PowerTransformerEnd is associated with each Terminal of a PowerTransformer.\r\
@@ -2166,6 +2767,12 @@ classes:
         multivalued: false
         range: Reactance
         required: false
+      PowerTransformer:
+        description: The power transformer of this power transformer end.
+        slot_uri: cim:PowerTransformerEnd.PowerTransformer
+        multivalued: false
+        range: PowerTransformer
+        required: false
     class_uri: cim:PowerTransformerEnd
   TransformerEnd:
     description: A conducting connection point of a power transformer. It corresponds
@@ -2223,6 +2830,73 @@ classes:
         slot_uri: cim:TransformerEnd.xground
         multivalued: false
         range: Reactance
+        required: false
+      PhaseTapChanger:
+        description: Phase tap changer associated with this transformer end.
+        slot_uri: cim:TransformerEnd.PhaseTapChanger
+        multivalued: false
+        range: PhaseTapChanger
+        required: false
+      StarImpedance:
+        description: (accurate for 2- or 3-winding transformers only) Pi-model impedances
+          of this transformer end. By convention, for a two winding transformer, the
+          full values of the transformer should be entered on the high voltage end
+          (endNumber=1).
+        slot_uri: cim:TransformerEnd.StarImpedance
+        multivalued: false
+        range: TransformerStarImpedance
+        required: false
+      RatioTapChanger:
+        description: Ratio tap changer associated with this transformer end.
+        slot_uri: cim:TransformerEnd.RatioTapChanger
+        multivalued: false
+        range: RatioTapChanger
+        required: false
+      BaseVoltage:
+        description: Base voltage of the transformer end.  This is essential for PU
+          calculation.
+        slot_uri: cim:TransformerEnd.BaseVoltage
+        multivalued: false
+        range: BaseVoltage
+        required: false
+      Terminal:
+        description: Terminal of the power transformer to which this transformer end
+          belongs.
+        slot_uri: cim:TransformerEnd.Terminal
+        multivalued: false
+        range: Terminal
+        required: false
+      ToMeshImpedance:
+        description: All mesh impedances between this 'from' and other 'to' transformer
+          ends.
+        slot_uri: cim:TransformerEnd.ToMeshImpedance
+        multivalued: true
+        range: TransformerMeshImpedance
+        required: false
+      FromMeshImpedance:
+        description: All mesh impedances between this 'to' and other 'from' transformer
+          ends.
+        slot_uri: cim:TransformerEnd.FromMeshImpedance
+        multivalued: true
+        range: TransformerMeshImpedance
+        required: false
+      CoreAdmittance:
+        description: Core admittance of this transformer end, representing magnetising
+          current and core losses. The full values of the transformer should be supplied
+          for one transformer end only.
+        slot_uri: cim:TransformerEnd.CoreAdmittance
+        multivalued: false
+        range: TransformerCoreAdmittance
+        required: false
+      FromWindingInsulations:
+        slot_uri: cim:TransformerEnd.FromWindingInsulations
+        multivalued: true
+        range: WindingInsulation
+        required: false
+      ToWindingInsulations:
+        slot_uri: cim:TransformerEnd.ToWindingInsulations
+        multivalued: true
+        range: WindingInsulation
         required: false
     class_uri: cim:TransformerEnd
   ApparentPower:
@@ -2327,11 +3001,23 @@ classes:
         multivalued: false
         range: boolean
         required: false
+      RegulatingControl:
+        description: The regulating control scheme in which this equipment participates.
+        slot_uri: cim:RegulatingCondEq.RegulatingControl
+        multivalued: false
+        range: RegulatingControl
+        required: false
     class_uri: cim:RegulatingCondEq
   EnergyConnection:
     description: A connection of energy generation or consumption on the power system
       model.
     is_a: ConductingEquipment
+    attributes:
+      EnergyComponent:
+        slot_uri: cim:EnergyConnection.EnergyComponent
+        multivalued: true
+        range: EnergyComponent
+        required: false
     class_uri: cim:EnergyConnection
   SeriesCompensator:
     description: "A Series Compensator is a series capacitor or reactor or an AC transmission\
@@ -2403,6 +3089,13 @@ classes:
     description: "Describes each tap step in the ratio tap changer tabular curve.\r\
       \n"
     is_a: TapChangerTablePoint
+    attributes:
+      RatioTapChangerTable:
+        description: Table of this point.
+        slot_uri: cim:RatioTapChangerTablePoint.RatioTapChangerTable
+        multivalued: false
+        range: RatioTapChangerTable
+        required: true
     class_uri: cim:RatioTapChangerTablePoint
   TapChangerTablePoint:
     description: Describes each tap step in the tabular curve.
@@ -2540,6 +3233,56 @@ classes:
         multivalued: false
         range: Reactance
         required: false
+      Clamp:
+        description: The clamps connected to the line segment.
+        slot_uri: cim:ACLineSegment.Clamp
+        multivalued: true
+        range: Clamp
+        required: false
+      WireSpacingInfo:
+        description: The wire spacing information that applies to this AC line segment
+        slot_uri: cim:ACLineSegment.WireSpacingInfo
+        multivalued: false
+        range: WireSpacingInfo
+        required: false
+      PerLengthImpedance:
+        description: Per-length impedance of this line segment.
+        slot_uri: cim:ACLineSegment.PerLengthImpedance
+        multivalued: false
+        range: PerLengthImpedance
+        required: false
+      Cut:
+        description: Cuts applied to the line segment.
+        slot_uri: cim:ACLineSegment.Cut
+        multivalued: true
+        range: Cut
+        required: false
+      LineFaults:
+        description: The line faults of the line segment.
+        slot_uri: cim:ACLineSegment.LineFaults
+        multivalued: true
+        range: LineFault
+        required: false
+      ACLineSegmentPhases:
+        description: The line segment phases which belong to the line segment.
+        slot_uri: cim:ACLineSegment.ACLineSegmentPhases
+        multivalued: true
+        range: ACLineSegmentPhase
+        required: false
+      LineGroundingAction:
+        description: Ground action involving clamp usage (for the case when the ground
+          is applied along the line segment instead of at its terminals).
+        slot_uri: cim:ACLineSegment.LineGroundingAction
+        multivalued: false
+        range: GroundAction
+        required: false
+      LineJumpingAction:
+        description: Jumper action involving clamp usage (for the case when the jumper
+          is applied along the line segment instead of at its terminals).
+        slot_uri: cim:ACLineSegment.LineJumpingAction
+        multivalued: false
+        range: JumperAction
+        required: false
     class_uri: cim:ACLineSegment
   Conductor:
     description: 'Combination of conducting material with consistent electrical characteristics,
@@ -2616,6 +3359,12 @@ classes:
         multivalued: false
         range: string
         required: false
+      Switches:
+        description: Switches contained in this Composite switch.
+        slot_uri: cim:CompositeSwitch.Switches
+        multivalued: true
+        range: Switch
+        required: false
     class_uri: cim:CompositeSwitch
   Sectionaliser:
     description: "Automatic switch that will lock open to isolate a faulted section.\
@@ -2629,6 +3378,19 @@ classes:
       voltage control purposes. A voltage control zone consists of a collection of
       substations with a designated bus bar section whose voltage will be controlled.
     is_a: PowerSystemResource
+    attributes:
+      RegulationSchedule:
+        description: A VoltageControlZone may have a  voltage regulation schedule.
+        slot_uri: cim:VoltageControlZone.RegulationSchedule
+        multivalued: false
+        range: RegulationSchedule
+        required: false
+      BusbarSection:
+        description: A VoltageControlZone is controlled by a designated BusbarSection.
+        slot_uri: cim:VoltageControlZone.BusbarSection
+        multivalued: false
+        range: BusbarSection
+        required: true
     class_uri: cim:VoltageControlZone
   EnergySource:
     description: A generic equivalent for an energy supplier on a transmission or
@@ -2728,6 +3490,24 @@ classes:
         slot_uri: cim:EnergySource.xn
         multivalued: false
         range: Reactance
+        required: false
+      EnergySchedulingType:
+        description: Energy Scheduling Type of an Energy Source.
+        slot_uri: cim:EnergySource.EnergySchedulingType
+        multivalued: false
+        range: EnergySchedulingType
+        required: false
+      EnergySourcePhase:
+        description: The individual phase information of the energy source.
+        slot_uri: cim:EnergySource.EnergySourcePhase
+        multivalued: true
+        range: EnergySourcePhase
+        required: false
+      EnergySourceAction:
+        description: Action taken with this energy source.
+        slot_uri: cim:EnergySource.EnergySourceAction
+        multivalued: false
+        range: EnergySourceAction
         required: false
     class_uri: cim:EnergySource
   AngleRadians:
@@ -2965,6 +3745,33 @@ classes:
         multivalued: false
         range: Reactance
         required: false
+      PrimeMovers:
+        description: Prime movers that drive this SynchronousMachine.
+        slot_uri: cim:SynchronousMachine.PrimeMovers
+        multivalued: true
+        range: PrimeMover
+        required: false
+      InitialReactiveCapabilityCurve:
+        description: The default reactive capability curve for use by a synchronous
+          machine.
+        slot_uri: cim:SynchronousMachine.InitialReactiveCapabilityCurve
+        multivalued: false
+        range: ReactiveCapabilityCurve
+        required: false
+      ReactiveCapabilityCurves:
+        description: All available reactive capability curves for this synchronous
+          machine.
+        slot_uri: cim:SynchronousMachine.ReactiveCapabilityCurves
+        multivalued: true
+        range: ReactiveCapabilityCurve
+        required: false
+      SynchronousMachineDynamics:
+        description: Synchronous machine dynamics model used to describe dynamic behaviour
+          of this synchronous machine.
+        slot_uri: cim:SynchronousMachine.SynchronousMachineDynamics
+        multivalued: false
+        range: SynchronousMachineDynamics
+        required: false
     class_uri: cim:SynchronousMachine
   RotatingMachine:
     description: A rotating machine which may be used as a generator or motor.
@@ -3009,6 +3816,21 @@ classes:
         multivalued: false
         range: Voltage
         required: false
+      HydroPump:
+        description: The synchronous machine drives the turbine which moves the water
+          from a low elevation to a higher elevation. The direction of machine rotation
+          for pumping may or may not be the same as for generating.
+        slot_uri: cim:RotatingMachine.HydroPump
+        multivalued: false
+        range: HydroPump
+        required: false
+      GeneratingUnit:
+        description: A synchronous machine may operate as a generator and as such
+          becomes a member of a generating unit.
+        slot_uri: cim:RotatingMachine.GeneratingUnit
+        multivalued: false
+        range: GeneratingUnit
+        required: false
     class_uri: cim:RotatingMachine
   PU:
     description: "Per Unit - a positive or negative value referred to a defined base.\
@@ -3045,6 +3867,24 @@ classes:
         multivalued: false
         range: Length
         required: false
+      JumperAction:
+        description: Action taken with this jumper.
+        slot_uri: cim:Clamp.JumperAction
+        multivalued: false
+        range: JumperAction
+        required: false
+      ClampAction:
+        description: The clamp action that is performed on the clamp
+        slot_uri: cim:Clamp.ClampAction
+        multivalued: false
+        range: ClampAction
+        required: false
+      ACLineSegment:
+        description: The line segment to which the clamp is connected.
+        slot_uri: cim:Clamp.ACLineSegment
+        multivalued: false
+        range: ACLineSegment
+        required: true
     class_uri: cim:Clamp
   TransformerTankEnd:
     description: "Transformer tank end represents an individual winding for unbalanced\
@@ -3058,11 +3898,30 @@ classes:
         multivalued: false
         range: PhaseCode
         required: false
+      TransformerTank:
+        description: Transformer this winding belongs to.
+        slot_uri: cim:TransformerTankEnd.TransformerTank
+        multivalued: false
+        range: TransformerTank
+        required: false
     class_uri: cim:TransformerTankEnd
   RatioTapChangerTable:
     description: 'Describes a curve for how the voltage magnitude and impedance varies
       with the tap step. '
     is_a: IdentifiedObject
+    attributes:
+      RatioTapChangerTablePoint:
+        description: Points of this table.
+        slot_uri: cim:RatioTapChangerTable.RatioTapChangerTablePoint
+        multivalued: true
+        range: RatioTapChangerTablePoint
+        required: true
+      RatioTapChanger:
+        description: The ratio tap changer of this tap ratio table.
+        slot_uri: cim:RatioTapChangerTable.RatioTapChanger
+        multivalued: true
+        range: RatioTapChanger
+        required: false
     class_uri: cim:RatioTapChangerTable
   PhaseImpedanceData:
     description: "Impedance and conductance matrix element values. \r\nThe diagonal\
@@ -3122,6 +3981,12 @@ classes:
         multivalued: false
         range: ReactancePerLength
         required: false
+      PhaseImpedance:
+        description: Conductor phase impedance to which this data belongs.
+        slot_uri: cim:PhaseImpedanceData.PhaseImpedance
+        multivalued: false
+        range: PerLengthPhaseImpedance
+        required: true
     class_uri: cim:PhaseImpedanceData
   ShuntCompensator:
     description: A shunt capacitor or reactor or switchable bank of shunt capacitors
@@ -3209,6 +4074,24 @@ classes:
         multivalued: false
         range: VoltagePerReactivePower
         required: false
+      ShuntCompensatorPhase:
+        description: The individual phases models for the shunt compensator.
+        slot_uri: cim:ShuntCompensator.ShuntCompensatorPhase
+        multivalued: true
+        range: ShuntCompensatorPhase
+        required: false
+      ShuntCompensatorAction:
+        description: The shunt compensator action that is performed on the shunt compensator
+        slot_uri: cim:ShuntCompensator.ShuntCompensatorAction
+        multivalued: false
+        range: ShuntCompensatorAction
+        required: false
+      SvShuntCompensatorSections:
+        description: The state for the number of shunt compensator sections in service.
+        slot_uri: cim:ShuntCompensator.SvShuntCompensatorSections
+        multivalued: true
+        range: SvShuntCompensatorSections
+        required: false
     class_uri: cim:ShuntCompensator
   VoltagePerReactivePower:
     description: "Voltage variation with reactive power.\r\n"
@@ -3289,6 +4172,22 @@ classes:
         multivalued: false
         range: Reactance
         required: false
+      First_Terminal:
+        description: The starting terminal for the calculation of distances along
+          the first branch of the mutual coupling.  Normally MutualCoupling would
+          only be used for terminals of AC line segments.  The first and second terminals
+          of a mutual coupling should point to different AC line segments.
+        slot_uri: cim:MutualCoupling.First_Terminal
+        multivalued: false
+        range: Terminal
+        required: true
+      Second_Terminal:
+        description: The starting terminal for the calculation of distances along
+          the second branch of the mutual coupling.
+        slot_uri: cim:MutualCoupling.Second_Terminal
+        multivalued: false
+        range: Terminal
+        required: true
     class_uri: cim:MutualCoupling
   Cut:
     description: "A cut separates a line segment into two parts. The cut appears as\
@@ -3311,6 +4210,18 @@ classes:
         slot_uri: cim:Cut.lengthFromTerminal1
         multivalued: false
         range: Length
+        required: false
+      ACLineSegment:
+        description: The line segment to which the cut is applied.
+        slot_uri: cim:Cut.ACLineSegment
+        multivalued: false
+        range: ACLineSegment
+        required: true
+      CutAction:
+        description: Action taken with this cut.
+        slot_uri: cim:Cut.CutAction
+        multivalued: false
+        range: CutAction
         required: false
     class_uri: cim:Cut
   ReactiveCapabilityCurve:
@@ -3335,6 +4246,24 @@ classes:
         multivalued: false
         range: Pressure
         required: false
+      EquivalentInjection:
+        description: The equivalent injection using this reactive capability curve.
+        slot_uri: cim:ReactiveCapabilityCurve.EquivalentInjection
+        multivalued: true
+        range: EquivalentInjection
+        required: false
+      InitiallyUsedBySynchronousMachines:
+        description: Synchronous machines using this curve as default.
+        slot_uri: cim:ReactiveCapabilityCurve.InitiallyUsedBySynchronousMachines
+        multivalued: true
+        range: SynchronousMachine
+        required: true
+      SynchronousMachines:
+        description: Synchronous machines using this curve.
+        slot_uri: cim:ReactiveCapabilityCurve.SynchronousMachines
+        multivalued: true
+        range: SynchronousMachine
+        required: true
     class_uri: cim:ReactiveCapabilityCurve
   Curve:
     description: "A multi-purpose curve or functional relationship between an independent\
@@ -3394,6 +4323,12 @@ classes:
         slot_uri: cim:Curve.y3Unit
         multivalued: false
         range: UnitSymbol
+        required: false
+      CurveDatas:
+        description: The point data values that define this curve.
+        slot_uri: cim:Curve.CurveDatas
+        multivalued: true
+        range: CurveData
         required: false
     class_uri: cim:Curve
   Pressure:
@@ -3472,6 +4407,13 @@ classes:
         multivalued: false
         range: Voltage
         required: false
+      StaticVarCompensatorDynamics:
+        description: Static Var Compensator dynamics model used to describe dynamic
+          behaviour of this Static Var Compensator.
+        slot_uri: cim:StaticVarCompensator.StaticVarCompensatorDynamics
+        multivalued: false
+        range: StaticVarCompensatorDynamics
+        required: false
     class_uri: cim:StaticVarCompensator
   EnergyConsumer:
     description: "Generic user of energy - a  point of consumption on the power system\
@@ -3547,6 +4489,38 @@ classes:
         slot_uri: cim:EnergyConsumer.qfixedPct
         multivalued: false
         range: PerCent
+        required: false
+      LoadResponse:
+        description: The load response characteristic of this load.  If missing, this
+          load is assumed to be constant power.
+        slot_uri: cim:EnergyConsumer.LoadResponse
+        multivalued: false
+        range: LoadResponseCharacteristic
+        required: false
+      EnergyConsumerPhase:
+        description: The individual phase models for this energy consumer.
+        slot_uri: cim:EnergyConsumer.EnergyConsumerPhase
+        multivalued: true
+        range: EnergyConsumerPhase
+        required: false
+      EnergyConsumerAction:
+        description: The energy consumer action that is performed on the energy consumer
+        slot_uri: cim:EnergyConsumer.EnergyConsumerAction
+        multivalued: false
+        range: EnergyConsumerAction
+        required: false
+      PowerCutZone:
+        description: The  energy consumer is assigned to this power cut zone.
+        slot_uri: cim:EnergyConsumer.PowerCutZone
+        multivalued: false
+        range: PowerCutZone
+        required: false
+      LoadDynamics:
+        description: Load dynamics model used to describe dynamic behaviour of this
+          energy consumer.
+        slot_uri: cim:EnergyConsumer.LoadDynamics
+        multivalued: false
+        range: LoadDynamics
         required: false
     class_uri: cim:EnergyConsumer
   Junction:
@@ -3668,6 +4642,12 @@ classes:
         multivalued: false
         range: AngleDegrees
         required: false
+      PhaseTapChangerTable:
+        description: The table of this point.
+        slot_uri: cim:PhaseTapChangerTablePoint.PhaseTapChangerTable
+        multivalued: false
+        range: PhaseTapChangerTable
+        required: true
     class_uri: cim:PhaseTapChangerTablePoint
   LoadBreakSwitch:
     description: A mechanical switching device capable of making, carrying, and breaking
@@ -3808,6 +4788,13 @@ classes:
         slot_uri: cim:AsynchronousMachine.xs
         multivalued: false
         range: Reactance
+        required: false
+      AsynchronousMachineDynamics:
+        description: Asynchronous machine dynamics model used to describe dynamic
+          behaviour of this asynchronous machine.
+        slot_uri: cim:AsynchronousMachine.AsynchronousMachineDynamics
+        multivalued: false
+        range: AsynchronousMachineDynamics
         required: false
     class_uri: cim:AsynchronousMachine
   RotationSpeed:
@@ -4027,6 +5014,13 @@ classes:
       describe the total conductance and admittance of a NonlinearShuntCompensatorPoint
       at a section number specified by NonlinearShuntCompensatorPoint.sectionNumber.
     is_a: ShuntCompensator
+    attributes:
+      NonlinearShuntCompensatorPoints:
+        description: All points of the non-linear shunt compensator.
+        slot_uri: cim:NonlinearShuntCompensator.NonlinearShuntCompensatorPoints
+        multivalued: true
+        range: NonlinearShuntCompensatorPoint
+        required: true
     class_uri: cim:NonlinearShuntCompensator
   NonlinearShuntCompensatorPoint:
     description: A non linear shunt compensator bank or section admittance value.
@@ -4065,6 +5059,12 @@ classes:
         multivalued: false
         range: integer
         required: false
+      NonlinearShuntCompensator:
+        description: Non-linear shunt compensator owning this point.
+        slot_uri: cim:NonlinearShuntCompensatorPoint.NonlinearShuntCompensator
+        multivalued: false
+        range: NonlinearShuntCompensator
+        required: true
     class_uri: cim:NonlinearShuntCompensatorPoint
   LinearShuntCompensatorPhase:
     description: A per phase linear shunt compensator has banks or sections with equal
@@ -4094,6 +5094,13 @@ classes:
       describe the total conductance and admittance of a NonlinearShuntCompensatorPhasePoint
       at a section number specified by NonlinearShuntCompensatorPhasePoint.sectionNumber.
     is_a: ShuntCompensatorPhase
+    attributes:
+      NonlinearShuntCompensatorPhasePoints:
+        description: All points of the non-linear shunt compensator phase.
+        slot_uri: cim:NonlinearShuntCompensatorPhase.NonlinearShuntCompensatorPhasePoints
+        multivalued: true
+        range: NonlinearShuntCompensatorPhasePoint
+        required: true
     class_uri: cim:NonlinearShuntCompensatorPhase
   NonlinearShuntCompensatorPhasePoint:
     description: A per phase non linear shunt compensator bank or section admittance
@@ -4120,17 +5127,37 @@ classes:
         multivalued: false
         range: integer
         required: false
+      NonlinearShuntCompensatorPhase:
+        description: Non-linear shunt compensator phase owning this point.
+        slot_uri: cim:NonlinearShuntCompensatorPhasePoint.NonlinearShuntCompensatorPhase
+        multivalued: false
+        range: NonlinearShuntCompensatorPhase
+        required: true
     class_uri: cim:NonlinearShuntCompensatorPhasePoint
   PhaseTapChangerTabular:
     description: 'Describes a tap changer with a table defining the relation between
       the tap step and the phase angle difference across the transformer. '
     is_a: PhaseTapChanger
+    attributes:
+      PhaseTapChangerTable:
+        description: The phase tap changer table for this phase tap changer.
+        slot_uri: cim:PhaseTapChangerTabular.PhaseTapChangerTable
+        multivalued: false
+        range: PhaseTapChangerTable
+        required: false
     class_uri: cim:PhaseTapChangerTabular
   WireSegment:
     description: A two terminal and power conducting device of negligible impedance
       and length represented as zero impedance device that can be used to connect
       auxiliary equipment to its terminals.
     is_a: Conductor
+    attributes:
+      WireSegmentPhases:
+        description: The wire segment phases which belong to the wire segment.
+        slot_uri: cim:WireSegment.WireSegmentPhases
+        multivalued: true
+        range: WireSegmentPhase
+        required: false
     class_uri: cim:WireSegment
   EnergySourcePhase:
     description: Represents the single phase information of an unbalanced energy source.
@@ -4146,10 +5173,23 @@ classes:
         multivalued: false
         range: SinglePhaseKind
         required: false
+      EnergySource:
+        description: The energy sourceto which the phase belongs.
+        slot_uri: cim:EnergySourcePhase.EnergySource
+        multivalued: false
+        range: EnergySource
+        required: true
     class_uri: cim:EnergySourcePhase
   EnergySchedulingType:
     description: Used to define the type of generation for scheduling purposes.
     is_a: IdentifiedObject
+    attributes:
+      EnergySource:
+        description: Energy Source of a particular Energy Scheduling Type.
+        slot_uri: cim:EnergySchedulingType.EnergySource
+        multivalued: true
+        range: EnergySource
+        required: false
     class_uri: cim:EnergySchedulingType
   PowerElectronicsConnection:
     description: A connection to the AC network for energy production or consumption
@@ -4246,6 +5286,26 @@ classes:
         multivalued: false
         range: Reactance
         required: false
+      PowerElectronicsUnit:
+        description: An AC network connection may have several power electronics units
+          connecting through it.
+        slot_uri: cim:PowerElectronicsConnection.PowerElectronicsUnit
+        multivalued: true
+        range: PowerElectronicsUnit
+        required: false
+      PowerElectronicsConnectionPhase:
+        description: The individual phases models for the power electronics connection.
+        slot_uri: cim:PowerElectronicsConnection.PowerElectronicsConnectionPhase
+        multivalued: true
+        range: PowerElectronicsConnectionPhase
+        required: false
+      WindTurbineType3or4Dynamics:
+        description: The wind turbine type 3 or type 4 dynamics model associated with
+          this power electronics connection.
+        slot_uri: cim:PowerElectronicsConnection.WindTurbineType3or4Dynamics
+        multivalued: false
+        range: WindTurbineType3or4Dynamics
+        required: false
     class_uri: cim:PowerElectronicsConnection
   ACLineSegmentPhase:
     description: "Represents a single wire of an alternating current line segment.\r\
@@ -4267,6 +5327,18 @@ classes:
         slot_uri: cim:ACLineSegmentPhase.sequenceNumber
         multivalued: false
         range: integer
+        required: false
+      ACLineSegment:
+        description: The line segment to which the phase belongs.
+        slot_uri: cim:ACLineSegmentPhase.ACLineSegment
+        multivalued: false
+        range: ACLineSegment
+        required: true
+      WireInfo:
+        description: Wire information contributing to this AC line segment phase information.
+        slot_uri: cim:ACLineSegmentPhase.WireInfo
+        multivalued: false
+        range: WireInfo
         required: false
     class_uri: cim:ACLineSegmentPhase
   PowerElectronicsConnectionPhase:
@@ -4297,6 +5369,13 @@ classes:
         multivalued: false
         range: ReactivePower
         required: false
+      PowerElectronicsConnection:
+        description: Power electronics connection of this power electronics connection
+          phase.
+        slot_uri: cim:PowerElectronicsConnectionPhase.PowerElectronicsConnection
+        multivalued: false
+        range: PowerElectronicsConnection
+        required: true
     class_uri: cim:PowerElectronicsConnectionPhase
   DisconnectingCircuitBreaker:
     description: A circuit breaking device including disconnecting function, eliminating
@@ -4320,4 +5399,11 @@ classes:
         multivalued: false
         range: integer
         required: false
+      WireSegment:
+        description: The wire segment to which the phase belongs.
+        slot_uri: cim:WireSegmentPhase.WireSegment
+        multivalued: false
+        range: WireSegment
+        required: true
     class_uri: cim:WireSegmentPhase
+prefixes: {}

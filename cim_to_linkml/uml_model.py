@@ -54,7 +54,7 @@ class AttributeStereotype(Enum):
     DEPRECATED = "deprecated"
 
 
-@dataclass
+@dataclass(frozen=True)
 class Package:
     id: ObjectID
     name: PackageName
@@ -65,7 +65,7 @@ class Package:
     parent: Optional[ObjectID] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class Attribute:
     id: AttributeID
     class_: ObjectID
@@ -78,12 +78,12 @@ class Attribute:
     stereotype: Optional[AttributeStereotype] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class EnumerationValue(Attribute):
     stereotype = AttributeStereotype.ENUM
 
 
-@dataclass
+@dataclass(frozen=True)
 class Class:
     id: ObjectID
     name: ClassName
@@ -96,22 +96,22 @@ class Class:
     stereotype: Optional[ClassStereotype] = None
 
 
-# @dataclass
+# @dataclass(frozen=True)
 # class EnumerationClass(Class):
 #     stereotype = ClassStereotype.ENUMERATION
 
 
-# @dataclass
+# @dataclass(frozen=True)
 # class CIMDatatypeClass(Class):
 #     stereotype = ClassStereotype.CIMDATATYPE
 
 
-# @dataclass
+# @dataclass(frozen=True)
 # class PrimitiveClass(Class):
 #     stereotype = ClassStereotype.PRIMITIVE
 
 
-@dataclass
+@dataclass(frozen=True)
 class Relation:
     id: ConnectorID
     type: RelationType
@@ -127,7 +127,7 @@ class Relation:
     dest_role_note: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class Project:
     packages: dict[ObjectID, Package]
     classes: dict[ObjectID, Class]

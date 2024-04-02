@@ -59,14 +59,15 @@ def _get_package_hierarchy(
 def _gen_class_deps(
     uml_class: uml_model.Class, uml_project: uml_model.Project
 ) -> tuple[list[linkml_model.ClassDefinition], list[linkml_model.EnumDefinition]]:
-    # TODO: Extend with relations.
     classes = []
     enums = []
 
     uml_super_class = get_super_class(uml_class, uml_project)
-    uml_attr_type_classes = get_attr_type_classes(uml_class, uml_project)
+    uml_type_classes = get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
+        uml_class, uml_project
+    )
 
-    if not (uml_super_class or uml_attr_type_classes):
+    if not (uml_super_class or uml_type_classes):
         return classes, enums
 
     if uml_super_class:
@@ -76,32 +77,30 @@ def _gen_class_deps(
     else:
         super_class_deps = ([], [])
 
-    for uml_attr_type_class in uml_attr_type_classes.values():
-        if uml_attr_type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
-            attr_type_enum = gen_enum(uml_attr_type_class)
-            enums.append(attr_type_enum)
+    for type_class in uml_type_classes.values():
+        if type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
+            type_enum = gen_enum(type_class)
+            enums.append(type_enum)
         else:  # Class.
-            attr_type_class = gen_class(uml_attr_type_class, uml_project)
-            classes.append(attr_type_class)
+            type_class = gen_class(type_class, uml_project)
+            classes.append(type_class)
 
-    if len(uml_attr_type_classes) == 0:
-        uml_attr_type_classes_deps = ([], [])
-    elif len(uml_attr_type_classes) == 1:
-        uml_attr_type_classes_deps = _gen_class_deps(
-            list(uml_attr_type_classes.values())[0], uml_project
-        )
+    if len(uml_type_classes) == 0:
+        uml_type_classes_deps = ([], [])
+    elif len(uml_type_classes) == 1:
+        uml_type_classes_deps = _gen_class_deps(list(uml_type_classes.values())[0], uml_project)
     else:
-        uml_attr_type_classes_deps = ([], [])
-        for type_class in uml_attr_type_classes.values():
+        uml_type_classes_deps = ([], [])
+        for type_class in uml_type_classes.values():
             deps = _gen_class_deps(type_class, uml_project)
-            uml_attr_type_classes = (
-                uml_attr_type_classes_deps[0] + deps[0],
-                uml_attr_type_classes_deps[1] + deps[1],
+            uml_type_classes = (
+                uml_type_classes_deps[0] + deps[0],
+                uml_type_classes_deps[1] + deps[1],
             )
 
     return (
-        classes + super_class_deps[0] + uml_attr_type_classes_deps[0],
-        enums + super_class_deps[1] + uml_attr_type_classes_deps[1],
+        classes + super_class_deps[0] + uml_type_classes_deps[0],
+        enums + super_class_deps[1] + uml_type_classes_deps[1],
     )
 
 
@@ -210,6 +209,24 @@ def get_attr_type_classes(
     return type_classes
 
 
+def get_rel_type_classes(
+    uml_class: uml_model.Class, uml_project: uml_model.Project
+) -> dict[uml_model.ObjectID, uml_model.Class]:
+    from_classes = {}
+    to_classes = {}
+
+    for rel in uml_project.relations.values():
+        match uml_class.id:
+            case rel.source_class:
+                dest_class = uml_project.classes[rel.dest_class]
+                to_classes[dest_class.id] = dest_class
+            case rel.dest_class:
+                source_class = uml_project.classes[rel.source_class]
+                from_classes[source_class.id] = source_class
+
+    return from_classes | to_classes
+
+
 def gen_slot_from_attr(
     uml_attr: uml_model.Attribute, uml_project: uml_model.Project
 ) -> linkml_model.SlotDefinition:
@@ -248,36 +265,40 @@ def _slot_multivalued(upper_bound: uml_model.CardinalityValue) -> bool:
 
 
 def gen_slot_from_relation(
-    uml_relation: uml_model.Relation, uml_class: uml_model.Class
+    uml_relation: uml_model.Relation, uml_project: uml_model.Project, direction
 ) -> linkml_model.SlotDefinition:
-    classes_by_name = {
-        name: next(classes)
-        for name, classes in groupby(
-            sorted(uml_project.classes.values(), key=attrgetter("name")), attrgetter("name")
-        )
-    }
-    domain_class = uml_project.classes[uml_attr.class_]
+    source_class = uml_project.classes[uml_relation.source_class]
+    dest_class = uml_project.classes[uml_relation.dest_class]
 
-    range_ = None
-    if uml_attr.type is not None:
-        type_class = classes_by_name[uml_attr.type]
-        if type_class.stereotype == uml_model.ClassStereotype.PRIMITIVE:
-            range_ = map_primitive_data_type(uml_attr.type)
-        else:
-            range_ = convert_camel_to_snake(gen_safe_name(type_class.name))
-    return linkml_model.SlotDefinition(
-        name=convert_camel_to_snake(
-            gen_safe_name(uml_relation.dest_role or uml_relation.dest_class.name)
-        ),
-        range=convert_camel_to_snake(gen_safe_name(uml_relation.dest_class.name)),
-        description=uml_relation.source_role_note,  # TODO: Is this the right one?
-        required=_slot_required(uml_relation.source_card.lower_bound),
-        multivalued=_slot_multivalued(uml_relation.source_card.upper_bound),
-        slot_uri=gen_curie(
-            f"{uml_class.name}.{uml_relation.source_role or uml_relation.source_class.name}",
-            CIM_PREFIX,
-        ),
-    )
+    match direction:
+        case "source->dest":
+            return linkml_model.SlotDefinition(
+                name=convert_camel_to_snake(
+                    gen_safe_name(uml_relation.dest_role or dest_class.name)
+                ),
+                range=gen_safe_name(dest_class.name),
+                description=uml_relation.dest_role_note,
+                required=_slot_required(uml_relation.dest_card.lower_bound),
+                multivalued=_slot_multivalued(uml_relation.dest_card.upper_bound),
+                slot_uri=gen_curie(
+                    f"{source_class.name}.{uml_relation.dest_role or dest_class.name}",
+                    CIM_PREFIX,
+                ),
+            )
+        case "dest->source":
+            return linkml_model.SlotDefinition(
+                name=convert_camel_to_snake(
+                    gen_safe_name(uml_relation.source_role or source_class.name)
+                ),
+                range=gen_safe_name(source_class.name),
+                description=uml_relation.source_role_note,
+                required=_slot_required(uml_relation.source_card.lower_bound),
+                multivalued=_slot_multivalued(uml_relation.source_card.upper_bound),
+                slot_uri=gen_curie(
+                    f"{dest_class.name}.{uml_relation.source_role or source_class.name}",
+                    CIM_PREFIX,
+                ),
+            )
 
 
 def gen_class(
@@ -289,19 +310,27 @@ def gen_class(
         convert_camel_to_snake(gen_safe_name(attr_name)): gen_slot_from_attr(attr, uml_project)
         for attr_name, attr in uml_class.attributes.items()
     }
-    # relation_slots = {
-    #     convert_camel_to_snake(
-    #         gen_safe_name(rel.dest_role or rel.dest_class.name)
-    #     ): gen_slot_from_relation(rel, uml_class)
-    #     for rel in uml_project.relations.values()
-    #     if rel.source_class == uml_class.id
-    #     if rel.type != uml_model.RelationType.GENERALIZATION
-    # }
+
+    from_relation_slots = {
+        slot.name: slot
+        for rel in uml_project.relations.values()
+        if rel.source_class == uml_class.id
+        if rel.type != uml_model.RelationType.GENERALIZATION
+        if (slot := gen_slot_from_relation(rel, uml_project, "source->dest"))
+    }
+
+    to_relation_slots = {
+        slot.name: slot
+        for rel in uml_project.relations.values()
+        if rel.dest_class == uml_class.id
+        if rel.type != uml_model.RelationType.GENERALIZATION
+        if (slot := gen_slot_from_relation(rel, uml_project, "dest->source"))
+    }
 
     return linkml_model.ClassDefinition(
         name=gen_safe_name(uml_class.name),
         class_uri=gen_curie(uml_class.name, CIM_PREFIX),
         is_a=super_class.name if super_class else None,
         description=uml_class.note,
-        attributes=attr_slots,  # | relation_slots,
+        attributes=attr_slots | from_relation_slots | to_relation_slots,
     )

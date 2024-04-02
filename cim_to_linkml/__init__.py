@@ -8,7 +8,7 @@ from linkml_runtime.utils.schema_as_dict import schema_as_yaml_dump
 import cim_to_linkml.uml_model as uml_model
 from cim_to_linkml.read import read_uml_classes, read_uml_relations, read_uml_packages
 from cim_to_linkml.parser import parse_uml_package, parse_uml_class, parse_uml_relation
-from cim_to_linkml.generator import gen_schema, get_super_class
+from cim_to_linkml.generator import gen_schema, get_super_class, get_rel_type_classes
 
 
 if __name__ == "__main__":
@@ -28,6 +28,10 @@ if __name__ == "__main__":
     uml_project = uml_model.Project(
         classes=uml_classes, packages=uml_packages, relations=uml_relations
     )
+
+    # psr = uml_project.classes[84]
+    # type_classes = get_rel_type_classes(psr, uml_project)
+    # pprint(type_classes)
 
     schema = gen_schema(11, uml_project)
     with open("out.yml", "wt") as f:
