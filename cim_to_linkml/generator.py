@@ -101,20 +101,10 @@ def _gen_elements(
     uml_super_class = get_super_class(uml_class, uml_project)
     if uml_super_class:
         uml_dep_classes.add(uml_super_class)
-        # results = {
-        #     (results[0] | new_classes, results[1] | new_enums)
-        #     for new_classes, new_enums in new_results
-        #     if (new_results := _gen_elements(uml_super_class, uml_project, results))
-        # }
 
     uml_dep_classes |= get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
         uml_class, uml_project
     )
-
-    # if (dep_classes | results[0] == results[0]) and (enums | results[1] == results[1]):
-    #     return results
-
-    # results = results[0] | classes, results[1] | enums
 
     for uml_dep_class in uml_dep_classes:
         if uml_dep_class.id in [c[1].ea_object_id for c in results[0]]:
@@ -156,7 +146,7 @@ def gen_enum(uml_enum: uml_model.Class, uml_project: uml_model.Project) -> linkm
 
     return linkml_model.Enum(
         ea_object_id=uml_enum.id,
-        name=enum_name,  # TODO: `gen_safe_name`
+        name=gen_safe_name(enum_name),
         enum_uri=gen_curie(uml_enum.name, CIM_PREFIX),
         description=uml_enum.note,
         permissible_values=frozenset(
