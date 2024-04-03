@@ -1,5 +1,6 @@
 from pprint import pprint
 from itertools import groupby, chain
+from functools import lru_cache
 from operator import attrgetter, itemgetter, add
 from urllib.parse import quote
 
@@ -59,60 +60,40 @@ def _get_package_hierarchy(
 def _gen_class_deps(
     uml_class: uml_model.Class,
     uml_project: uml_model.Project,
-    processed_obj_ids: set[uml_model.ObjectID] | None = None,
-) -> tuple[list[linkml_model.ClassDefinition], list[linkml_model.EnumDefinition]]:
-    if processed_obj_ids is None:
-        processed_obj_ids = set()
-    classes = []
-    enums = []
+    results: (
+        tuple[dict[uml_model.ObjectID, uml_model.Class], dict[uml_model.ObjectID, uml_model.Class]]
+        | None
+    ) = None,
+) -> tuple[dict[uml_model.ObjectID, uml_model.Class], dict[uml_model.ObjectID, uml_model.Class]]:
+    if results is None:
+        results = {}, {}
+
+    classes = {}
+    enums = {}
 
     uml_super_class = get_super_class(uml_class, uml_project)
     uml_type_classes = get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
         uml_class, uml_project
     )
 
-    if not (
-        set([uml_super_class.id] if uml_super_class is not None else []) | set(uml_type_classes)
-    ) - processed_obj_ids:
-        return classes, enums
-
     if uml_super_class:
-        super_class = gen_class(uml_super_class, uml_project)
-        classes.append(super_class)
-        processed_obj_ids.add(uml_super_class.id)
-        super_class_deps = _gen_class_deps(uml_super_class, uml_project, processed_obj_ids)
-    else:
-        super_class_deps = ([], [])
+        classes[uml_super_class.id] = uml_super_class
 
     for uml_type_class in uml_type_classes.values():
         if uml_type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
-            type_enum = gen_enum(uml_type_class)
-            enums.append(type_enum)
-            processed_obj_ids.add(uml_type_class.id)
+            enums[uml_type_class.id] = uml_type_class
         else:  # Class.
-            type_class = gen_class(uml_type_class, uml_project)
-            classes.append(type_class)
-            processed_obj_ids.add(uml_type_class.id)
+            classes[uml_type_class.id] = uml_type_class
 
-    if len(uml_type_classes) == 0:
-        uml_type_classes_deps = ([], [])
-    elif len(uml_type_classes) == 1:
-        uml_type_classes_deps = _gen_class_deps(
-            list(uml_type_classes.values())[0], uml_project, processed_obj_ids
-        )
-    else:
-        uml_type_classes_deps = ([], [])
-        for type_class in uml_type_classes.values():
-            deps = _gen_class_deps(type_class, uml_project, processed_obj_ids)
-            uml_type_classes = (
-                uml_type_classes_deps[0] + deps[0],
-                uml_type_classes_deps[1] + deps[1],
-            )
+    if (classes | results[0] == results[0]) and (enums | results[1] == results[1]):
+        return results
 
-    return (
-        classes + super_class_deps[0] + uml_type_classes_deps[0],
-        enums + super_class_deps[1] + uml_type_classes_deps[1],
-    )
+    results = results[0] | classes, results[1] | enums
+
+    for cls in (classes | enums).values():
+        c, e = _gen_class_deps(cls, uml_project, results)
+        results = results[0] | c, results[1] | e
+    return results
 
 
 def gen_schema(
@@ -147,9 +128,12 @@ def gen_schema(
                 class_ = gen_class(uml_class, uml_project)
                 schema.classes[gen_safe_name(class_.name)] = class_
 
+                print(uml_class.name)
                 dep_classes, dep_enums = _gen_class_deps(uml_class, uml_project)
-                schema.classes.update({gen_safe_name(c.name): c for c in dep_classes})
-                schema.enums.update({gen_safe_name(e.name): e for e in dep_enums})
+                schema.classes.update(
+                    {c.name: gen_class(c, uml_project) for c in dep_classes.values()}
+                )
+                schema.enums.update({e.name: gen_enum(e) for e in dep_enums.values()})
 
     return schema
 
@@ -227,6 +211,8 @@ def get_rel_type_classes(
     to_classes = {}
 
     for rel in uml_project.relations.values():
+        if rel.type == uml_model.RelationType.GENERALIZATION:
+            continue
         match uml_class.id:
             case rel.source_class:
                 dest_class = uml_project.classes[rel.dest_class]
