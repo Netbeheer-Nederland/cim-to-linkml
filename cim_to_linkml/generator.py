@@ -75,17 +75,6 @@ def gen_curie(name: str, prefix: str) -> Curie:  # TODO: Implement and move.
     return f"{prefix}:{quote(name)}"
 
 
-def _get_package_hierarchy(
-    pkg_id: uml_model.ObjectID, pkgs: dict[uml_model.ObjectID, uml_model.Package]
-) -> list[uml_model.Package]:
-    pkg = pkgs[pkg_id]
-
-    if pkg.parent in [None, 0]:  # Package `0` does not exist; treat it as top-level.
-        return []
-
-    return [pkgs[pkg.parent].id] + _get_package_hierarchy(pkg.parent, pkgs)
-
-
 @lru_cache(maxsize=2048)
 def _gen_class_deps(
     uml_class: uml_model.Class,
