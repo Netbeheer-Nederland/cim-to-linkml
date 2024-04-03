@@ -3184,7 +3184,7 @@ classes:
         is_a: AssetOrganisationRole
         name: AssetTestSampleTaker
     AssetUser:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:AssetUser
         description: "Organisation that is a user of the asset.\r\n"
         is_a: AssetOrganisationRole
@@ -5738,7 +5738,7 @@ classes:
         is_a: null
         name: BlockingFunction
     Boolean:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Boolean
         description: "A type with the value space \"true\" and \"false\".\r\n"
         is_a: null
@@ -6232,7 +6232,7 @@ classes:
         is_a: WorkDocument
         name: BusinessCase
     BusinessPlan:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:BusinessPlan
         description: A BusinessPlan is an organized sequence of predetermined actions
             required to complete a future organizational objective. It is a type of
@@ -6842,7 +6842,7 @@ classes:
         is_a: WorkIdentifiedObject
         name: CUWorkEquipmentItem
     Cabinet:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Cabinet
         description: Enclosure that offers protection to the equipment it contains
             and/or safety to people/animals outside it.
@@ -8231,7 +8231,7 @@ classes:
         is_a: EndDeviceFunction
         name: ComFunction
     ComMedia:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ComMedia
         description: "Communication media such as fibre optic cable, power-line, telephone,\
             \ etc.\r\n"
@@ -9714,7 +9714,7 @@ classes:
         is_a: PowerSystemResource
         name: ConnectivityNodeContainer
     Connector:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Connector
         description: A conductor, or group of conductors, with negligible impedance,
             that serve to connect other conducting equipment within a single substation
@@ -12595,19 +12595,19 @@ classes:
         is_a: ACDCTerminal
         name: DCBaseTerminal
     DCBreaker:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DCBreaker
         description: 'A breaker within a DC system. '
         is_a: DCSwitch
         name: DCBreaker
     DCBusbar:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DCBusbar
         description: A busbar within a DC system.
         is_a: DCConductingEquipment
         name: DCBusbar
     DCChopper:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DCChopper
         description: Low resistance equipment used in the internal DC circuit to balance
             voltages. It has typically positive and negative pole terminals and a
@@ -12670,7 +12670,7 @@ classes:
         is_a: DCEquipmentContainer
         name: DCConverterUnit
     DCDisconnector:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DCDisconnector
         description: A disconnector within a DC system.
         is_a: DCSwitch
@@ -12851,7 +12851,7 @@ classes:
         is_a: DCConductingEquipment
         name: DCShunt
     DCSwitch:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DCSwitch
         description: A switch within the DC system.
         is_a: DCConductingEquipment
@@ -13039,7 +13039,7 @@ classes:
         attributes:
             EndDeviceGroup:
                 description: The DER Group supporting the DER functions.
-                multivalued: false
+                multivalued: true
                 name: EndDeviceGroup
                 range: EndDeviceGroup
                 required: false
@@ -13379,7 +13379,7 @@ classes:
         is_a: ModelOperationArgDescription
         name: DatasetArgDescription
     Date:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Date
         description: Date as "yyyy-mm-dd", which conforms with ISO 8601. UTC time
             zone is specified as "yyyy-mm-ddZ". A local timezone relative UTC is specified
@@ -13441,7 +13441,7 @@ classes:
         is_a: null
         name: DateInterval
     DateTime:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DateTime
         description: Date and time as "yyyy-mm-ddThh:mm:ss.sss", which conforms with
             ISO 8601. UTC time zone is specified as "yyyy-mm-ddThh:mm:ss.sssZ". A
@@ -13488,7 +13488,7 @@ classes:
         is_a: IdentifiedObject
         name: DayType
     Decimal:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Decimal
         description: "Decimal is the base-10 notational system for representing real\
             \ numbers.\r\n\r\n"
@@ -14469,7 +14469,7 @@ classes:
         is_a: IdentifiedObject
         name: DiagramStyle
     DifferentialModel:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DifferentialModel
         description: 'A set of statements describing the changes in the network model.
             The statement is defined in the incremental model. '
@@ -14751,14 +14751,14 @@ classes:
         is_a: DiscontinuousExcitationControlDynamics
         name: DiscExcContIEEEDEC3A
     DisconnectingCircuitBreaker:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DisconnectingCircuitBreaker
         description: A circuit breaking device including disconnecting function, eliminating
             the need for separate disconnectors.
         is_a: Breaker
         name: DisconnectingCircuitBreaker
     Disconnector:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Disconnector
         description: 'A manually operated or motor operated mechanical switching device
             used for changing the connections in a circuit, or for isolating a circuit
@@ -15354,13 +15354,13 @@ classes:
         is_a: IdentifiedObject
         name: Document
     DocumentOrganisationRole:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DocumentOrganisationRole
         description: "Role an organisation plays with respect to documents.\r\n"
         is_a: OrganisationRole
         name: DocumentOrganisationRole
     DocumentPersonRole:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:DocumentPersonRole
         description: Person role with respect to documents.
         is_a: PersonRole
@@ -15744,7 +15744,7 @@ classes:
         is_a: null
         name: Due
     Duration:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Duration
         description: "Duration as \"PnYnMnDTnHnMnS\" which conforms to ISO 8601, where\
             \ nY expresses a number of years, nM a number of months, nD a number of\
@@ -17961,7 +17961,7 @@ classes:
         is_a: OrganisationRole
         name: EnvironmentalDataProvider
     EnvironmentalDependentLimit:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:EnvironmentalDependentLimit
         description: This is a environmental based limit dependency model for calculating
             operational limits.
@@ -18932,7 +18932,7 @@ classes:
         is_a: ErpIdentifiedObject
         name: ErpBomItemData
     ErpChartOfAccounts:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ErpChartOfAccounts
         description: Accounting structure of a business. Each account represents a
             financial aspect of a business, such as its Accounts Payable, or the value
@@ -18957,7 +18957,7 @@ classes:
         is_a: ErpIdentifiedObject
         name: ErpCompetency
     ErpDocument:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ErpDocument
         description: Shadow class for Document, to isolate subclassing from this package.
             If any subclass gets normative and needs inheritance, it will inherit
@@ -18965,13 +18965,13 @@ classes:
         is_a: Document
         name: ErpDocument
     ErpEngChangeOrder:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ErpEngChangeOrder
         description: General Utility Engineering Change Order information.
         is_a: ErpDocument
         name: ErpEngChangeOrder
     ErpIdentifiedObject:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ErpIdentifiedObject
         description: Shadow class for IdentifiedObject, to isolate subclassing from
             this package. If any subclass gets normative and needs inheritance, it
@@ -20062,7 +20062,7 @@ classes:
         is_a: ErpDocument
         name: ErpRequisition
     ErpSalesOrder:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ErpSalesOrder
         description: "General purpose Sales Order is used for utility service orders,\
             \ etc.\r\nAs used by the OAG, the SalesOrder is a step beyond a PurchaseOrder\
@@ -29054,7 +29054,7 @@ classes:
         is_a: null
         name: ExtensionsList
     ExternalCustomerAgreement:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ExternalCustomerAgreement
         description: A type of customer agreement involving an external agency. For
             example, a customer may form a contracts with an Energy Service Supplier
@@ -29526,7 +29526,7 @@ classes:
         is_a: null
         name: FaultImpedance
     FaultIndicator:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:FaultIndicator
         description: A FaultIndicator is typically only an indicator (which may or
             may not be remotely monitored), and not a piece of equipment that actually
@@ -29788,7 +29788,7 @@ classes:
         is_a: IdentifiedObject
         name: FinancialInfo
     Fire:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Fire
         description: A fire, often uncontrolled, covering an area of land which typically
             contains combustible vegetation. Associated location information is assumed
@@ -29830,7 +29830,7 @@ classes:
         is_a: null
         name: FiveMinAuxiliaryData
     Float:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Float
         description: "A floating point number. The range is unspecified and not limited.\r\
             \n"
@@ -29864,7 +29864,7 @@ classes:
         is_a: null
         name: FloatQuantity
     Flood:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Flood
         description: A flood, an overflowing of a large amount of water beyond its
             normal confines, esp. over what is normally dry land.
@@ -30792,7 +30792,7 @@ classes:
         is_a: IdentifiedObject
         name: FuelRegion
     Fuse:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Fuse
         description: An overcurrent protective device with a circuit opening fusible
             part that is heated and severed by the passage of overcurrent through
@@ -32011,7 +32011,7 @@ classes:
         is_a: EnvironmentalAnalog
         name: GeosphericAnalog
     GeosphericPhenomenon:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:GeosphericPhenomenon
         description: A geospheric phenomenon.
         is_a: EnvironmentalPhenomenon
@@ -39491,7 +39491,7 @@ classes:
         is_a: SwitchingAction
         name: GroundAction
     GroundDisconnector:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:GroundDisconnector
         description: A manually operated or motor operated mechanical switching device
             used for isolating a circuit or equipment from ground.
@@ -39511,7 +39511,7 @@ classes:
         is_a: EarthFaultCompensator
         name: GroundingImpedance
     HVDCDynamics:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:HVDCDynamics
         description: HVDC whose behaviour is described by reference to a standard
             model <font color="#0f0f0f">or by definition of a user-defined model.</font>
@@ -40290,7 +40290,7 @@ classes:
         is_a: EnvironmentalAnalog
         name: HydrosphericAnalog
     HydrosphericPhenomenon:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:HydrosphericPhenomenon
         description: A hydrospheric phenomenon.
         is_a: EnvironmentalPhenomenon
@@ -40372,7 +40372,7 @@ classes:
         is_a: ProvidedBilateralPoint
         name: ICCPProvidedPoint
     ICCPVCC:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ICCPVCC
         description: Indicates that the ICCP information is global in nature and normally
             is available to all authorized peers.
@@ -40513,7 +40513,7 @@ classes:
                 required: false
                 slot_uri: cim:IEC61968CIMVersion.version
         class_uri: cim:IEC61968CIMVersion
-        description: "IEC 61968 version number assigned to this UML model.\r\n"
+        description: IEC 61968 version number assigned to this UML model.
         is_a: null
         name: IEC61968CIMVersion
     IEC61970CIMVersion:
@@ -41610,7 +41610,7 @@ classes:
         is_a: Agreement
         name: IntSchedAgreement
     Integer:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Integer
         description: "An integer number. The range is unspecified and not limited.\r\
             \n"
@@ -42254,7 +42254,7 @@ classes:
         is_a: SwitchingAction
         name: JumperAction
     Junction:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Junction
         description: A point where one or more conducting equipments are connected
             with zero resistance.
@@ -42509,7 +42509,7 @@ classes:
         is_a: IdentifiedObject
         name: LandProperty
     Landslide:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Landslide
         description: A landslide, a large mass of rocks and earth that suddenly and
             quickly moves down the side of a mountain or hill.
@@ -42916,7 +42916,7 @@ classes:
         is_a: LoadDynamics
         name: LoadAggregate
     LoadAggregationPoint:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:LoadAggregationPoint
         description: "A specialized class of type AggregatedNode type. Defines Load\
             \ Aggregation Points.\r\n"
@@ -43087,7 +43087,7 @@ classes:
         is_a: ResourceBid
         name: LoadBid
     LoadBreakSwitch:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:LoadBreakSwitch
         description: A mechanical switching device capable of making, carrying, and
             breaking currents under normal operating conditions.
@@ -43429,7 +43429,7 @@ classes:
         is_a: IdentifiedObject
         name: LoadGroup
     LoadModelPartVersion:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:LoadModelPartVersion
         description: Load a model part version.
         is_a: null
@@ -44704,7 +44704,7 @@ classes:
         is_a: SpacePhenomenon
         name: MagneticStorm
     Maintainer:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Maintainer
         description: "Organisation that maintains assets.\r\n"
         is_a: AssetOrganisationRole
@@ -44777,7 +44777,7 @@ classes:
         is_a: WorkLocation
         name: MaintenanceLocation
     MaintenanceOrder:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:MaintenanceOrder
         description: null
         is_a: WorkOrder
@@ -45071,7 +45071,7 @@ classes:
         is_a: IdentifiedObject
         name: MarketActualEvent
     MarketAgreement:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:MarketAgreement
         description: "An identification  or eventually the contents of an agreement\
             \ between two or more parties.\r\n"
@@ -46637,7 +46637,7 @@ classes:
         is_a: IdentifiedObject
         name: MaterialItem
     MaxStartUpCostCurve:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:MaxStartUpCostCurve
         description: "The maximum Startup costs and time as a function of down time.\
             \  Relationship between unit startup cost (Y1-axis) vs. unit elapsed down\
@@ -47729,7 +47729,7 @@ classes:
         is_a: CombinedCyclePlant
         name: MktCombinedCyclePlant
     MktConductingEquipment:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:MktConductingEquipment
         description: Subclass of IEC 61970:Core:ConductingEquipment.
         is_a: ConductingEquipment
@@ -48404,7 +48404,7 @@ classes:
         is_a: ModelToBeDeleted
         name: ModelPartVersion
     ModelToBeDeleted:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ModelToBeDeleted
         description: A Model is a collection of Datasets.
         is_a: IdentifiedObject
@@ -48437,7 +48437,7 @@ classes:
         is_a: null
         name: Money
     MonthDay:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:MonthDay
         description: MonthDay format as "--mm-dd", which conforms with XSD data type
             gMonthDay.
@@ -48662,7 +48662,7 @@ classes:
                 multivalued: false
                 name: NetworkFrame
                 range: NetworkFrame
-                required: false
+                required: true
                 slot_uri: cim:NetworkBoundary.NetworkFrame
         class_uri: cim:NetworkBoundary
         description: A framework part that is a boundary between 2 frames.
@@ -48817,7 +48817,7 @@ classes:
         is_a: IdentifiedObject
         name: NetworkModelProjectChangeVersion
     NetworkModelProjectCollection:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:NetworkModelProjectCollection
         description: null
         is_a: null
@@ -49280,19 +49280,19 @@ classes:
         is_a: Curve
         name: NotificationTimeCurve
     NuclearGeneratingUnit:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:NuclearGeneratingUnit
         description: A nuclear generating unit.
         is_a: GeneratingUnit
         name: NuclearGeneratingUnit
     ObjectCreation:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ObjectCreation
         description: An object is to be created in the context.
         is_a: ChangeSetMember
         name: ObjectCreation
     ObjectDeletion:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ObjectDeletion
         description: "An object is to be deleted in the context.\r\n"
         is_a: ChangeSetMember
@@ -49329,7 +49329,7 @@ classes:
         is_a: ChangeSetMember
         name: ObjectReverseModification
     Observation:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Observation
         description: Observed (actual non-forecast) values sets and/or phenomena characteristics.
         is_a: EnvironmentalInformation
@@ -49937,7 +49937,7 @@ classes:
         is_a: WorkDocument
         name: OneCallRequest
     OpenAccessProduct:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:OpenAccessProduct
         description: "Contracts for services offered commercially.\r\n"
         is_a: Agreement
@@ -50162,7 +50162,7 @@ classes:
         is_a: null
         name: Operation
     OperationPersonRole:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:OperationPersonRole
         description: Person role in the context of utility operations.
         is_a: PersonRole
@@ -51330,7 +51330,7 @@ classes:
         is_a: WorkIdentifiedObject
         name: OverheadCost
     OverheadWireInfo:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:OverheadWireInfo
         description: "Overhead wire data.\r\n"
         is_a: WireInfo
@@ -53384,7 +53384,7 @@ classes:
         is_a: PhaseTapChanger
         name: PhaseTapChangerNonLinear
     PhaseTapChangerSymmetrical:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:PhaseTapChangerSymmetrical
         description: Describes a symmetrical phase shifting transformer tap model
             in which the voltage magnitude of both sides is the same. The difference
@@ -53483,7 +53483,7 @@ classes:
         is_a: IdentifiedObject
         name: PhenomenonClassification
     PhotoVoltaicUnit:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:PhotoVoltaicUnit
         description: A photovoltaic device or an aggregation of such devices.
         is_a: PowerElectronicsUnit
@@ -53732,7 +53732,7 @@ classes:
         is_a: Document
         name: PlannedOutageNotification
     Plant:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Plant
         description: A Plant is a collection of equipment for purposes of generation.
         is_a: EquipmentContainer
@@ -54290,7 +54290,7 @@ classes:
         is_a: null
         name: PositionPoint
     PostLineSensor:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:PostLineSensor
         description: " A sensor used mainly in overhead distribution networks as the\
             \ source of both current and voltage measurements.\r\n"
@@ -54627,7 +54627,7 @@ classes:
         is_a: Equipment
         name: PowerElectronicsUnit
     PowerElectronicsWindUnit:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:PowerElectronicsWindUnit
         description: A wind generating unit that connects to the AC network with power
             electronics rather than rotating machines or an aggregation of such units.
@@ -55897,7 +55897,7 @@ classes:
         is_a: WorkDocument
         name: Project
     ProjectAlternative:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ProjectAlternative
         description: "Project B is an alternative to project A.  Project A is the\
             \ primary alternative.\r\nMultiple project alternatives should not be\
@@ -55905,7 +55905,7 @@ classes:
         is_a: NetworkModelProjectRelationship
         name: ProjectAlternative
     ProjectDependency:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ProjectDependency
         description: 'Project A change sets should be applied before Project B during
             case creation. '
@@ -59805,10 +59805,11 @@ classes:
                 required: false
                 slot_uri: cim:Quantity.quality
             quantity:
-                description: null
+                description: "The quantity value.\r\nThe association role provides\
+                    \ the information about what is expressed."
                 multivalued: false
                 name: quantity
-                range: Quantity
+                range: double
                 required: false
                 slot_uri: cim:Quantity.quantity
             type:
@@ -61067,7 +61068,7 @@ classes:
         is_a: IdentifiedObject
         name: RecloseSequence
     Recloser:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Recloser
         description: "Pole-mounted fault interrupter with built-in phase and ground\
             \ relays, current transformer (CT), and supplemental controls.\r\n"
@@ -64265,40 +64266,107 @@ classes:
     ResourceCertification:
         attributes:
             RegisteredResource:
-                description: RegisteredResources are qualified for resource ancillary
-                    service types (which include market product types as well as other
-                    types such as BlackStart) by the association to the class ResourceAncillaryServiceQualification.
-                multivalued: false
+                description: null
+                multivalued: true
                 name: RegisteredResource
                 range: RegisteredResource
-                required: true
-                slot_uri: cim:ResourceCertification.RegisteredResource
-            market:
-                description: "market type\r\n"
-                multivalued: false
-                name: market
-                range: MarketType
                 required: false
-                slot_uri: cim:ResourceCertification.market
-            qualificationFlag:
-                description: "Status of the qualification ('Y' = Active, 'N' = Inactive)\r\
-                    \n"
+                slot_uri: cim:ResourceCertification.RegisteredResource
+            certifiedDAM:
+                description: null
                 multivalued: false
-                name: qualificationFlag
+                name: certifiedDAM
                 range: YesNo
                 required: false
-                slot_uri: cim:ResourceCertification.qualificationFlag
-            type:
-                description: "Type of service based on ResourceAncillaryServiceType\
-                    \ enumeration\r\n"
+                slot_uri: cim:ResourceCertification.certifiedDAM
+            certifiedNonspinDAM:
+                description: null
                 multivalued: false
-                name: type
-                range: ResourceCertificationKind
+                name: certifiedNonspinDAM
+                range: YesNo
                 required: false
-                slot_uri: cim:ResourceCertification.type
+                slot_uri: cim:ResourceCertification.certifiedNonspinDAM
+            certifiedNonspinDAMMw:
+                description: null
+                multivalued: false
+                name: certifiedNonspinDAMMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinDAMMw
+            certifiedNonspinRTM:
+                description: null
+                multivalued: false
+                name: certifiedNonspinRTM
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinRTM
+            certifiedNonspinRTMMw:
+                description: null
+                multivalued: false
+                name: certifiedNonspinRTMMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinRTMMw
+            certifiedPIRP:
+                description: null
+                multivalued: false
+                name: certifiedPIRP
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedPIRP
+            certifiedRTM:
+                description: null
+                multivalued: false
+                name: certifiedRTM
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRTM
+            certifiedRUC:
+                description: null
+                multivalued: false
+                name: certifiedRUC
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRUC
+            certifiedRegulation:
+                description: null
+                multivalued: false
+                name: certifiedRegulation
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRegulation
+            certifiedRegulationMw:
+                description: null
+                multivalued: false
+                name: certifiedRegulationMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRegulationMw
+            certifiedReplaceAS:
+                description: null
+                multivalued: false
+                name: certifiedReplaceAS
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedReplaceAS
+            certifiedSpin:
+                description: null
+                multivalued: false
+                name: certifiedSpin
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedSpin
+            certifiedSpinMw:
+                description: null
+                multivalued: false
+                name: certifiedSpinMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedSpinMw
         class_uri: cim:ResourceCertification
-        description: Specifies certification for a resource to participate in a specific
-            markets.
+        description: "This class represent the resource certification for a specific\
+            \ product type. For example, a resource is certified for Non-Spinning\
+            \ reserve for RTM.\r\n"
         is_a: null
         name: ResourceCertification
     ResourceClearing:
@@ -65993,7 +66061,7 @@ classes:
         is_a: null
         name: Seconds
     Sectionaliser:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Sectionaliser
         description: "Automatic switch that will lock open to isolate a faulted section.\
             \ It may, or may not, have load breaking capability. Its primary purpose\
@@ -66185,7 +66253,7 @@ classes:
         is_a: Curve
         name: SensitivityPriceCurve
     Sensor:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Sensor
         description: "This class describe devices that transform a measured quantity\
             \ into signals that can be presented at displays, used in control or be\
@@ -66523,7 +66591,7 @@ classes:
         is_a: IdentifiedObject
         name: ServiceMultiplier
     ServiceOrder:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:ServiceOrder
         description: null
         is_a: WorkOrder
@@ -67515,7 +67583,7 @@ classes:
         is_a: Document
         name: Skill
     SolarGeneratingUnit:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:SolarGeneratingUnit
         description: A solar thermal generating unit, connected to the grid by means
             of a rotating machine.  This class does not represent photovoltaic (PV)
@@ -67536,7 +67604,7 @@ classes:
         is_a: EnvironmentalAnalog
         name: SpaceAnalog
     SpacePhenomenon:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:SpacePhenomenon
         description: An extra-terrestrial phenomenon.
         is_a: EnvironmentalPhenomenon
@@ -68075,7 +68143,7 @@ classes:
         is_a: IdentifiedObject
         name: StartupModel
     StateVariable:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:StateVariable
         description: An abstract class for state variables.
         is_a: null
@@ -68171,7 +68239,7 @@ classes:
         is_a: DynamicsFunctionBlock
         name: StaticVarCompensatorDynamics
     StationSupply:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:StationSupply
         description: Station supply with load derived from the station output.
         is_a: EnergyConsumer
@@ -68575,7 +68643,7 @@ classes:
         is_a: Asset
         name: Streetlight
     String:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:String
         description: A string consisting of a sequence of characters. The character
             encoding is UTF-8. The string length is unspecified and unlimited.
@@ -69078,13 +69146,13 @@ classes:
         is_a: EnergyArea
         name: SubLoadArea
     Subcritical:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Subcritical
         description: "Once-through subcritical boiler.\r\n"
         is_a: FossilSteamSupply
         name: Subcritical
     SubscribePowerCurve:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:SubscribePowerCurve
         description: Price curve for specifying the cost of energy (X) at points in
             time (y1) according to a prcing structure, which is based on a tariff.
@@ -69184,13 +69252,13 @@ classes:
         is_a: null
         name: SubstitutionResourceList
     Supercritical:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Supercritical
         description: "Once-through supercritical boiler.\r\n"
         is_a: FossilSteamSupply
         name: Supercritical
     SurgeArrester:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:SurgeArrester
         description: Shunt device, installed on the network, usually in the proximity
             of electrical equipment in order to protect the said equipment against
@@ -71005,7 +71073,7 @@ classes:
         is_a: SynchronousMachineDetailed
         name: SynchronousMachineEquivalentCircuit
     SynchronousMachineSimplified:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:SynchronousMachineSimplified
         description: "The simplified model represents a synchronous generator as a\
             \ constant internal voltage behind an impedance<i> </i>(<i>Rs + jXp</i>)\
@@ -72891,7 +72959,7 @@ classes:
         is_a: IdentifiedObject
         name: TiePoint
     Time:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Time
         description: "Time as \"hh:mm:ss.sss\", which conforms with ISO 8601. UTC\
             \ time zone is specified as \"hh:mm:ss.sssZ\". A local timezone relative\
@@ -78625,7 +78693,7 @@ classes:
         is_a: null
         name: WaterLevel
     WaveTrap:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:WaveTrap
         description: Line traps are devices that impede high frequency power line
             carrier signals yet present a negligible impedance at the main power frequency.
@@ -78674,7 +78742,7 @@ classes:
         is_a: BidHourlySchedule
         name: WheelingReferenceSchedule
     Whirlpool:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:Whirlpool
         description: A whirlpool, a rapidly rotating mass of water in a river or sea
             into which objects may be drawn, typically caused by the meeting of conflicting
@@ -81745,7 +81813,7 @@ classes:
         is_a: WorkDocument
         name: WorkCostSummary
     WorkDocument:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:WorkDocument
         description: Shadow class for Document, to isolate subclassing from this package.
             If any subclass gets normative and needs inheritance, it will inherit
@@ -81789,7 +81857,7 @@ classes:
         is_a: WorkIdentifiedObject
         name: WorkFlowStep
     WorkIdentifiedObject:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:WorkIdentifiedObject
         description: Shadow class for IdentifiedObject, to isolate subclassing from
             this package. If any subclass gets normative and needs inheritance, it
@@ -81825,13 +81893,13 @@ classes:
         is_a: Location
         name: WorkLocation
     WorkOrder:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:WorkOrder
         description: null
         is_a: Document
         name: WorkOrder
     WorkRequest:
-        attributes: {}
+        attributes: !!set {}
         class_uri: cim:WorkRequest
         description: Document used to plan or initiate work
         is_a: Document
@@ -92397,14 +92465,14 @@ enums:
             \ enumeration\r\nPossible types of breaker maintenance work."
         enum_uri: cim:TransformerMaintenanceKind
         name: TransformerMaintenanceKind
-        permissible_values: {}
+        permissible_values: !!set {}
     TransformerRepairItemKind:
         description: "Transformer components and problem areas which can be the focus\
             \ of a repair work task.\r\nWorkTimeScheduleKind enumeration\r\nKind of\
             \ work schedule."
         enum_uri: cim:TransformerRepairItemKind
         name: TransformerRepairItemKind
-        permissible_values: {}
+        permissible_values: !!set {}
     TransmissionModeKind:
         description: 'Transmission mode for end device display controls, applicable
             to premises area network (PAN) devices. '
@@ -92436,6 +92504,9 @@ enums:
         enum_uri: cim:TroubleReportingKind
         name: TroubleReportingKind
         permissible_values:
+            app:
+                meaning: cim:TroubleReportingKind.app
+                text: app
             call:
                 meaning: cim:TroubleReportingKind.call
                 text: call
@@ -92451,6 +92522,12 @@ enums:
             other:
                 meaning: cim:TroubleReportingKind.other
                 text: other
+            sms:
+                meaning: cim:TroubleReportingKind.sms
+                text: sms
+            web:
+                meaning: cim:TroubleReportingKind.web
+                text: web
     TroubleSymptomsExtentKind:
         description: The enumerated values that define the extent of the problem.
         enum_uri: cim:TroubleSymptomsExtentKind

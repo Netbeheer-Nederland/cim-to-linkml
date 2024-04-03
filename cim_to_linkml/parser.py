@@ -41,7 +41,8 @@ def parse_iso_datetime_val(val: str | None) -> datetime:
 
 
 def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
-    uml_package: dict = dict(package_row)
+    # uml_package: dict = dict(package_row)
+    uml_package = package_row
 
     return uml_model.Package(
         id=uml_package["id"],
@@ -55,7 +56,8 @@ def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
 
 
 def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
-    uml_relation: dict = dict(relation_row)
+    # uml_relation: dict = dict(relation_row)
+    uml_relation = relation_row
 
     try:
         direction = uml_model.RelationDirection(uml_relation["direction"])

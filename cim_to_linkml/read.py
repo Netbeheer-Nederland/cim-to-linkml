@@ -1,6 +1,13 @@
 import sqlite3
 import textwrap
 
+# from collections import namedtuple
+
+# def namedtuple_factory(cursor, row):
+#     fields = [column[0] for column in cursor.description]
+#     cls = namedtuple("Row", fields)
+#     return cls._make(row)
+
 
 def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
     conn.row_factory = sqlite3.Row
