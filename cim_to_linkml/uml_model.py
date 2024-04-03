@@ -160,8 +160,40 @@ class ProjectClasses:
         return self._by_pkg_id
 
 
+class ProjectRelations:
+    def __init__(self, relations):
+        self._relations = relations
+        self._by_id = relations
+        self._by_source_id = {
+            source_id: list(rels)
+            for source_id, rels in groupby(
+                sorted(self._relations.values(), key=attrgetter("source_class")),
+                attrgetter("source_class"),
+            )
+        }
+        self._by_dest_id = {
+            dest_id: list(rels)
+            for dest_id, rels in groupby(
+                sorted(self._relations.values(), key=attrgetter("dest_class")),
+                attrgetter("dest_class"),
+            )
+        }
+
+    @property
+    def by_id(self):
+        return self._by_id
+
+    @property
+    def by_source_id(self):
+        return self._by_source_id
+
+    @property
+    def by_dest_id(self):
+        return self._by_dest_id
+
+
 @dataclass(frozen=True)
 class Project:
     packages: dict[ObjectID, Package]
     classes: ProjectClasses
-    relations: dict[ObjectID, Relation]
+    relations: ProjectRelations

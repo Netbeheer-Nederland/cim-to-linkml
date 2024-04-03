@@ -66,7 +66,7 @@ def _gen_class_deps(
     ) = None,
 ) -> tuple[dict[uml_model.ObjectID, uml_model.Class], dict[uml_model.ObjectID, uml_model.Class]]:
 
-    @lru_cache
+    # @lru_cache
     def _go_deps(uml_class, results=None):
         if results is None:
             results = frozenset(), frozenset()
@@ -101,14 +101,14 @@ def _gen_class_deps(
     return _go_deps(uml_class, results)
 
 
-def gen_schema(
-    uml_package_id: uml_model.ObjectID, uml_project: uml_model.Project
-) -> linkml_model.SchemaDefinition:
+def gen_schema(uml_package_id: uml_model.ObjectID, uml_project: uml_model.Project):
     uml_package = uml_project.packages[uml_package_id]
-    schema = linkml_model.SchemaDefinition(
-        id=gen_curie(uml_package.name, "cim"),
-        name=uml_package.name,
-    )
+    schema = {
+        "id": gen_curie(uml_package.name, "cim"),
+        "name": uml_package.name,
+        "enums": {},
+        "classes": {},
+    }
     # package_hierarchy = [
     #     uml_package_id,
     #     *_get_package_hierarchy(uml_package_id, uml_project.packages),
@@ -116,18 +116,19 @@ def gen_schema(
     dep_classes = frozenset()
     dep_enums = frozenset()
 
-    for uml_class in uml_project.classes.by_pkg_id[uml_package_id]:
+    for uml_class in uml_project.classes.by_id.values():
+        # for uml_class in uml_project.classes.by_pkg_id[uml_package_id]:
         match uml_class.stereotype:
             case uml_model.ClassStereotype.PRIMITIVE:
                 continue
             case uml_model.ClassStereotype.ENUMERATION:
                 enum = gen_enum(uml_class)
-                schema.enums[gen_safe_name(enum.name)] = enum
+                schema["enums"][gen_safe_name(enum["name"])] = enum
             # case uml_model.ClassStereotype.CIMDATATYPE:
             #     ... # TODO
             case None | _:
                 class_ = gen_class(uml_class, uml_project)
-                schema.classes[gen_safe_name(class_.name)] = class_
+                schema["classes"][gen_safe_name(class_["name"])] = class_
 
                 print(uml_class.name)
                 dep_classes, dep_enums = _gen_class_deps(
@@ -136,31 +137,33 @@ def gen_schema(
 
                 for c_id in dep_classes:
                     c = uml_project.classes.by_id[c_id]
-                    schema.classes[c_id] = gen_class(c, uml_project)
+                    class_ = gen_class(c, uml_project)
+                    schema["classes"][class_["name"]] = class_
                 for e_id in dep_enums:
                     e = uml_project.classes.by_id[e_id]
-                    schema.enums[e_id] = e
+                    enum = gen_enum(e)
+                    schema["enums"][enum["name"]] = enum
 
     return schema
 
 
-def gen_enum(uml_enum: uml_model.Class) -> linkml_model.EnumDefinition:
+def gen_enum(uml_enum: uml_model.Class):
     assert uml_enum.stereotype == uml_model.ClassStereotype.ENUMERATION
     enum_name = gen_safe_name(uml_enum.name)
 
-    return linkml_model.EnumDefinition(
-        name=enum_name,
-        enum_uri=gen_curie(uml_enum.name, CIM_PREFIX),
-        description=uml_enum.note,
-        permissible_values={
-            convert_camel_to_snake(gen_safe_name(uml_enum_val.name)): linkml_model.PermissibleValue(
-                text=enum_val,
-                meaning=gen_curie(f"{enum_name}.{enum_val}", CIM_PREFIX),
-            )
+    return {
+        "name": enum_name,
+        "enum_uri": gen_curie(uml_enum.name, CIM_PREFIX),
+        "description": uml_enum.note,
+        "permissible_values": {
+            convert_camel_to_snake(gen_safe_name(uml_enum_val.name)): {
+                "text": enum_val,
+                "meaning": gen_curie(f"{enum_name}.{enum_val}", CIM_PREFIX),
+            }
             for uml_enum_val in uml_enum.attributes
             if (enum_val := convert_camel_to_snake(gen_safe_name(uml_enum_val.name)))
         },
-    )
+    }
 
 
 def get_super_class(
@@ -168,7 +171,8 @@ def get_super_class(
 ) -> uml_model.Class | None:
     @lru_cache
     def _go(uml_class):
-        for uml_relation in uml_project.relations.values():
+        rels = uml_project.relations.by_source_id.get(uml_class.id, [])
+        for uml_relation in rels:
             try:
                 source_class = uml_project.classes.by_id[uml_relation.source_class]
             except KeyError as e:
@@ -214,7 +218,7 @@ def get_rel_type_classes(
     from_classes = {}
     to_classes = {}
 
-    for rel in uml_project.relations.values():
+    for rel in uml_project.relations.by_id.values():
         if rel.type == uml_model.RelationType.GENERALIZATION:
             continue
         match uml_class.id:
@@ -229,10 +233,8 @@ def get_rel_type_classes(
 
 
 def gen_slot_from_attr(
-    uml_attr: uml_model.Attribute, uml_project: uml_model.Project
-) -> linkml_model.SlotDefinition:
-    domain_class = uml_project.classes.by_id[uml_attr.class_]
-
+    uml_attr: uml_model.Attribute, uml_class: uml_model.Class, uml_project: uml_model.Project
+):
     range_ = None
     if uml_attr.type is not None:
         type_class = uml_project.classes.by_name[uml_attr.type]
@@ -241,14 +243,14 @@ def gen_slot_from_attr(
         else:
             range_ = convert_camel_to_snake(gen_safe_name(type_class.name))
 
-    return linkml_model.SlotDefinition(
-        name=convert_camel_to_snake(gen_safe_name(uml_attr.name)),
-        range=range_,
-        description=uml_attr.notes,
-        required=_slot_required(uml_attr.lower_bound),
-        multivalued=_slot_multivalued(uml_attr.lower_bound),
-        slot_uri=gen_curie(f"{domain_class.name}.{uml_attr.name}", CIM_PREFIX),
-    )
+    return {
+        "name": convert_camel_to_snake(gen_safe_name(uml_attr.name)),
+        "range": range_,
+        "description": uml_attr.notes,
+        "required": _slot_required(uml_attr.lower_bound),
+        "multivalued": _slot_multivalued(uml_attr.lower_bound),
+        "slot_uri": gen_curie(f"{uml_class.name}.{uml_attr.name}", CIM_PREFIX),
+    }
 
 
 def _slot_required(lower_bound: uml_model.CardinalityValue) -> bool:
@@ -261,71 +263,71 @@ def _slot_multivalued(upper_bound: uml_model.CardinalityValue) -> bool:
 
 def gen_slot_from_relation(
     uml_relation: uml_model.Relation, uml_project: uml_model.Project, direction
-) -> linkml_model.SlotDefinition:
+):
     source_class = uml_project.classes.by_id[uml_relation.source_class]
     dest_class = uml_project.classes.by_id[uml_relation.dest_class]
 
     match direction:
         case "source->dest":
-            return linkml_model.SlotDefinition(
-                name=convert_camel_to_snake(
+            return {
+                "name": convert_camel_to_snake(
                     gen_safe_name(uml_relation.dest_role or dest_class.name)
                 ),
-                range=gen_safe_name(dest_class.name),
-                description=uml_relation.dest_role_note,
-                required=_slot_required(uml_relation.dest_card.lower_bound),
-                multivalued=_slot_multivalued(uml_relation.dest_card.upper_bound),
-                slot_uri=gen_curie(
+                "range": gen_safe_name(dest_class.name),
+                "description": uml_relation.dest_role_note,
+                "required": _slot_required(uml_relation.dest_card.lower_bound),
+                "multivalued": _slot_multivalued(uml_relation.dest_card.upper_bound),
+                "slot_uri": gen_curie(
                     f"{source_class.name}.{uml_relation.dest_role or dest_class.name}",
                     CIM_PREFIX,
                 ),
-            )
+            }
         case "dest->source":
-            return linkml_model.SlotDefinition(
-                name=convert_camel_to_snake(
+            return {
+                "name": convert_camel_to_snake(
                     gen_safe_name(uml_relation.source_role or source_class.name)
                 ),
-                range=gen_safe_name(source_class.name),
-                description=uml_relation.source_role_note,
-                required=_slot_required(uml_relation.source_card.lower_bound),
-                multivalued=_slot_multivalued(uml_relation.source_card.upper_bound),
-                slot_uri=gen_curie(
+                "range": gen_safe_name(source_class.name),
+                "description": uml_relation.source_role_note,
+                "required": _slot_required(uml_relation.source_card.lower_bound),
+                "multivalued": _slot_multivalued(uml_relation.source_card.upper_bound),
+                "slot_uri": gen_curie(
                     f"{dest_class.name}.{uml_relation.source_role or source_class.name}",
                     CIM_PREFIX,
                 ),
-            )
+            }
 
 
-def gen_class(
-    uml_class: uml_model.Class, uml_project: uml_model.Project
-) -> linkml_model.ClassDefinition:
+def gen_class(uml_class: uml_model.Class, uml_project: uml_model.Project):
     super_class = get_super_class(uml_class, uml_project)
 
     attr_slots = {
-        convert_camel_to_snake(gen_safe_name(attr.name)): gen_slot_from_attr(attr, uml_project)
+        convert_camel_to_snake(gen_safe_name(attr.name)): gen_slot_from_attr(
+            attr, uml_class, uml_project
+        )
         for attr in uml_class.attributes
     }
 
     from_relation_slots = {
-        slot.name: slot
-        for rel in uml_project.relations.values()
-        if rel.source_class == uml_class.id
+        slot["name"]: slot
+        for rel in uml_project.relations.by_source_id.get(uml_class.id, [])
+        if rel
         if rel.type != uml_model.RelationType.GENERALIZATION
         if (slot := gen_slot_from_relation(rel, uml_project, "source->dest"))
     }
 
     to_relation_slots = {
-        slot.name: slot
-        for rel in uml_project.relations.values()
-        if rel.dest_class == uml_class.id
+        slot["name"]: slot
+        for rel in uml_project.relations.by_dest_id.get(uml_class.id, [])
+        if rel
         if rel.type != uml_model.RelationType.GENERALIZATION
         if (slot := gen_slot_from_relation(rel, uml_project, "dest->source"))
     }
 
-    return linkml_model.ClassDefinition(
-        name=gen_safe_name(uml_class.name),
-        class_uri=gen_curie(uml_class.name, CIM_PREFIX),
-        is_a=super_class.name if super_class else None,
-        description=uml_class.note,
-        attributes=attr_slots | from_relation_slots | to_relation_slots,
-    )
+    return {
+        "name": gen_safe_name(uml_class.name),
+        "class_uri": gen_curie(uml_class.name, CIM_PREFIX),
+        "is_a": super_class.name if super_class else None,
+        "description": uml_class.note,
+        "attributes": attr_slots | from_relation_slots | to_relation_slots,
+    }
