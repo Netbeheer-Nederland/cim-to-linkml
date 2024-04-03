@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import Literal, NamedTuple, Optional
+from itertools import groupby
+from operator import attrgetter
 
 ObjectID = int
 ConnectorID = int
@@ -127,8 +129,39 @@ class Relation:
     dest_role_note: Optional[str] = None
 
 
+class ProjectClasses:
+    def __init__(self, classes):
+        self._classes = classes
+        self._by_id = classes
+        self._by_name = {
+            name: next(classes)
+            for name, classes in groupby(
+                sorted(self._classes.values(), key=attrgetter("name")), attrgetter("name")
+            )
+        }
+        self._by_pkg_id = {
+            pkg_id: list(classes)
+            for pkg_id, classes in groupby(
+                sorted(self._classes.values(), key=attrgetter("package")),
+                attrgetter("package"),
+            )
+        }
+
+    @property
+    def by_id(self):
+        return self._by_id
+
+    @property
+    def by_name(self):
+        return self._by_name
+
+    @property
+    def by_pkg_id(self):
+        return self._by_pkg_id
+
+
 @dataclass(frozen=True)
 class Project:
     packages: dict[ObjectID, Package]
-    classes: dict[ObjectID, Class]
+    classes: ProjectClasses
     relations: dict[ObjectID, Relation]
