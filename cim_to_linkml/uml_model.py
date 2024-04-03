@@ -88,7 +88,7 @@ class Class:
     id: ObjectID
     name: ClassName
     package: ObjectID
-    attributes: dict[AttributeName, Attribute]  # TODO: Make list?
+    attributes: frozenset[Attribute]
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()
     author: Optional[str] = None

@@ -107,12 +107,12 @@ def parse_uml_class(class_rows: list[sqlite3.Cursor]) -> uml_model.Class:
         name=class_rows[0]["class_name"],
         author=class_rows[0]["class_author"],
         package=class_rows[0]["class_package_id"],
-        attributes={
-            attr_name: parse_uml_class_attr(attr)
+        attributes=frozenset(
+            parse_uml_class_attr(attr)
             for attr_name, attr_ in groupby(class_rows, itemgetter("attr_name"))
             if (attr := next(attr_))
             if attr["attr_id"] is not None
-        },
+        ),
         created_date=parse_iso_datetime_val(class_rows[0]["class_created_date"]),
         modified_date=parse_iso_datetime_val(class_rows[0]["class_modified_date"]),
         note=class_rows[0]["class_note"],

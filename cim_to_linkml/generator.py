@@ -65,35 +65,40 @@ def _gen_class_deps(
         | None
     ) = None,
 ) -> tuple[dict[uml_model.ObjectID, uml_model.Class], dict[uml_model.ObjectID, uml_model.Class]]:
-    if results is None:
-        results = {}, {}
 
-    classes = {}
-    enums = {}
+    @lru_cache
+    def _go(uml_class, results=None):
+        if results is None:
+            results = frozenset(), frozenset()
 
-    uml_super_class = get_super_class(uml_class, uml_project)
-    uml_type_classes = get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
-        uml_class, uml_project
-    )
+        classes = frozenset()
+        enums = frozenset()
 
-    if uml_super_class:
-        classes[uml_super_class.id] = uml_super_class
+        uml_super_class = get_super_class(uml_class, uml_project)
+        uml_type_classes = get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
+            uml_class, uml_project
+        )
 
-    for uml_type_class in uml_type_classes.values():
-        if uml_type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
-            enums[uml_type_class.id] = uml_type_class
-        else:  # Class.
-            classes[uml_type_class.id] = uml_type_class
+        if uml_super_class:
+            classes |= {uml_super_class.id}
 
-    if (classes | results[0] == results[0]) and (enums | results[1] == results[1]):
+        for uml_type_class in uml_type_classes.values():
+            if uml_type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
+                enums |= {uml_type_class.id}
+            else:  # Class.
+                classes |= {uml_type_class.id}
+
+        if (classes | results[0] == results[0]) and (enums | results[1] == results[1]):
+            return results
+
+        results = results[0] | classes, results[1] | enums
+
+        for cls_id in classes | enums:
+            c, e = _go(uml_project.classes[cls_id], results)
+            results = results[0] | c, results[1] | e
         return results
 
-    results = results[0] | classes, results[1] | enums
-
-    for cls in (classes | enums).values():
-        c, e = _gen_class_deps(cls, uml_project, results)
-        results = results[0] | c, results[1] | e
-    return results
+    return _go(uml_class, results)
 
 
 def gen_schema(
@@ -131,9 +136,19 @@ def gen_schema(
                 print(uml_class.name)
                 dep_classes, dep_enums = _gen_class_deps(uml_class, uml_project)
                 schema.classes.update(
-                    {c.name: gen_class(c, uml_project) for c in dep_classes.values()}
+                    {
+                        c.name: gen_class(c, uml_project)
+                        for c_id in dep_classes
+                        if (c := uml_project.classes[c_id])
+                    }
                 )
-                schema.enums.update({e.name: gen_enum(e) for e in dep_enums.values()})
+                schema.enums.update(
+                    {
+                        e.name: gen_enum(e)
+                        for e_id in dep_enums
+                        if (e := uml_project.classes[e_id])
+                    }
+                )
 
     return schema
 
@@ -151,7 +166,7 @@ def gen_enum(uml_enum: uml_model.Class) -> linkml_model.EnumDefinition:
                 text=enum_val,
                 meaning=gen_curie(f"{enum_name}.{enum_val}", CIM_PREFIX),
             )
-            for uml_enum_val in uml_enum.attributes.values()
+            for uml_enum_val in uml_enum.attributes
             if (enum_val := convert_camel_to_snake(gen_safe_name(uml_enum_val.name)))
         },
     )
@@ -196,7 +211,7 @@ def get_attr_type_classes(
     }
     type_classes = {
         class_.id: class_
-        for attr in uml_class.attributes.values()
+        for attr in uml_class.attributes
         if attr.type is not None
         if (class_ := classes_by_name[attr.type])
     }
@@ -304,8 +319,8 @@ def gen_class(
     super_class = get_super_class(uml_class, uml_project)
 
     attr_slots = {
-        convert_camel_to_snake(gen_safe_name(attr_name)): gen_slot_from_attr(attr, uml_project)
-        for attr_name, attr in uml_class.attributes.items()
+        convert_camel_to_snake(gen_safe_name(attr.name)): gen_slot_from_attr(attr, uml_project)
+        for attr in uml_class.attributes
     }
 
     from_relation_slots = {
