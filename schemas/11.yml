@@ -9450,10 +9450,8 @@ classes:
     Customer:
         attributes:
             Customer:
-                description: All customers related to the primary customer.  This
-                    may support customer hierarchies. (this can be used to support
-                    some form of customer containment)
-                multivalued: true
+                description: The primary customer that manages the account(s).
+                multivalued: false
                 name: Customer
                 range: Customer
                 required: false
@@ -21149,7 +21147,7 @@ classes:
     InterrupterUnit:
         attributes:
             Bushing:
-                description: Bushing(s) to which the fixed contact(s) of this interrupter
+                description: Bushing(s) to which the moving contact(s) of this interrupter
                     is(are) attached. Some interrupters have one fixed and one moving
                     contact, some have 2 fixed contacts, some 2 moving contacts. An
                     interrupter will have relationships with 2 bushings and those
@@ -31554,17 +31552,15 @@ classes:
         name: ProductBid
     Profile:
         attributes:
-            DataSet:
-                description: The data sets that make use of the profile.
+            ProfileDatas:
+                description: A profile has profile data associated with it.
                 multivalued: true
-                name: DataSet
-                range: DataSet
+                name: ProfileDatas
+                range: ProfileData
                 required: false
-                slot_uri: cim:Profile.DataSet
+                slot_uri: cim:Profile.ProfileDatas
         class_uri: cim:Profile
-        description: Describes the existence of a profile.  The MRID is usually defined
-            as a static value by the document or artifact that defines the contents
-            of the profile and the rules for using the profile.
+        description: "A profile is a simpler curve type.\r\n"
         is_a: IdentifiedObject
         name: Profile
     ProfileData:
@@ -36427,40 +36423,107 @@ classes:
     ResourceCertification:
         attributes:
             RegisteredResource:
-                description: RegisteredResources are qualified for resource ancillary
-                    service types (which include market product types as well as other
-                    types such as BlackStart) by the association to the class ResourceAncillaryServiceQualification.
-                multivalued: false
+                description: null
+                multivalued: true
                 name: RegisteredResource
                 range: RegisteredResource
-                required: true
-                slot_uri: cim:ResourceCertification.RegisteredResource
-            market:
-                description: "market type\r\n"
-                multivalued: false
-                name: market
-                range: MarketType
                 required: false
-                slot_uri: cim:ResourceCertification.market
-            qualificationFlag:
-                description: "Status of the qualification ('Y' = Active, 'N' = Inactive)\r\
-                    \n"
+                slot_uri: cim:ResourceCertification.RegisteredResource
+            certifiedDAM:
+                description: null
                 multivalued: false
-                name: qualificationFlag
+                name: certifiedDAM
                 range: YesNo
                 required: false
-                slot_uri: cim:ResourceCertification.qualificationFlag
-            type:
-                description: "Type of service based on ResourceAncillaryServiceType\
-                    \ enumeration\r\n"
+                slot_uri: cim:ResourceCertification.certifiedDAM
+            certifiedNonspinDAM:
+                description: null
                 multivalued: false
-                name: type
-                range: ResourceCertificationKind
+                name: certifiedNonspinDAM
+                range: YesNo
                 required: false
-                slot_uri: cim:ResourceCertification.type
+                slot_uri: cim:ResourceCertification.certifiedNonspinDAM
+            certifiedNonspinDAMMw:
+                description: null
+                multivalued: false
+                name: certifiedNonspinDAMMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinDAMMw
+            certifiedNonspinRTM:
+                description: null
+                multivalued: false
+                name: certifiedNonspinRTM
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinRTM
+            certifiedNonspinRTMMw:
+                description: null
+                multivalued: false
+                name: certifiedNonspinRTMMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinRTMMw
+            certifiedPIRP:
+                description: null
+                multivalued: false
+                name: certifiedPIRP
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedPIRP
+            certifiedRTM:
+                description: null
+                multivalued: false
+                name: certifiedRTM
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRTM
+            certifiedRUC:
+                description: null
+                multivalued: false
+                name: certifiedRUC
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRUC
+            certifiedRegulation:
+                description: null
+                multivalued: false
+                name: certifiedRegulation
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRegulation
+            certifiedRegulationMw:
+                description: null
+                multivalued: false
+                name: certifiedRegulationMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRegulationMw
+            certifiedReplaceAS:
+                description: null
+                multivalued: false
+                name: certifiedReplaceAS
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedReplaceAS
+            certifiedSpin:
+                description: null
+                multivalued: false
+                name: certifiedSpin
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedSpin
+            certifiedSpinMw:
+                description: null
+                multivalued: false
+                name: certifiedSpinMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedSpinMw
         class_uri: cim:ResourceCertification
-        description: Specifies certification for a resource to participate in a specific
-            markets.
+        description: "This class represent the resource certification for a specific\
+            \ product type. For example, a resource is certified for Non-Spinning\
+            \ reserve for RTM.\r\n"
         is_a: null
         name: ResourceCertification
     ResourceClearing:

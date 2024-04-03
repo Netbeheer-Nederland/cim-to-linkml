@@ -65,13 +65,17 @@ def linkml_namedtuple_representer(dumper, data):
     return dumper.represent_dict(data._asdict())
 
 
-def main():
+def init_yaml_serializer():
     yaml.add_representer(frozenset, frozenset_representer)
     yaml.add_representer(linkml_model.Slot, linkml_namedtuple_representer)
     yaml.add_representer(linkml_model.Class, linkml_namedtuple_representer)
     yaml.add_representer(linkml_model.Enum, linkml_namedtuple_representer)
     yaml.add_representer(linkml_model.Schema, linkml_namedtuple_representer)
     yaml.add_representer(linkml_model.PermissibleValue, linkml_namedtuple_representer)
+
+
+def main():
+    init_yaml_serializer()
 
     for pkg_id in uml_project.packages:
         pkg_id = 11
