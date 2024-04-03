@@ -9,8 +9,8 @@ class PermissibleValue(NamedTuple):
 class Slot(NamedTuple):
     name: str
     range: str
-    required: bool
-    multivalued: bool
+    required: bool = False
+    multivalued: bool = False
     description: Optional[str] = None
     slot_uri: Optional[str] = None
 

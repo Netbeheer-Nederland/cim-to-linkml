@@ -5,10 +5,12 @@ from operator import itemgetter
 import sqlite3
 import cProfile
 from dataclasses import dataclass
+from typing import NamedTuple, Optional
 
 from linkml_runtime.utils.schema_as_dict import schema_as_yaml_dump
 
 import cim_to_linkml.uml_model as uml_model
+import cim_to_linkml.linkml_model as linkml_model
 from cim_to_linkml.read import read_uml_classes, read_uml_relations, read_uml_packages
 from cim_to_linkml.parser import parse_uml_package, parse_uml_class, parse_uml_relation
 from cim_to_linkml.generator import (
@@ -47,13 +49,42 @@ from cim_to_linkml.generator import (
 #         yaml.dump(schema, f, indent=4, default_flow_style=False)
 
 
+def frozenset_representer(dumper, data):
+    assert type(data) == frozenset
+    if len(data) == 0:
+        return dumper.represent_set(data)
+
+    for el in data:  # Only check first element.
+        if type(el) == tuple and len(el) == 2:
+            return dumper.represent_dict(dict(data))
+        else:
+            return dumper.represent_set(data)
+
+
+def linkml_namedtuple_representer(dumper, data):
+    return dumper.represent_dict(data._asdict())
+
+
 def main():
-    # for pkg_id in uml_project.packages:
-    pkg_id = 11
-    schema = gen_schema(pkg_id)
-    with open(f"schemas/{pkg_id}.yml", "w") as f:
-        yaml.dump(schema, f, indent=4, default_flow_style=False)
+    yaml.add_representer(frozenset, frozenset_representer)
+    yaml.add_representer(linkml_model.Slot, linkml_namedtuple_representer)
+    yaml.add_representer(linkml_model.Class, linkml_namedtuple_representer)
+    yaml.add_representer(linkml_model.Enum, linkml_namedtuple_representer)
+    yaml.add_representer(linkml_model.Schema, linkml_namedtuple_representer)
+    yaml.add_representer(linkml_model.PermissibleValue, linkml_namedtuple_representer)
+
+    for pkg_id in uml_project.packages:
+        pkg_id = 11
+        schema = gen_schema(pkg_id)
+        with open(f"schemas/{pkg_id}.yml", "w") as f:
+            yaml.dump(schema, f, indent=4, default_flow_style=False)
+        # slot = linkml_model.Slot(name="JeMoeder", range="jeVader")
+        # class_ = linkml_model.Class(name="God", attributes=frozenset({("JeMoeder", slot)}))
+        # d = yaml.dump(class_, indent=4, default_flow_style=False)
+        # pprint(d)
+        break
 
 
 if __name__ == "__main__":
     cProfile.run("main()", sort="cumtime")
+    # main()
