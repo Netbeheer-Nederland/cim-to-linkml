@@ -25,7 +25,7 @@ def map_primitive_data_type(val):
             "MonthDay": "date",  # Is this right?
             "Date": "date",
             "Time": "time",
-            "Duration": "int",
+            "Duration": "integer",
         }[val]
     except KeyError:
         raise TypeError(f"Data type `{val}` is not a CIM Primitive.")
@@ -120,6 +120,9 @@ def gen_schema(
         )
     }
 
+    dep_classes = frozenset()
+    dep_enums = frozenset()
+
     for uml_class in classes_by_package_id[uml_package_id]:
         match uml_class.stereotype:
             case uml_model.ClassStereotype.PRIMITIVE:
@@ -134,7 +137,7 @@ def gen_schema(
                 schema.classes[gen_safe_name(class_.name)] = class_
 
                 print(uml_class.name)
-                dep_classes, dep_enums = _gen_class_deps(uml_class, uml_project)
+                dep_classes, dep_enums = _gen_class_deps(uml_class, uml_project, (dep_classes, dep_enums))
                 schema.classes.update(
                     {
                         c.name: gen_class(c, uml_project)
