@@ -80,21 +80,26 @@ def _gen_elements(
         tuple[
             frozenset[tuple[uml_model.ObjectID, linkml_model.Class]],
             frozenset[tuple[str, linkml_model.Enum]],
+            frozenset[uml_model.ObjectID],
         ]
     ] = None,
-) -> tuple[frozenset[tuple[str, linkml_model.Class]], frozenset[tuple[str, linkml_model.Enum]]]:
+) -> tuple[
+    frozenset[tuple[str, linkml_model.Class]],
+    frozenset[tuple[str, linkml_model.Enum]],
+    frozenset[uml_model.ObjectID],
+]:
     if results is None:
-        results = frozenset(), frozenset()
+        results = frozenset(), frozenset(), frozenset()
 
     match uml_class.stereotype:
         case uml_model.ClassStereotype.PRIMITIVE:
             return results
         case uml_model.ClassStereotype.ENUMERATION:
             enum = gen_enum(uml_class, uml_project)
-            results = results[0], results[1] | {(enum.name, enum)}
+            results = results[0], results[1] | {(enum.name, enum)}, results[2] | {uml_class.id}
         case uml_model.ClassStereotype.CIMDATATYPE | None | _:
             class_ = gen_class(uml_class, uml_project)
-            results = results[0] | {(class_.name, class_)}, results[1]
+            results = results[0] | {(class_.name, class_)}, results[1], results[2] | {uml_class.id}
 
     uml_dep_classes = set()
 
@@ -107,10 +112,10 @@ def _gen_elements(
     )
 
     for uml_dep_class in uml_dep_classes:
-        if uml_dep_class.id in [c[1].ea_object_id for c in results[0]]:
+        if uml_dep_class.id in results[2]:
             continue
-        c, e = _gen_elements(uml_dep_class, uml_project, results)
-        results = frozenset(results[0] | c), frozenset(results[1] | e)
+        c, e, p = _gen_elements(uml_dep_class, uml_project, results)
+        results = results[0] | c, results[1] | e, results[2] | p
     return results
 
 
@@ -119,21 +124,27 @@ def gen_schema(
 ) -> linkml_model.Schema:
     uml_package = uml_project.packages.by_id[uml_package_id]
 
-    classes = set()
-    enums = set()
+    classes = frozenset()
+    enums = frozenset()
+    processed_ids = frozenset()
     # for uml_class in uml_project.classes.by_id.values():
     for uml_class in uml_project.classes.by_pkg_id.get(uml_package_id, []):
         print(uml_class.name)
-        new_classes, new_enums = _gen_elements(uml_class, uml_project)
+        new_classes, new_enums, new_processed_ids = _gen_elements(
+            uml_class,
+            uml_project,
+            (classes, enums, processed_ids),
+        )
 
-        classes |= new_classes
-        enums |= new_enums
+        classes = classes | new_classes
+        enums = enums | new_enums
+        processed_ids = processed_ids | new_processed_ids
 
     schema = linkml_model.Schema(
         id=gen_curie(uml_package.name, "cim"),
         name=uml_package.name,
-        enums=frozenset(enums),
-        classes=frozenset(classes),
+        enums=enums,
+        classes=classes,
     )
 
     return schema
@@ -145,7 +156,6 @@ def gen_enum(uml_enum: uml_model.Class, uml_project: uml_model.Project) -> linkm
     enum_name = gen_safe_name(uml_enum.name)
 
     return linkml_model.Enum(
-        ea_object_id=uml_enum.id,
         name=gen_safe_name(enum_name),
         enum_uri=gen_curie(uml_enum.name, CIM_PREFIX),
         description=uml_enum.note,
@@ -312,7 +322,6 @@ def gen_class(uml_class: uml_model.Class, uml_project: uml_model.Project) -> lin
     }
 
     class_ = linkml_model.Class(
-        ea_object_id=uml_class.id,
         name=gen_safe_name(uml_class.name),
         class_uri=gen_curie(uml_class.name, CIM_PREFIX),
         is_a=super_class.name if super_class else None,

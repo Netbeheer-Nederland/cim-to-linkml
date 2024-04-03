@@ -16,7 +16,6 @@ class Slot(NamedTuple):
 
 
 class Enum(NamedTuple):
-    ea_object_id: int
     name: str
     enum_uri: Optional[str] = None
     description: Optional[str] = None
@@ -24,7 +23,6 @@ class Enum(NamedTuple):
 
 
 class Class(NamedTuple):
-    ea_object_id: int
     name: str
     class_uri: Optional[str] = None
     is_a: Optional[str] = None
