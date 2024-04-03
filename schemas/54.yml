@@ -1,0 +1,2117 @@
+classes:
+    AlternateModel:
+        attributes:
+            AlternateModelGroup:
+                description: The group of alternate models for which one alternate
+                    is used.
+                multivalued: false
+                name: AlternateModelGroup
+                range: AlternateModelGroup
+                required: true
+                slot_uri: cim:AlternateModel.AlternateModelGroup
+            Dataset:
+                description: The data belonging to the alternate model.
+                multivalued: false
+                name: Dataset
+                range: DataSet
+                required: true
+                slot_uri: cim:AlternateModel.Dataset
+        class_uri: cim:AlternateModel
+        description: null
+        is_a: IdentifiedObject
+        name: AlternateModel
+    AlternateModelGroup:
+        attributes:
+            AlternateModel:
+                description: An alternate model that can be one possiblity among alternates.
+                multivalued: true
+                name: AlternateModel
+                range: AlternateModel
+                required: false
+                slot_uri: cim:AlternateModelGroup.AlternateModel
+        class_uri: cim:AlternateModelGroup
+        description: null
+        is_a: IdentifiedObject
+        name: AlternateModelGroup
+    AngleDegrees:
+        attributes:
+            multiplier:
+                description: null
+                multivalued: false
+                name: multiplier
+                range: UnitMultiplier
+                required: false
+                slot_uri: cim:AngleDegrees.multiplier
+            unit:
+                description: null
+                multivalued: false
+                name: unit
+                range: UnitSymbol
+                required: false
+                slot_uri: cim:AngleDegrees.unit
+            value:
+                description: null
+                multivalued: false
+                name: value
+                range: float
+                required: false
+                slot_uri: cim:AngleDegrees.value
+        class_uri: cim:AngleDegrees
+        description: "Measurement of angle in degrees.\r\n"
+        is_a: null
+        name: AngleDegrees
+    AnnotatedProjectDependency:
+        attributes:
+            DependentOnStage:
+                description: null
+                multivalued: false
+                name: DependentOnStage
+                range: NetworkModelProjectStage
+                required: true
+                slot_uri: cim:AnnotatedProjectDependency.DependentOnStage
+            DependingStage:
+                description: null
+                multivalued: false
+                name: DependingStage
+                range: NetworkModelProjectStage
+                required: true
+                slot_uri: cim:AnnotatedProjectDependency.DependingStage
+            dependencyType:
+                description: null
+                multivalued: false
+                name: dependencyType
+                range: DependencyKind
+                required: false
+                slot_uri: cim:AnnotatedProjectDependency.dependencyType
+        class_uri: cim:AnnotatedProjectDependency
+        description: null
+        is_a: IdentifiedObject
+        name: AnnotatedProjectDependency
+    AssemblyDescription:
+        attributes:
+            ModelSpecification:
+                description: The models that are part of the assembly descrption.
+                multivalued: true
+                name: ModelSpecification
+                range: ModelPartSpecification
+                required: false
+                slot_uri: cim:AssemblyDescription.ModelSpecification
+        class_uri: cim:AssemblyDescription
+        description: A description for how to assemble model parts for a specific
+            purpose.
+        is_a: IdentifiedObject
+        name: AssemblyDescription
+    AssemblyManifest:
+        attributes:
+            CompleteModelToBeDeleted:
+                description: null
+                multivalued: false
+                name: CompleteModelToBeDeleted
+                range: CompleteModelToBeDeleted
+                required: false
+                slot_uri: cim:AssemblyManifest.CompleteModelToBeDeleted
+            ModelPartVersion:
+                description: null
+                multivalued: true
+                name: ModelPartVersion
+                range: ModelPartVersion
+                required: false
+                slot_uri: cim:AssemblyManifest.ModelPartVersion
+        class_uri: cim:AssemblyManifest
+        description: A collection of model parts when combined form a case or part
+            of a case.
+        is_a: IdentifiedObject
+        name: AssemblyManifest
+    Boolean:
+        attributes: {}
+        class_uri: cim:Boolean
+        description: "A type with the value space \"true\" and \"false\".\r\n"
+        is_a: null
+        name: Boolean
+    ChangeSet:
+        attributes:
+            ChangeSetMember:
+                description: Data objects contained in the dataset.
+                multivalued: true
+                name: ChangeSetMember
+                range: ChangeSetMember
+                required: false
+                slot_uri: cim:ChangeSet.ChangeSetMember
+            IncrementalDatasetArg:
+                description: null
+                multivalued: true
+                name: IncrementalDatasetArg
+                range: IncrementalDatasetArg
+                required: false
+                slot_uri: cim:ChangeSet.IncrementalDatasetArg
+            NMProjectStage:
+                description: null
+                multivalued: false
+                name: NMProjectStage
+                range: NetworkModelProjectStage
+                required: false
+                slot_uri: cim:ChangeSet.NMProjectStage
+            NetworkModelProjectChangeVersion:
+                description: The project of the details of model changes.
+                multivalued: true
+                name: NetworkModelProjectChangeVersion
+                range: NetworkModelProjectChangeVersion
+                required: false
+                slot_uri: cim:ChangeSet.NetworkModelProjectChangeVersion
+        class_uri: cim:ChangeSet
+        description: Describes a set of changes that can be applied in different situations.   A
+            given registered target object  MRID may only be referenced once by the
+            contained change set members.
+        is_a: DataSet
+        name: ChangeSet
+    ChangeSetMember:
+        attributes:
+            Changeset:
+                description: Dataset containing the data objects.
+                multivalued: false
+                name: Changeset
+                range: ChangeSet
+                required: false
+                slot_uri: cim:ChangeSetMember.Changeset
+            PropertiesObject:
+                description: The CIM object holding the properties of this dataset
+                    context.   Sometimes properties are not required and only the
+                    reference to the registered object is required.
+                multivalued: false
+                name: PropertiesObject
+                range: IdentifiedObject
+                required: false
+                slot_uri: cim:ChangeSetMember.PropertiesObject
+            TargetObject:
+                description: The registered CIM object.
+                multivalued: false
+                name: TargetObject
+                range: IdentifiedObject
+                required: true
+                slot_uri: cim:ChangeSetMember.TargetObject
+        class_uri: cim:ChangeSetMember
+        description: A CRUD-style data object.
+        is_a: null
+        name: ChangeSetMember
+    CompleteModelToBeDeleted:
+        attributes:
+            AssemblyManifest:
+                description: null
+                multivalued: true
+                name: AssemblyManifest
+                range: AssemblyManifest
+                required: false
+                slot_uri: cim:CompleteModelToBeDeleted.AssemblyManifest
+            ModelPartVersion:
+                description: null
+                multivalued: true
+                name: ModelPartVersion
+                range: ModelPartVersion
+                required: false
+                slot_uri: cim:CompleteModelToBeDeleted.ModelPartVersion
+        class_uri: cim:CompleteModelToBeDeleted
+        description: A complete model can be used in applications to perform meaningful
+            calculations, e.g. a study case in offline tools or a real time model
+            in a SCADA/EMS.
+        is_a: ModelToBeDeleted
+        name: CompleteModelToBeDeleted
+    CurrentState:
+        attributes:
+            NetworkModelProjectComponent2:
+                description: null
+                multivalued: true
+                name: NetworkModelProjectComponent2
+                range: NetworkModelProjectComponent2
+                required: false
+                slot_uri: cim:CurrentState.NetworkModelProjectComponent2
+        class_uri: cim:CurrentState
+        description: null
+        is_a: IdentifiedObject
+        name: CurrentState
+    DataSet:
+        attributes:
+            AlternateModel:
+                description: The alternate model using the data.
+                multivalued: false
+                name: AlternateModel
+                range: AlternateModel
+                required: false
+                slot_uri: cim:DataSet.AlternateModel
+            ModelPartVersion:
+                description: null
+                multivalued: false
+                name: ModelPartVersion
+                range: ModelPartVersion
+                required: true
+                slot_uri: cim:DataSet.ModelPartVersion
+            Profile:
+                description: The profiles that describe the contents of the data set
+                    and the rules governing the contents of the data set.
+                multivalued: true
+                name: Profile
+                range: Profile
+                required: true
+                slot_uri: cim:DataSet.Profile
+            description:
+                description: The description is a free human readable text describing
+                    or naming the object. It may be non unique and may not correlate
+                    to a naming hierarchy.
+                multivalued: false
+                name: description
+                range: string
+                required: false
+                slot_uri: cim:DataSet.description
+            mRID:
+                description: "Master resource identifier issued by a model authority.\
+                    \ The mRID is unique within an exchange context. Global uniqueness\
+                    \ is easily achieved by using a UUID,  as specified in RFC 4122,\
+                    \ for the mRID. The use of UUID is strongly recommended.\r\nFor\
+                    \ CIMXML data files in RDF syntax conforming to IEC 61970-552\
+                    \ Edition 1, the mRID is mapped to rdf:ID or rdf:about attributes\
+                    \ that identify CIM object elements.\r\n"
+                multivalued: false
+                name: mRID
+                range: string
+                required: false
+                slot_uri: cim:DataSet.mRID
+            name:
+                description: "The name is any free human readable and possibly non\
+                    \ unique text naming the object.\r\n"
+                multivalued: false
+                name: name
+                range: string
+                required: false
+                slot_uri: cim:DataSet.name
+        class_uri: cim:DataSet
+        description: "A generic container of a version of instance data. The MRID\
+            \ can be used in an audit trail, not in reusable script intended to work\
+            \ with new versions of data.\r\nA dataset could be serialized multiple\
+            \ times and in multiple technologies, yet retain the same identity."
+        is_a: null
+        name: DataSet
+    DatasetArg:
+        attributes:
+            Dataset:
+                description: Dataset referenced by this argument of a model operation..
+                multivalued: false
+                name: Dataset
+                range: InstanceSet
+                required: true
+                slot_uri: cim:DatasetArg.Dataset
+            OperationDatasetArgDescription:
+                description: The type of role for this dataset role.   Should only
+                    reference role types that belong to the operation type of the
+                    associated operation.
+                multivalued: false
+                name: OperationDatasetArgDescription
+                range: DatasetArgDescription
+                required: true
+                slot_uri: cim:DatasetArg.OperationDatasetArgDescription
+        class_uri: cim:DatasetArg
+        description: A model operation argument referencing a dataset instance.
+        is_a: ModelOperationArg
+        name: DatasetArg
+    DatasetArgDescription:
+        attributes:
+            OperationDatasetArg:
+                description: The operation dataset roles conforming to this role type.
+                multivalued: true
+                name: OperationDatasetArg
+                range: DatasetArg
+                required: false
+                slot_uri: cim:DatasetArgDescription.OperationDatasetArg
+        class_uri: cim:DatasetArgDescription
+        description: null
+        is_a: ModelOperationArgDescription
+        name: DatasetArgDescription
+    Date:
+        attributes: {}
+        class_uri: cim:Date
+        description: Date as "yyyy-mm-dd", which conforms with ISO 8601. UTC time
+            zone is specified as "yyyy-mm-ddZ". A local timezone relative UTC is specified
+            as "yyyy-mm-dd(+/-)hh:mm".
+        is_a: null
+        name: Date
+    DateTime:
+        attributes: {}
+        class_uri: cim:DateTime
+        description: Date and time as "yyyy-mm-ddThh:mm:ss.sss", which conforms with
+            ISO 8601. UTC time zone is specified as "yyyy-mm-ddThh:mm:ss.sssZ". A
+            local timezone relative UTC is specified as "yyyy-mm-ddThh:mm:ss.sss-hh:mm".
+            The second component (shown here as "ss.sss") could have any number of
+            digits in its fractional part to allow any kind of precision beyond seconds.
+        is_a: null
+        name: DateTime
+    Diagram:
+        attributes:
+            DiagramElements:
+                description: A diagram is made up of multiple diagram objects.
+                multivalued: true
+                name: DiagramElements
+                range: DiagramObject
+                required: false
+                slot_uri: cim:Diagram.DiagramElements
+            DiagramStyle:
+                description: A Diagram may have a DiagramStyle.
+                multivalued: false
+                name: DiagramStyle
+                range: DiagramStyle
+                required: false
+                slot_uri: cim:Diagram.DiagramStyle
+            orientation:
+                description: "Coordinate system orientation of the diagram. A positive\
+                    \ orientation gives standard \u201Cright-hand\u201D orientation,\
+                    \ with negative orientation indicating a \u201Cleft-hand\u201D\
+                    \ orientation. For 2D diagrams, a positive orientation will result\
+                    \ in X values increasing from left to right and Y values increasing\
+                    \ from bottom to top. A negative orientation gives the \u201C\
+                    left-hand\u201D orientation (favoured by computer graphics displays)\
+                    \ with X values increasing from left to right and Y values increasing\
+                    \ from top to bottom.\r\n"
+                multivalued: false
+                name: orientation
+                range: OrientationKind
+                required: false
+                slot_uri: cim:Diagram.orientation
+            x1InitialView:
+                description: "X coordinate of the first corner of the initial view.\r\
+                    \n"
+                multivalued: false
+                name: x1InitialView
+                range: float
+                required: false
+                slot_uri: cim:Diagram.x1InitialView
+            x2InitialView:
+                description: "X coordinate of the second corner of the initial view.\r\
+                    \n"
+                multivalued: false
+                name: x2InitialView
+                range: float
+                required: false
+                slot_uri: cim:Diagram.x2InitialView
+            y1InitialView:
+                description: "Y coordinate of the first corner of the initial view.\r\
+                    \n"
+                multivalued: false
+                name: y1InitialView
+                range: float
+                required: false
+                slot_uri: cim:Diagram.y1InitialView
+            y2InitialView:
+                description: "Y coordinate of the second corner of the initial view.\r\
+                    \n"
+                multivalued: false
+                name: y2InitialView
+                range: float
+                required: false
+                slot_uri: cim:Diagram.y2InitialView
+        class_uri: cim:Diagram
+        description: The diagram being exchanged. The coordinate system is a standard
+            Cartesian coordinate system and the orientation attribute defines the
+            orientation. The initial view related attributes can be used to specify
+            an initial view with the x,y coordinates of the diagonal points.
+        is_a: IdentifiedObject
+        name: Diagram
+    DiagramObject:
+        attributes:
+            Diagram:
+                description: A diagram object is part of a diagram.
+                multivalued: false
+                name: Diagram
+                range: Diagram
+                required: false
+                slot_uri: cim:DiagramObject.Diagram
+            DiagramObjectPoints:
+                description: A diagram object can have 0 or more points to reflect
+                    its layout position, routing (for polylines) or boundary (for
+                    polygons).
+                multivalued: true
+                name: DiagramObjectPoints
+                range: DiagramObjectPoint
+                required: false
+                slot_uri: cim:DiagramObject.DiagramObjectPoints
+            DiagramObjectStyle:
+                description: A diagram object has a style associated that provides
+                    a reference for the style used in the originating system.
+                multivalued: false
+                name: DiagramObjectStyle
+                range: DiagramObjectStyle
+                required: false
+                slot_uri: cim:DiagramObject.DiagramObjectStyle
+            IdentifiedObject:
+                description: The domain object to which this diagram object is associated.
+                multivalued: false
+                name: IdentifiedObject
+                range: IdentifiedObject
+                required: false
+                slot_uri: cim:DiagramObject.IdentifiedObject
+            VisibilityLayers:
+                description: A diagram object can be part of multiple visibility layers.
+                multivalued: true
+                name: VisibilityLayers
+                range: VisibilityLayer
+                required: false
+                slot_uri: cim:DiagramObject.VisibilityLayers
+            drawingOrder:
+                description: The drawing order of this element. The higher the number,
+                    the later the element is drawn in sequence. This is used to ensure
+                    that elements that overlap are rendered in the correct order.
+                multivalued: false
+                name: drawingOrder
+                range: integer
+                required: false
+                slot_uri: cim:DiagramObject.drawingOrder
+            isPolygon:
+                description: Defines whether or not the diagram objects points define
+                    the boundaries of a polygon or the routing of a polyline. If this
+                    value is true then a receiving application should consider the
+                    first and last points to be connected.
+                multivalued: false
+                name: isPolygon
+                range: boolean
+                required: false
+                slot_uri: cim:DiagramObject.isPolygon
+            offsetX:
+                description: "The offset in the X direction. This is used for defining\
+                    \ the offset from centre for rendering an icon (the default is\
+                    \ that a single point specifies the centre of the icon).\r\n\r\
+                    \nThe offset is in per-unit with 0 indicating there is no offset\
+                    \ from the horizontal centre of the icon.  -0.5 indicates it is\
+                    \ offset by 50% to the left and 0.5 indicates an offset of 50%\
+                    \ to the right.\r\n"
+                multivalued: false
+                name: offsetX
+                range: float
+                required: false
+                slot_uri: cim:DiagramObject.offsetX
+            offsetY:
+                description: "The offset in the Y direction. This is used for defining\
+                    \ the offset from centre for rendering an icon (the default is\
+                    \ that a single point specifies the centre of the icon).\r\n\r\
+                    \nThe offset is in per-unit with 0 indicating there is no offset\
+                    \ from the vertical centre of the icon.  The offset direction\
+                    \ is dependent on the orientation of the diagram, with -0.5 and\
+                    \ 0.5 indicating an offset of +/- 50% on the vertical axis.\r\n"
+                multivalued: false
+                name: offsetY
+                range: float
+                required: false
+                slot_uri: cim:DiagramObject.offsetY
+            rotation:
+                description: "Sets the angle of rotation of the diagram object.  Zero\
+                    \ degrees is pointing to the top of the diagram.  Rotation is\
+                    \ clockwise.  DiagramObject.rotation=0 has the following meaning:\
+                    \ The connection point of an element which has one terminal is\
+                    \ pointing to the top side of the diagram. The connection point\
+                    \ \"From side\" of an element which has more than one terminal\
+                    \ is pointing to the top side of the diagram.\r\nDiagramObject.rotation=90\
+                    \ has the following meaning: The connection point of an element\
+                    \ which has one terminal is pointing to the right hand side of\
+                    \ the diagram. The connection point \"From side\" of an element\
+                    \ which has more than one terminal is pointing to the right hand\
+                    \ side of the diagram."
+                multivalued: false
+                name: rotation
+                range: AngleDegrees
+                required: false
+                slot_uri: cim:DiagramObject.rotation
+        class_uri: cim:DiagramObject
+        description: An object that defines one or more points in a given space. This
+            object can be associated with anything that specializes IdentifiedObject.
+            For single line diagrams such objects typically include such items as
+            analog values, breakers, disconnectors, power transformers, and transmission
+            lines.
+        is_a: IdentifiedObject
+        name: DiagramObject
+    DiagramObjectGluePoint:
+        attributes:
+            DiagramObjectPoints:
+                description: A diagram object glue point is associated with 2 or more
+                    object points that are considered to be 'glued' together.
+                multivalued: true
+                name: DiagramObjectPoints
+                range: DiagramObjectPoint
+                required: true
+                slot_uri: cim:DiagramObjectGluePoint.DiagramObjectPoints
+        class_uri: cim:DiagramObjectGluePoint
+        description: "This is used for grouping diagram object points from different\
+            \ diagram objects that are considered to be glued together in a diagram\
+            \ even if they are not at the exact same coordinates.\r\n"
+        is_a: null
+        name: DiagramObjectGluePoint
+    DiagramObjectPoint:
+        attributes:
+            DiagramObject:
+                description: The diagram object with which the points are associated.
+                multivalued: false
+                name: DiagramObject
+                range: DiagramObject
+                required: true
+                slot_uri: cim:DiagramObjectPoint.DiagramObject
+            DiagramObjectGluePoint:
+                description: The 'glue' point to which this point is associated.
+                multivalued: false
+                name: DiagramObjectGluePoint
+                range: DiagramObjectGluePoint
+                required: false
+                slot_uri: cim:DiagramObjectPoint.DiagramObjectGluePoint
+            sequenceNumber:
+                description: "The sequence position of the point, used for defining\
+                    \ the order of points for diagram objects acting as a polyline\
+                    \ or polygon with more than one point. The attribute shall be\
+                    \ a positive value.\r\n"
+                multivalued: false
+                name: sequenceNumber
+                range: integer
+                required: false
+                slot_uri: cim:DiagramObjectPoint.sequenceNumber
+            xPosition:
+                description: "The X coordinate of this point.\r\n"
+                multivalued: false
+                name: xPosition
+                range: float
+                required: false
+                slot_uri: cim:DiagramObjectPoint.xPosition
+            yPosition:
+                description: "The Y coordinate of this point.\r\n"
+                multivalued: false
+                name: yPosition
+                range: float
+                required: false
+                slot_uri: cim:DiagramObjectPoint.yPosition
+            zPosition:
+                description: "The Z coordinate of this point.\r\n"
+                multivalued: false
+                name: zPosition
+                range: float
+                required: false
+                slot_uri: cim:DiagramObjectPoint.zPosition
+        class_uri: cim:DiagramObjectPoint
+        description: "A point in a given space defined by 3 coordinates and associated\
+            \ to a diagram object.  The coordinates may be positive or negative as\
+            \ the origin does not have to be in the corner of a diagram.  \r\n"
+        is_a: null
+        name: DiagramObjectPoint
+    DiagramObjectStyle:
+        attributes:
+            StyledObjects:
+                description: A style can be assigned to multiple diagram objects.
+                multivalued: true
+                name: StyledObjects
+                range: DiagramObject
+                required: false
+                slot_uri: cim:DiagramObjectStyle.StyledObjects
+        class_uri: cim:DiagramObjectStyle
+        description: A reference to a style used by the originating system for a diagram
+            object.  A diagram object style describes information such as line thickness,
+            shape such as circle or rectangle etc, and colour.
+        is_a: IdentifiedObject
+        name: DiagramObjectStyle
+    DiagramStyle:
+        attributes:
+            Diagram:
+                description: A DiagramStyle can be used by many Diagrams.
+                multivalued: true
+                name: Diagram
+                range: Diagram
+                required: false
+                slot_uri: cim:DiagramStyle.Diagram
+        class_uri: cim:DiagramStyle
+        description: The diagram style refers to a style used by the originating system
+            for a diagram.  A diagram style describes information such as schematic,
+            geographic, etc.
+        is_a: IdentifiedObject
+        name: DiagramStyle
+    Float:
+        attributes: {}
+        class_uri: cim:Float
+        description: "A floating point number. The range is unspecified and not limited.\r\
+            \n"
+        is_a: null
+        name: Float
+    GenericDataSetVersion:
+        attributes:
+            majorVersion:
+                description: 'The universal CIM version name describing a consistent
+                    set of packages. '
+                multivalued: false
+                name: majorVersion
+                range: string
+                required: false
+                slot_uri: cim:GenericDataSetVersion.majorVersion
+            minorVersion:
+                description: Describe minor updates and error corrections.
+                multivalued: false
+                name: minorVersion
+                range: string
+                required: false
+                slot_uri: cim:GenericDataSetVersion.minorVersion
+            published:
+                description: "The date when the complete CIM canonical model is published\
+                    \ and made available for use, \r\nAfter the publication the major\
+                    \ version and name space are updated."
+                multivalued: false
+                name: published
+                range: date
+                required: false
+                slot_uri: cim:GenericDataSetVersion.published
+        class_uri: cim:GenericDataSetVersion
+        description: null
+        is_a: null
+        name: GenericDataSetVersion
+    IdentifiedObject:
+        attributes:
+            DiagramObjects:
+                description: The diagram objects that are associated with the domain
+                    object.
+                multivalued: true
+                name: DiagramObjects
+                range: DiagramObject
+                required: false
+                slot_uri: cim:IdentifiedObject.DiagramObjects
+            InstanceSet:
+                description: Dataset containing the data objects.
+                multivalued: false
+                name: InstanceSet
+                range: InstanceSet
+                required: true
+                slot_uri: cim:IdentifiedObject.InstanceSet
+            Names:
+                description: All names of this identified object.
+                multivalued: true
+                name: Names
+                range: Name
+                required: false
+                slot_uri: cim:IdentifiedObject.Names
+            PropertiesCIMDataObject:
+                description: The single CIM data object in the appropriate dataset
+                    context.
+                multivalued: false
+                name: PropertiesCIMDataObject
+                range: ChangeSetMember
+                required: false
+                slot_uri: cim:IdentifiedObject.PropertiesCIMDataObject
+            TargetingCIMDataObject:
+                description: Data objects registered.
+                multivalued: true
+                name: TargetingCIMDataObject
+                range: ChangeSetMember
+                required: false
+                slot_uri: cim:IdentifiedObject.TargetingCIMDataObject
+            aliasName:
+                description: "The aliasName is free text human readable name of the\
+                    \ object alternative to IdentifiedObject.name. It may be non unique\
+                    \ and may not correlate to a naming hierarchy.\r\nThe attribute\
+                    \ aliasName is retained because of backwards compatibility between\
+                    \ CIM relases. It is however recommended to replace aliasName\
+                    \ with the Name class as aliasName is planned for retirement at\
+                    \ a future time.\r\n\r\n"
+                multivalued: false
+                name: aliasName
+                range: string
+                required: false
+                slot_uri: cim:IdentifiedObject.aliasName
+            description:
+                description: The description is a free human readable text describing
+                    or naming the object. It may be non unique and may not correlate
+                    to a naming hierarchy.
+                multivalued: false
+                name: description
+                range: string
+                required: false
+                slot_uri: cim:IdentifiedObject.description
+            mRID:
+                description: "Master resource identifier issued by a model authority.\
+                    \ The mRID is unique within an exchange context. Global uniqueness\
+                    \ is easily achieved by using a UUID, as specified in RFC 4122,\
+                    \ for the mRID. The use of UUID is strongly recommended.\r\nFor\
+                    \ CIMXML data files in RDF syntax conforming to IEC 61970-552,\
+                    \ the mRID is mapped to rdf:ID or rdf:about attributes that identify\
+                    \ CIM object elements."
+                multivalued: false
+                name: mRID
+                range: string
+                required: false
+                slot_uri: cim:IdentifiedObject.mRID
+            name:
+                description: "The name is any free human readable and possibly non\
+                    \ unique text naming the object.\r\n"
+                multivalued: false
+                name: name
+                range: string
+                required: false
+                slot_uri: cim:IdentifiedObject.name
+        class_uri: cim:IdentifiedObject
+        description: This is a root class to provide common identification for all
+            classes needing identification and naming attributes.
+        is_a: null
+        name: IdentifiedObject
+    IncrementalDatasetArg:
+        attributes:
+            IncrementalDataset:
+                description: null
+                multivalued: false
+                name: IncrementalDataset
+                range: ChangeSet
+                required: true
+                slot_uri: cim:IncrementalDatasetArg.IncrementalDataset
+            IncrementalDatasetArgDescription:
+                description: null
+                multivalued: false
+                name: IncrementalDatasetArgDescription
+                range: IncrementalDatasetArgDescription
+                required: true
+                slot_uri: cim:IncrementalDatasetArg.IncrementalDatasetArgDescription
+        class_uri: cim:IncrementalDatasetArg
+        description: A generic model operation argument referencing an incremental
+            change description.
+        is_a: ModelOperationArg
+        name: IncrementalDatasetArg
+    IncrementalDatasetArgDescription:
+        attributes:
+            IncrementalDatasetArg:
+                description: The incremental dataset used for this argument instance.
+                multivalued: true
+                name: IncrementalDatasetArg
+                range: IncrementalDatasetArg
+                required: false
+                slot_uri: cim:IncrementalDatasetArgDescription.IncrementalDatasetArg
+        class_uri: cim:IncrementalDatasetArgDescription
+        description: null
+        is_a: ModelOperationArgDescription
+        name: IncrementalDatasetArgDescription
+    InstanceSet:
+        attributes:
+            DatasetArg:
+                description: The role of a dataset in the context of an operation.
+                multivalued: true
+                name: DatasetArg
+                range: DatasetArg
+                required: false
+                slot_uri: cim:InstanceSet.DatasetArg
+            InstanceSetMember:
+                description: Data objects contained in the dataset.
+                multivalued: true
+                name: InstanceSetMember
+                range: IdentifiedObject
+                required: false
+                slot_uri: cim:InstanceSet.InstanceSetMember
+        class_uri: cim:InstanceSet
+        description: 'Instance of a version of a model part.   This corresponds to
+            a payload of instance data.   '
+        is_a: DataSet
+        name: InstanceSet
+    Integer:
+        attributes: {}
+        class_uri: cim:Integer
+        description: "An integer number. The range is unspecified and not limited.\r\
+            \n"
+        is_a: null
+        name: Integer
+    ModelAuthority:
+        attributes:
+            ModelingAuthoritySets:
+                description: Modeling Authority Sets supplied and maintained by this
+                    Modeling Authority.
+                multivalued: true
+                name: ModelingAuthoritySets
+                range: ModelAuthoritySet
+                required: true
+                slot_uri: cim:ModelAuthority.ModelingAuthoritySets
+        class_uri: cim:ModelAuthority
+        description: A Modeling Authority is an entity responsible for supplying and
+            maintaining the data defining a specific set of objects in a network model.
+        is_a: IdentifiedObject
+        name: ModelAuthority
+    ModelAuthoritySet:
+        attributes:
+            ModelSpecification:
+                description: Models of the model frame.
+                multivalued: true
+                name: ModelSpecification
+                range: ModelPartSpecification
+                required: false
+                slot_uri: cim:ModelAuthoritySet.ModelSpecification
+            ModelingAuthority:
+                description: Modeling Authority suppliying and maintaining the data
+                    for the objects in this Modeling Authority Set.
+                multivalued: false
+                name: ModelingAuthority
+                range: ModelAuthority
+                required: true
+                slot_uri: cim:ModelAuthoritySet.ModelingAuthority
+        class_uri: cim:ModelAuthoritySet
+        description: "A Modeling Authority Set is a group of objects in a network\
+            \ model where the data is supplied and maintained by the same Modeling\
+            \ Authority.\r\nThis class is typically not included in instance data\
+            \ exchange as this information is tracked by other mechanisms in the exchange.\r\
+            \n"
+        is_a: IdentifiedObject
+        name: ModelAuthoritySet
+    ModelOperation:
+        attributes:
+            ModelOperationArg:
+                description: Arguments of the operation.
+                multivalued: true
+                name: ModelOperationArg
+                range: ModelOperationArg
+                required: false
+                slot_uri: cim:ModelOperation.ModelOperationArg
+            ModelOperationDescription:
+                description: The type of the model operation.
+                multivalued: false
+                name: ModelOperationDescription
+                range: ModelOperationDescription
+                required: true
+                slot_uri: cim:ModelOperation.ModelOperationDescription
+            OperationSequence:
+                description: null
+                multivalued: false
+                name: OperationSequence
+                range: ModelOperationSequence
+                required: true
+                slot_uri: cim:ModelOperation.OperationSequence
+            sequenceNumber:
+                description: Sequence number within a operation sequence, lower is
+                    first.   Normally starts with 1.
+                multivalued: false
+                name: sequenceNumber
+                range: integer
+                required: false
+                slot_uri: cim:ModelOperation.sequenceNumber
+        class_uri: cim:ModelOperation
+        description: 'An operation performed on models. '
+        is_a: IdentifiedObject
+        name: ModelOperation
+    ModelOperationArg:
+        attributes:
+            ModelOperation:
+                description: The opeation for the operation argument.
+                multivalued: false
+                name: ModelOperation
+                range: ModelOperation
+                required: true
+                slot_uri: cim:ModelOperationArg.ModelOperation
+            sequenceNumber:
+                description: "The sequence number of the argument in an operation.\
+                    \  Argument entries are considered in numerical order where the\
+                    \ operation requires an ordering. \r\n "
+                multivalued: false
+                name: sequenceNumber
+                range: integer
+                required: false
+                slot_uri: cim:ModelOperationArg.sequenceNumber
+        class_uri: cim:ModelOperationArg
+        description: Describes the role a dataset plays in a model operation.   The
+            role is applicable only in the context of a single operation.
+        is_a: IdentifiedObject
+        name: ModelOperationArg
+    ModelOperationArgDescription:
+        attributes:
+            ModelOperationDefinition:
+                description: The type of operation for this type of dataset role.   Operations
+                    referencing the dataset role type should only belong to operations
+                    that reference the operation type.
+                multivalued: false
+                name: ModelOperationDefinition
+                range: ModelOperationDescription
+                required: true
+                slot_uri: cim:ModelOperationArgDescription.ModelOperationDefinition
+            multiplicityMaximum:
+                description: "\r\nThe maximum multiplicity of the instance arguments\
+                    \ that should be supplied for a single operation.     Use -1 to\
+                    \ indicate unlimited. "
+                multivalued: false
+                name: multiplicityMaximum
+                range: integer
+                required: false
+                slot_uri: cim:ModelOperationArgDescription.multiplicityMaximum
+            multiplicityMinimum:
+                description: "\r\nThe minimum multiplicity of the instance arguments\
+                    \ that should be supplied for a single operation.     Use zero\
+                    \ to indicate optional. "
+                multivalued: false
+                name: multiplicityMinimum
+                range: integer
+                required: false
+                slot_uri: cim:ModelOperationArgDescription.multiplicityMinimum
+        class_uri: cim:ModelOperationArgDescription
+        description: The type of custom operation dataset role for an operation description.
+        is_a: IdentifiedObject
+        name: ModelOperationArgDescription
+    ModelOperationDescription:
+        attributes:
+            ModelOperation:
+                description: The instances of operations that conform to this operation
+                    type.
+                multivalued: true
+                name: ModelOperation
+                range: ModelOperation
+                required: false
+                slot_uri: cim:ModelOperationDescription.ModelOperation
+            OperationDatasetArgDescription:
+                description: The type of dataset roles that can be used for a type
+                    of general model operation.
+                multivalued: true
+                name: OperationDatasetArgDescription
+                range: ModelOperationArgDescription
+                required: false
+                slot_uri: cim:ModelOperationDescription.OperationDatasetArgDescription
+        class_uri: cim:ModelOperationDescription
+        description: The type of model operation.   This class is referenced by model
+            operations and defines the kind of operation.
+        is_a: IdentifiedObject
+        name: ModelOperationDescription
+    ModelOperationSequence:
+        attributes:
+            ModelOperation:
+                description: null
+                multivalued: true
+                name: ModelOperation
+                range: ModelOperation
+                required: false
+                slot_uri: cim:ModelOperationSequence.ModelOperation
+        class_uri: cim:ModelOperationSequence
+        description: A concrete sequence of operations.    For example, this may be
+            used to describe a specific audit trail, a script or other specific set
+            of actions on specific datasets.
+        is_a: IdentifiedObject
+        name: ModelOperationSequence
+    ModelPartSpecification:
+        attributes:
+            AssemblyDescription:
+                description: The assembly description into which model parts should
+                    be included.
+                multivalued: true
+                name: AssemblyDescription
+                range: AssemblyDescription
+                required: false
+                slot_uri: cim:ModelPartSpecification.AssemblyDescription
+            FrameworkPart:
+                description: Model frame of the model part.
+                multivalued: false
+                name: FrameworkPart
+                range: ModelAuthoritySet
+                required: false
+                slot_uri: cim:ModelPartSpecification.FrameworkPart
+            Model:
+                description: Modle parts conforming to the model part specification.
+                multivalued: true
+                name: Model
+                range: ModelPartVersion
+                required: false
+                slot_uri: cim:ModelPartSpecification.Model
+        class_uri: cim:ModelPartSpecification
+        description: 'The type of model.  For example,  state estimator, planning,
+            planning dynamics, short circuit, or real-time dynamics etc.     The model
+            must conform to a profile. '
+        is_a: IdentifiedObject
+        name: ModelPartSpecification
+    ModelPartVersion:
+        attributes:
+            AssemblyManifest:
+                description: null
+                multivalued: true
+                name: AssemblyManifest
+                range: AssemblyManifest
+                required: false
+                slot_uri: cim:ModelPartVersion.AssemblyManifest
+            CompleteModelToBeDeleted:
+                description: null
+                multivalued: true
+                name: CompleteModelToBeDeleted
+                range: CompleteModelToBeDeleted
+                required: false
+                slot_uri: cim:ModelPartVersion.CompleteModelToBeDeleted
+            DataSet:
+                description: null
+                multivalued: true
+                name: DataSet
+                range: DataSet
+                required: false
+                slot_uri: cim:ModelPartVersion.DataSet
+            ModelSpecification:
+                description: Model specification of the modelt.
+                multivalued: false
+                name: ModelSpecification
+                range: ModelPartSpecification
+                required: true
+                slot_uri: cim:ModelPartVersion.ModelSpecification
+        class_uri: cim:ModelPartVersion
+        description: This is a version of a part of a model.  New instances of this
+            class with new identity are instantiated upon changes to the content of
+            this class or changes to the associated data set.  Instances of this class
+            are considered immutable.  The case audit trail can reference this immutable
+            data to exactly reproduce a case.
+        is_a: ModelToBeDeleted
+        name: ModelPartVersion
+    ModelToBeDeleted:
+        attributes: {}
+        class_uri: cim:ModelToBeDeleted
+        description: A Model is a collection of Datasets.
+        is_a: IdentifiedObject
+        name: ModelToBeDeleted
+    Name:
+        attributes:
+            IdentifiedObject:
+                description: Identified object that this name designates.
+                multivalued: false
+                name: IdentifiedObject
+                range: IdentifiedObject
+                required: true
+                slot_uri: cim:Name.IdentifiedObject
+            NameType:
+                description: Type of this name.
+                multivalued: false
+                name: NameType
+                range: NameType
+                required: true
+                slot_uri: cim:Name.NameType
+            name:
+                description: "Any free text that name the object.\r\n"
+                multivalued: false
+                name: name
+                range: string
+                required: false
+                slot_uri: cim:Name.name
+        class_uri: cim:Name
+        description: "The Name class provides the means to define any number of human\
+            \ readable  names for an object. A name is <b>not</b> to be used for defining\
+            \ inter-object relationships. For inter-object relationships instead use\
+            \ the object identification 'mRID'.\r\n"
+        is_a: null
+        name: Name
+    NameType:
+        attributes:
+            NameTypeAuthority:
+                description: Authority responsible for managing names of this type.
+                multivalued: false
+                name: NameTypeAuthority
+                range: NameTypeAuthority
+                required: false
+                slot_uri: cim:NameType.NameTypeAuthority
+            Names:
+                description: All names of this type.
+                multivalued: true
+                name: Names
+                range: Name
+                required: false
+                slot_uri: cim:NameType.Names
+            description:
+                description: "Description of the name type.\r\n"
+                multivalued: false
+                name: description
+                range: string
+                required: false
+                slot_uri: cim:NameType.description
+            name:
+                description: "Name of the name type.\r\n"
+                multivalued: false
+                name: name
+                range: string
+                required: false
+                slot_uri: cim:NameType.name
+        class_uri: cim:NameType
+        description: "Type of name. Possible values for attribute 'name' are implementation\
+            \ dependent but standard profiles may specify types. An enterprise may\
+            \ have multiple IT systems each having its own local name for the same\
+            \ object, e.g. a planning system may have different names from an EMS.\
+            \ An object may also have different names within the same IT system, e.g.\
+            \ localName as defined in CIM version 14. The definition from CIM14 is:\r\
+            \nThe localName is a human readable name of the object. It is a free text\
+            \ name local to a node in a naming hierarchy similar to a file directory\
+            \ structure. A power system related naming hierarchy may be: Substation,\
+            \ VoltageLevel, Equipment etc. Children of the same parent in such a hierarchy\
+            \ have names that typically are unique among them.\r\n"
+        is_a: null
+        name: NameType
+    NameTypeAuthority:
+        attributes:
+            NameTypes:
+                description: All name types managed by this authority.
+                multivalued: true
+                name: NameTypes
+                range: NameType
+                required: false
+                slot_uri: cim:NameTypeAuthority.NameTypes
+            description:
+                description: "Description of the name type authority.\r\n"
+                multivalued: false
+                name: description
+                range: string
+                required: false
+                slot_uri: cim:NameTypeAuthority.description
+            name:
+                description: "Name of the name type authority.\r\n"
+                multivalued: false
+                name: name
+                range: string
+                required: false
+                slot_uri: cim:NameTypeAuthority.name
+        class_uri: cim:NameTypeAuthority
+        description: "Authority responsible for creation and management of names of\
+            \ a given type; typically an organization or an enterprise system.\r\n"
+        is_a: null
+        name: NameTypeAuthority
+    NetworkModelProject:
+        attributes:
+            ContainedProject:
+                description: Projects that are included in this parent project.
+                multivalued: true
+                name: ContainedProject
+                range: NetworkModelProjectComponent
+                required: false
+                slot_uri: cim:NetworkModelProject.ContainedProject
+        class_uri: cim:NetworkModelProject
+        description: "A grouping of network model change descriptions.  Primarily\
+            \ used to organize the phases of an overall project.\r\n\r\n\r\n "
+        is_a: NetworkModelProjectComponent
+        name: NetworkModelProject
+    NetworkModelProject2:
+        attributes:
+            Child:
+                description: null
+                multivalued: true
+                name: Child
+                range: NetworkModelProjectComponent2
+                required: false
+                slot_uri: cim:NetworkModelProject2.Child
+        class_uri: cim:NetworkModelProject2
+        description: null
+        is_a: NetworkModelProjectComponent2
+        name: NetworkModelProject2
+    NetworkModelProjectChange:
+        attributes:
+            NetworkModelProjectChangeVersion:
+                description: A specific version of the network model project change.
+                multivalued: true
+                name: NetworkModelProjectChangeVersion
+                range: NetworkModelProjectChangeVersion
+                required: true
+                slot_uri: cim:NetworkModelProjectChange.NetworkModelProjectChangeVersion
+        class_uri: cim:NetworkModelProjectChange
+        description: 'Network model project change described by versions of an associated
+            change set.  Has persistent identity over multiple versions of the associated
+            change set. '
+        is_a: NetworkModelProjectComponent
+        name: NetworkModelProjectChange
+    NetworkModelProjectChangeVersion:
+        attributes:
+            ChangeSet:
+                description: The details of model changes for this project.   The
+                    change set should have a new identifier if it changes.
+                multivalued: false
+                name: ChangeSet
+                range: ChangeSet
+                required: false
+                slot_uri: cim:NetworkModelProjectChangeVersion.ChangeSet
+            NetworkModelProjectChange:
+                description: The persistent network model project change to which
+                    this version applies.
+                multivalued: false
+                name: NetworkModelProjectChange
+                range: NetworkModelProjectChange
+                required: true
+                slot_uri: cim:NetworkModelProjectChangeVersion.NetworkModelProjectChange
+            NetworkModelProjectState:
+                description: The state of this network model project version.
+                multivalued: false
+                name: NetworkModelProjectState
+                range: NetworkModelProjectState
+                required: false
+                slot_uri: cim:NetworkModelProjectChangeVersion.NetworkModelProjectState
+            SupercededBy:
+                description: The project version that will supercede this project
+                    version.
+                multivalued: false
+                name: SupercededBy
+                range: NetworkModelProjectChangeVersion
+                required: false
+                slot_uri: cim:NetworkModelProjectChangeVersion.SupercededBy
+            Supercedes:
+                description: Project version that is being superceded.
+                multivalued: false
+                name: Supercedes
+                range: NetworkModelProjectChangeVersion
+                required: false
+                slot_uri: cim:NetworkModelProjectChangeVersion.Supercedes
+            comment:
+                description: A user provided comment describing the changes in this
+                    version from the previous version.
+                multivalued: false
+                name: comment
+                range: string
+                required: false
+                slot_uri: cim:NetworkModelProjectChangeVersion.comment
+            effectiveDateTime:
+                description: The date/time the change set is included in the model.
+                multivalued: false
+                name: effectiveDateTime
+                range: date
+                required: false
+                slot_uri: cim:NetworkModelProjectChangeVersion.effectiveDateTime
+            timeStamp:
+                description: The date/time this version was finalized and thus made
+                    immutable.
+                multivalued: false
+                name: timeStamp
+                range: date
+                required: false
+                slot_uri: cim:NetworkModelProjectChangeVersion.timeStamp
+        class_uri: cim:NetworkModelProjectChangeVersion
+        description: Describes the status and the planned implementation of the associated
+            change set into the as-built model.    New instances of this class with
+            new identity are instantiated upon changes to the content of this class
+            or changes to the associated change set.  Instances of this class are
+            considered immutable.  The case audit trail can reference this immutable
+            data to exactly reproduce a case.
+        is_a: IdentifiedObject
+        name: NetworkModelProjectChangeVersion
+    NetworkModelProjectComponent:
+        attributes:
+            ContainingProject:
+                description: The parent project of this project.
+                multivalued: false
+                name: ContainingProject
+                range: NetworkModelProject
+                required: true
+                slot_uri: cim:NetworkModelProjectComponent.ContainingProject
+            NetworkModelProjectDocument:
+                description: null
+                multivalued: true
+                name: NetworkModelProjectDocument
+                range: NetworkModelProjectDocument
+                required: false
+                slot_uri: cim:NetworkModelProjectComponent.NetworkModelProjectDocument
+            ProjectARelationships:
+                description: null
+                multivalued: true
+                name: ProjectARelationships
+                range: NetworkModelProjectRelationship
+                required: false
+                slot_uri: cim:NetworkModelProjectComponent.ProjectARelationships
+            ProjectBRelationships:
+                description: null
+                multivalued: true
+                name: ProjectBRelationships
+                range: NetworkModelProjectRelationship
+                required: false
+                slot_uri: cim:NetworkModelProjectComponent.ProjectBRelationships
+        class_uri: cim:NetworkModelProjectComponent
+        description: Abstract class for both a network model project and network model
+            change.
+        is_a: IdentifiedObject
+        name: NetworkModelProjectComponent
+    NetworkModelProjectComponent2:
+        attributes:
+            CurrentState:
+                description: null
+                multivalued: false
+                name: CurrentState
+                range: CurrentState
+                required: true
+                slot_uri: cim:NetworkModelProjectComponent2.CurrentState
+            Parent:
+                description: null
+                multivalued: false
+                name: Parent
+                range: NetworkModelProject2
+                required: false
+                slot_uri: cim:NetworkModelProjectComponent2.Parent
+            closed:
+                description: null
+                multivalued: false
+                name: closed
+                range: date
+                required: false
+                slot_uri: cim:NetworkModelProjectComponent2.closed
+            created:
+                description: null
+                multivalued: false
+                name: created
+                range: date
+                required: false
+                slot_uri: cim:NetworkModelProjectComponent2.created
+            updated:
+                description: null
+                multivalued: false
+                name: updated
+                range: date
+                required: false
+                slot_uri: cim:NetworkModelProjectComponent2.updated
+            version:
+                description: null
+                multivalued: false
+                name: version
+                range: integer
+                required: false
+                slot_uri: cim:NetworkModelProjectComponent2.version
+        class_uri: cim:NetworkModelProjectComponent2
+        description: null
+        is_a: IdentifiedObject
+        name: NetworkModelProjectComponent2
+    NetworkModelProjectDocument:
+        attributes:
+            NetworkModelProjectComponent:
+                description: null
+                multivalued: true
+                name: NetworkModelProjectComponent
+                range: NetworkModelProjectComponent
+                required: false
+                slot_uri: cim:NetworkModelProjectDocument.NetworkModelProjectComponent
+        class_uri: cim:NetworkModelProjectDocument
+        description: null
+        is_a: null
+        name: NetworkModelProjectDocument
+    NetworkModelProjectRelationship:
+        attributes:
+            ProjectA:
+                description: null
+                multivalued: false
+                name: ProjectA
+                range: NetworkModelProjectComponent
+                required: true
+                slot_uri: cim:NetworkModelProjectRelationship.ProjectA
+            ProjectB:
+                description: null
+                multivalued: false
+                name: ProjectB
+                range: NetworkModelProjectComponent
+                required: true
+                slot_uri: cim:NetworkModelProjectRelationship.ProjectB
+        class_uri: cim:NetworkModelProjectRelationship
+        description: A relationship that assists humans and software building cases
+            by assembling project changes in the correct sequence.  This class may
+            be specialized to create specific types of relationships.
+        is_a: IdentifiedObject
+        name: NetworkModelProjectRelationship
+    NetworkModelProjectStage:
+        attributes:
+            ChangeSets:
+                description: null
+                multivalued: true
+                name: ChangeSets
+                range: ChangeSet
+                required: true
+                slot_uri: cim:NetworkModelProjectStage.ChangeSets
+            DenpendecyDependingStage:
+                description: null
+                multivalued: true
+                name: DenpendecyDependingStage
+                range: AnnotatedProjectDependency
+                required: false
+                slot_uri: cim:NetworkModelProjectStage.DenpendecyDependingStage
+            DependencyDependentOnStage:
+                description: null
+                multivalued: false
+                name: DependencyDependentOnStage
+                range: AnnotatedProjectDependency
+                required: false
+                slot_uri: cim:NetworkModelProjectStage.DependencyDependentOnStage
+            changesetVersion:
+                description: null
+                multivalued: false
+                name: changesetVersion
+                range: integer
+                required: false
+                slot_uri: cim:NetworkModelProjectStage.changesetVersion
+            commissionedDate:
+                description: null
+                multivalued: false
+                name: commissionedDate
+                range: date
+                required: false
+                slot_uri: cim:NetworkModelProjectStage.commissionedDate
+            plannedCommissionedDate:
+                description: null
+                multivalued: false
+                name: plannedCommissionedDate
+                range: date
+                required: false
+                slot_uri: cim:NetworkModelProjectStage.plannedCommissionedDate
+        class_uri: cim:NetworkModelProjectStage
+        description: null
+        is_a: NetworkModelProjectComponent2
+        name: NetworkModelProjectStage
+    NetworkModelProjectState:
+        attributes:
+            NetworkModelProjectChangeVersion:
+                description: The change versions that are at this state.
+                multivalued: true
+                name: NetworkModelProjectChangeVersion
+                range: NetworkModelProjectChangeVersion
+                required: false
+                slot_uri: cim:NetworkModelProjectState.NetworkModelProjectChangeVersion
+        class_uri: cim:NetworkModelProjectState
+        description: A network model project version state.  States are agreed upon
+            by the exchange community.  Examples are "approved", "proposed", "withdrawn",
+            "committed" etc.
+        is_a: IdentifiedObject
+        name: NetworkModelProjectState
+    ObjectCreation:
+        attributes: {}
+        class_uri: cim:ObjectCreation
+        description: An object is to be created in the context.
+        is_a: ChangeSetMember
+        name: ObjectCreation
+    ObjectDeletion:
+        attributes: {}
+        class_uri: cim:ObjectDeletion
+        description: "An object is to be deleted in the context.\r\n"
+        is_a: ChangeSetMember
+        name: ObjectDeletion
+    ObjectModification:
+        attributes:
+            ObjectReverseModification:
+                description: The data object holding preconditions of updates.
+                multivalued: false
+                name: ObjectReverseModification
+                range: ObjectReverseModification
+                required: false
+                slot_uri: cim:ObjectModification.ObjectReverseModification
+        class_uri: cim:ObjectModification
+        description: The object already exists and is to be modified.
+        is_a: ChangeSetMember
+        name: ObjectModification
+    ObjectReverseModification:
+        attributes:
+            ObjectModification:
+                description: The associated data object representing the update. Normally
+                    the associaiton is specifed, but in the case of a proxy object
+                    where the association is removed, we might not reference any data
+                    object as it would only reference a proxy data object with no
+                    associations.
+                multivalued: false
+                name: ObjectModification
+                range: ObjectModification
+                required: false
+                slot_uri: cim:ObjectReverseModification.ObjectModification
+        class_uri: cim:ObjectReverseModification
+        description: Used to specify precondition properties for a preconditioned
+            update.
+        is_a: ChangeSetMember
+        name: ObjectReverseModification
+    Profile:
+        attributes:
+            DataSet:
+                description: The data sets that make use of the profile.
+                multivalued: true
+                name: DataSet
+                range: DataSet
+                required: false
+                slot_uri: cim:Profile.DataSet
+        class_uri: cim:Profile
+        description: Describes the existence of a profile.  The MRID is usually defined
+            as a static value by the document or artifact that defines the contents
+            of the profile and the rules for using the profile.
+        is_a: IdentifiedObject
+        name: Profile
+    String:
+        attributes: {}
+        class_uri: cim:String
+        description: A string consisting of a sequence of characters. The character
+            encoding is UTF-8. The string length is unspecified and unlimited.
+        is_a: null
+        name: String
+    VisibilityLayer:
+        attributes:
+            VisibleObjects:
+                description: A visibility layer can contain one or more diagram objects.
+                multivalued: true
+                name: VisibleObjects
+                range: DiagramObject
+                required: false
+                slot_uri: cim:VisibilityLayer.VisibleObjects
+            drawingOrder:
+                description: "The drawing order for this layer.  The higher the number,\
+                    \ the later the layer and the objects within it are rendered.\r\
+                    \n"
+                multivalued: false
+                name: drawingOrder
+                range: integer
+                required: false
+                slot_uri: cim:VisibilityLayer.drawingOrder
+        class_uri: cim:VisibilityLayer
+        description: "Layers are typically used for grouping diagram objects according\
+            \ to themes and scales. Themes are used to display or hide certain information\
+            \ (e.g., lakes, borders), while scales are used for hiding or displaying\
+            \ information depending on the current zoom level (hide text when it is\
+            \ too small to be read, or when it exceeds the screen size). This is also\
+            \ called de-cluttering.\r\nCIM based graphics exchange supports an m:n\
+            \ relationship between diagram objects and layers. The importing system\
+            \ shall convert an m:n case into an appropriate 1:n representation if\
+            \ the importing system does not support m:n."
+        is_a: IdentifiedObject
+        name: VisibilityLayer
+enums:
+    DependencyKind:
+        description: null
+        enum_uri: cim:DependencyKind
+        name: DependencyKind
+        permissible_values:
+            mutuallyExclusive:
+                meaning: cim:DependencyKind.mutuallyExclusive
+                text: mutuallyExclusive
+            required:
+                meaning: cim:DependencyKind.required
+                text: required
+    OrientationKind:
+        description: "The orientation of the coordinate system with respect to top,\
+            \ left, and the coordinate number system.\r\n"
+        enum_uri: cim:OrientationKind
+        name: OrientationKind
+        permissible_values:
+            negative:
+                meaning: cim:OrientationKind.negative
+                text: negative
+            positive:
+                meaning: cim:OrientationKind.positive
+                text: positive
+    UnitMultiplier:
+        description: "The unit multipliers defined for the CIM.  When applied to unit\
+            \ symbols, the unit symbol is treated as a derived unit. Regardless of\
+            \ the contents of the unit symbol text, the unit symbol shall be treated\
+            \ as if it were a single-character unit symbol. Unit symbols should not\
+            \ contain multipliers, and it should be left to the multiplier to define\
+            \ the multiple for an entire data type. \r\n\r\nFor example, if a unit\
+            \ symbol is \"m2Pers\" and the multiplier is \"k\", then the value is\
+            \ k(m**2/s), and the multiplier applies to the entire final value, not\
+            \ to any individual part of the value. This can be conceptualized by substituting\
+            \ a derived unit symbol for the unit type. If one imagines that the symbol\
+            \ \"\xDE\" represents the derived unit \"m2Pers\", then applying the multiplier\
+            \ \"k\" can be conceptualized simply as \"k\xDE\".\r\n\r\nFor example,\
+            \ the SI unit for mass is \"kg\" and not \"g\".  If the unit symbol is\
+            \ defined as \"kg\", then the multiplier is applied to \"kg\" as a whole\
+            \ and does not replace the \"k\" in front of the \"g\". In this case,\
+            \ the multiplier of \"m\" would be used with the unit symbol of \"kg\"\
+            \ to represent one gram.  As a text string, this violates the instructions\
+            \ in IEC 80000-1. However, because the unit symbol in CIM is treated as\
+            \ a derived unit instead of as an SI unit, it makes more sense to conceptualize\
+            \ the \"kg\" as if it were replaced by one of the proposed replacements\
+            \ for the SI mass symbol. If one imagines that the \"kg\" were replaced\
+            \ by a symbol \"\xDE\", then it is easier to conceptualize the multiplier\
+            \ \"m\" as creating the proper unit \"m\xDE\", and not the forbidden unit\
+            \ \"mkg\"."
+        enum_uri: cim:UnitMultiplier
+        name: UnitMultiplier
+        permissible_values:
+            E:
+                meaning: cim:UnitMultiplier.E
+                text: E
+            G:
+                meaning: cim:UnitMultiplier.G
+                text: G
+            M:
+                meaning: cim:UnitMultiplier.M
+                text: M
+            P:
+                meaning: cim:UnitMultiplier.P
+                text: P
+            T:
+                meaning: cim:UnitMultiplier.T
+                text: T
+            Y:
+                meaning: cim:UnitMultiplier.Y
+                text: Y
+            Z:
+                meaning: cim:UnitMultiplier.Z
+                text: Z
+            a:
+                meaning: cim:UnitMultiplier.a
+                text: a
+            c:
+                meaning: cim:UnitMultiplier.c
+                text: c
+            d:
+                meaning: cim:UnitMultiplier.d
+                text: d
+            da:
+                meaning: cim:UnitMultiplier.da
+                text: da
+            f:
+                meaning: cim:UnitMultiplier.f
+                text: f
+            h:
+                meaning: cim:UnitMultiplier.h
+                text: h
+            k:
+                meaning: cim:UnitMultiplier.k
+                text: k
+            m:
+                meaning: cim:UnitMultiplier.m
+                text: m
+            micro:
+                meaning: cim:UnitMultiplier.micro
+                text: micro
+            n:
+                meaning: cim:UnitMultiplier.n
+                text: n
+            none:
+                meaning: cim:UnitMultiplier.none
+                text: none
+            p:
+                meaning: cim:UnitMultiplier.p
+                text: p
+            y:
+                meaning: cim:UnitMultiplier.y
+                text: y
+            z:
+                meaning: cim:UnitMultiplier.z
+                text: z
+    UnitSymbol:
+        description: "The derived units defined for usage in the CIM. In some cases,\
+            \ the derived unit is equal to an SI unit. Whenever possible, the standard\
+            \ derived symbol is used instead of the formula for the derived unit.\
+            \ For example, the unit symbol Farad is defined as \"F\" instead of \"\
+            CPerV\". In cases where a standard symbol does not exist for a derived\
+            \ unit, the formula for the unit is used as the unit symbol. For example,\
+            \ density does not have a standard symbol and so it is represented as\
+            \ \"kgPerm3\". With the exception of the \"kg\", which is an SI unit,\
+            \ the unit symbols do not contain multipliers and therefore represent\
+            \ the base derived unit to which a multiplier can be applied as a whole.\
+            \ \r\nEvery unit symbol is treated as an unparseable text as if it were\
+            \ a single-letter symbol. The meaning of each unit symbol is defined by\
+            \ the accompanying descriptive text and not by the text contents of the\
+            \ unit symbol.\r\nTo allow the widest possible range of serializations\
+            \ without requiring special character handling, several substitutions\
+            \ are made which deviate from the format described in IEC 80000-1. The\
+            \ division symbol \"/\" is replaced by the letters \"Per\". Exponents\
+            \ are written in plain text after the unit as \"m3\" instead of being\
+            \ formatted as \"m\" with a superscript of 3  or introducing a symbol\
+            \ as in \"m^3\". The degree symbol \"\xB0\" is replaced with the letters\
+            \ \"deg\". Any clarification of the meaning for a substitution is included\
+            \ in the description for the unit symbol.\r\nNon-SI units are included\
+            \ in list of unit symbols to allow sources of data to be correctly labelled\
+            \ with their non-SI units (for example, a GPS sensor that is reporting\
+            \ numbers that represent feet instead of meters). This allows software\
+            \ to use the unit symbol information correctly convert and scale the raw\
+            \ data of those sources into SI-based units. \r\nThe integer values are\
+            \ used for harmonization with IEC 61850."
+        enum_uri: cim:UnitSymbol
+        name: UnitSymbol
+        permissible_values:
+            A:
+                meaning: cim:UnitSymbol.A
+                text: A
+            A2:
+                meaning: cim:UnitSymbol.A2
+                text: A2
+            A2h:
+                meaning: cim:UnitSymbol.A2h
+                text: A2h
+            A2s:
+                meaning: cim:UnitSymbol.A2s
+                text: A2s
+            APerA:
+                meaning: cim:UnitSymbol.APerA
+                text: APerA
+            APerm:
+                meaning: cim:UnitSymbol.APerm
+                text: APerm
+            Ah:
+                meaning: cim:UnitSymbol.Ah
+                text: Ah
+            As:
+                meaning: cim:UnitSymbol.As
+                text: As
+            Bq:
+                meaning: cim:UnitSymbol.Bq
+                text: Bq
+            Btu:
+                meaning: cim:UnitSymbol.Btu
+                text: Btu
+            C:
+                meaning: cim:UnitSymbol.C
+                text: C
+            CPerkg:
+                meaning: cim:UnitSymbol.CPerkg
+                text: CPerkg
+            CPerm2:
+                meaning: cim:UnitSymbol.CPerm2
+                text: CPerm2
+            CPerm3:
+                meaning: cim:UnitSymbol.CPerm3
+                text: CPerm3
+            F:
+                meaning: cim:UnitSymbol.F
+                text: F
+            FPerm:
+                meaning: cim:UnitSymbol.FPerm
+                text: FPerm
+            G:
+                meaning: cim:UnitSymbol.G
+                text: G
+            Gy:
+                meaning: cim:UnitSymbol.Gy
+                text: Gy
+            GyPers:
+                meaning: cim:UnitSymbol.GyPers
+                text: GyPers
+            H:
+                meaning: cim:UnitSymbol.H
+                text: H
+            HPerm:
+                meaning: cim:UnitSymbol.HPerm
+                text: HPerm
+            Hz:
+                meaning: cim:UnitSymbol.Hz
+                text: Hz
+            HzPerHz:
+                meaning: cim:UnitSymbol.HzPerHz
+                text: HzPerHz
+            HzPers:
+                meaning: cim:UnitSymbol.HzPers
+                text: HzPers
+            J:
+                meaning: cim:UnitSymbol.J
+                text: J
+            JPerK:
+                meaning: cim:UnitSymbol.JPerK
+                text: JPerK
+            JPerkg:
+                meaning: cim:UnitSymbol.JPerkg
+                text: JPerkg
+            JPerkgK:
+                meaning: cim:UnitSymbol.JPerkgK
+                text: JPerkgK
+            JPerm2:
+                meaning: cim:UnitSymbol.JPerm2
+                text: JPerm2
+            JPerm3:
+                meaning: cim:UnitSymbol.JPerm3
+                text: JPerm3
+            JPermol:
+                meaning: cim:UnitSymbol.JPermol
+                text: JPermol
+            JPermolK:
+                meaning: cim:UnitSymbol.JPermolK
+                text: JPermolK
+            JPers:
+                meaning: cim:UnitSymbol.JPers
+                text: JPers
+            K:
+                meaning: cim:UnitSymbol.K
+                text: K
+            KPers:
+                meaning: cim:UnitSymbol.KPers
+                text: KPers
+            M:
+                meaning: cim:UnitSymbol.M
+                text: M
+            Mx:
+                meaning: cim:UnitSymbol.Mx
+                text: Mx
+            N:
+                meaning: cim:UnitSymbol.N
+                text: N
+            NPerm:
+                meaning: cim:UnitSymbol.NPerm
+                text: NPerm
+            Nm:
+                meaning: cim:UnitSymbol.Nm
+                text: Nm
+            Oe:
+                meaning: cim:UnitSymbol.Oe
+                text: Oe
+            Pa:
+                meaning: cim:UnitSymbol.Pa
+                text: Pa
+            PaPers:
+                meaning: cim:UnitSymbol.PaPers
+                text: PaPers
+            Pas:
+                meaning: cim:UnitSymbol.Pas
+                text: Pas
+            Q:
+                meaning: cim:UnitSymbol.Q
+                text: Q
+            Qh:
+                meaning: cim:UnitSymbol.Qh
+                text: Qh
+            S:
+                meaning: cim:UnitSymbol.S
+                text: S
+            SPerm:
+                meaning: cim:UnitSymbol.SPerm
+                text: SPerm
+            Sv:
+                meaning: cim:UnitSymbol.Sv
+                text: Sv
+            T:
+                meaning: cim:UnitSymbol.T
+                text: T
+            V:
+                meaning: cim:UnitSymbol.V
+                text: V
+            V2:
+                meaning: cim:UnitSymbol.V2
+                text: V2
+            V2h:
+                meaning: cim:UnitSymbol.V2h
+                text: V2h
+            VA:
+                meaning: cim:UnitSymbol.VA
+                text: VA
+            VAh:
+                meaning: cim:UnitSymbol.VAh
+                text: VAh
+            VAr:
+                meaning: cim:UnitSymbol.VAr
+                text: VAr
+            VArh:
+                meaning: cim:UnitSymbol.VArh
+                text: VArh
+            VPerHz:
+                meaning: cim:UnitSymbol.VPerHz
+                text: VPerHz
+            VPerV:
+                meaning: cim:UnitSymbol.VPerV
+                text: VPerV
+            VPerVA:
+                meaning: cim:UnitSymbol.VPerVA
+                text: VPerVA
+            VPerVAr:
+                meaning: cim:UnitSymbol.VPerVAr
+                text: VPerVAr
+            VPerm:
+                meaning: cim:UnitSymbol.VPerm
+                text: VPerm
+            Vh:
+                meaning: cim:UnitSymbol.Vh
+                text: Vh
+            Vs:
+                meaning: cim:UnitSymbol.Vs
+                text: Vs
+            W:
+                meaning: cim:UnitSymbol.W
+                text: W
+            WPerA:
+                meaning: cim:UnitSymbol.WPerA
+                text: WPerA
+            WPerW:
+                meaning: cim:UnitSymbol.WPerW
+                text: WPerW
+            WPerm2:
+                meaning: cim:UnitSymbol.WPerm2
+                text: WPerm2
+            WPerm2sr:
+                meaning: cim:UnitSymbol.WPerm2sr
+                text: WPerm2sr
+            WPermK:
+                meaning: cim:UnitSymbol.WPermK
+                text: WPermK
+            WPers:
+                meaning: cim:UnitSymbol.WPers
+                text: WPers
+            WPersr:
+                meaning: cim:UnitSymbol.WPersr
+                text: WPersr
+            Wb:
+                meaning: cim:UnitSymbol.Wb
+                text: Wb
+            Wh:
+                meaning: cim:UnitSymbol.Wh
+                text: Wh
+            anglemin:
+                meaning: cim:UnitSymbol.anglemin
+                text: anglemin
+            anglesec:
+                meaning: cim:UnitSymbol.anglesec
+                text: anglesec
+            bar:
+                meaning: cim:UnitSymbol.bar
+                text: bar
+            cd:
+                meaning: cim:UnitSymbol.cd
+                text: cd
+            charPers:
+                meaning: cim:UnitSymbol.charPers
+                text: charPers
+            character:
+                meaning: cim:UnitSymbol.character
+                text: character
+            cosPhi:
+                meaning: cim:UnitSymbol.cosPhi
+                text: cosPhi
+            count:
+                meaning: cim:UnitSymbol.count
+                text: count
+            d:
+                meaning: cim:UnitSymbol.d
+                text: d
+            dB:
+                meaning: cim:UnitSymbol.dB
+                text: dB
+            dBm:
+                meaning: cim:UnitSymbol.dBm
+                text: dBm
+            deg:
+                meaning: cim:UnitSymbol.deg
+                text: deg
+            degC:
+                meaning: cim:UnitSymbol.degC
+                text: degC
+            ft3:
+                meaning: cim:UnitSymbol.ft3
+                text: ft3
+            gPerg:
+                meaning: cim:UnitSymbol.gPerg
+                text: gPerg
+            gal:
+                meaning: cim:UnitSymbol.gal
+                text: gal
+            h:
+                meaning: cim:UnitSymbol.h
+                text: h
+            ha:
+                meaning: cim:UnitSymbol.ha
+                text: ha
+            kat:
+                meaning: cim:UnitSymbol.kat
+                text: kat
+            katPerm3:
+                meaning: cim:UnitSymbol.katPerm3
+                text: katPerm3
+            kg:
+                meaning: cim:UnitSymbol.kg
+                text: kg
+            kgPerJ:
+                meaning: cim:UnitSymbol.kgPerJ
+                text: kgPerJ
+            kgPerm3:
+                meaning: cim:UnitSymbol.kgPerm3
+                text: kgPerm3
+            kgm:
+                meaning: cim:UnitSymbol.kgm
+                text: kgm
+            kgm2:
+                meaning: cim:UnitSymbol.kgm2
+                text: kgm2
+            kn:
+                meaning: cim:UnitSymbol.kn
+                text: kn
+            l:
+                meaning: cim:UnitSymbol.l
+                text: l
+            lPerh:
+                meaning: cim:UnitSymbol.lPerh
+                text: lPerh
+            lPerl:
+                meaning: cim:UnitSymbol.lPerl
+                text: lPerl
+            lPers:
+                meaning: cim:UnitSymbol.lPers
+                text: lPers
+            lm:
+                meaning: cim:UnitSymbol.lm
+                text: lm
+            lx:
+                meaning: cim:UnitSymbol.lx
+                text: lx
+            m:
+                meaning: cim:UnitSymbol.m
+                text: m
+            m2:
+                meaning: cim:UnitSymbol.m2
+                text: m2
+            m2Pers:
+                meaning: cim:UnitSymbol.m2Pers
+                text: m2Pers
+            m3:
+                meaning: cim:UnitSymbol.m3
+                text: m3
+            m3Compensated:
+                meaning: cim:UnitSymbol.m3Compensated
+                text: m3Compensated
+            m3Perh:
+                meaning: cim:UnitSymbol.m3Perh
+                text: m3Perh
+            m3Perkg:
+                meaning: cim:UnitSymbol.m3Perkg
+                text: m3Perkg
+            m3Pers:
+                meaning: cim:UnitSymbol.m3Pers
+                text: m3Pers
+            m3Uncompensated:
+                meaning: cim:UnitSymbol.m3Uncompensated
+                text: m3Uncompensated
+            mPerm3:
+                meaning: cim:UnitSymbol.mPerm3
+                text: mPerm3
+            mPers:
+                meaning: cim:UnitSymbol.mPers
+                text: mPers
+            mPers2:
+                meaning: cim:UnitSymbol.mPers2
+                text: mPers2
+            min:
+                meaning: cim:UnitSymbol.min
+                text: min
+            mmHg:
+                meaning: cim:UnitSymbol.mmHg
+                text: mmHg
+            mol:
+                meaning: cim:UnitSymbol.mol
+                text: mol
+            molPerkg:
+                meaning: cim:UnitSymbol.molPerkg
+                text: molPerkg
+            molPerm3:
+                meaning: cim:UnitSymbol.molPerm3
+                text: molPerm3
+            molPermol:
+                meaning: cim:UnitSymbol.molPermol
+                text: molPermol
+            none:
+                meaning: cim:UnitSymbol.none
+                text: none
+            ohm:
+                meaning: cim:UnitSymbol.ohm
+                text: ohm
+            ohmPerm:
+                meaning: cim:UnitSymbol.ohmPerm
+                text: ohmPerm
+            ohmm:
+                meaning: cim:UnitSymbol.ohmm
+                text: ohmm
+            onePerHz:
+                meaning: cim:UnitSymbol.onePerHz
+                text: onePerHz
+            onePerm:
+                meaning: cim:UnitSymbol.onePerm
+                text: onePerm
+            ppm:
+                meaning: cim:UnitSymbol.ppm
+                text: ppm
+            rad:
+                meaning: cim:UnitSymbol.rad
+                text: rad
+            radPers:
+                meaning: cim:UnitSymbol.radPers
+                text: radPers
+            radPers2:
+                meaning: cim:UnitSymbol.radPers2
+                text: radPers2
+            rev:
+                meaning: cim:UnitSymbol.rev
+                text: rev
+            rotPers:
+                meaning: cim:UnitSymbol.rotPers
+                text: rotPers
+            s:
+                meaning: cim:UnitSymbol.s
+                text: s
+            sPers:
+                meaning: cim:UnitSymbol.sPers
+                text: sPers
+            sr:
+                meaning: cim:UnitSymbol.sr
+                text: sr
+            therm:
+                meaning: cim:UnitSymbol.therm
+                text: therm
+            tonne:
+                meaning: cim:UnitSymbol.tonne
+                text: tonne
+id: cim:GenericDataSet
+name: GenericDataSet

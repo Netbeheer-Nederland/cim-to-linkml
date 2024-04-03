@@ -1,0 +1,41 @@
+classes:
+    Date:
+        attributes: {}
+        class_uri: cim:Date
+        description: Date as "yyyy-mm-dd", which conforms with ISO 8601. UTC time
+            zone is specified as "yyyy-mm-ddZ". A local timezone relative UTC is specified
+            as "yyyy-mm-dd(+/-)hh:mm".
+        is_a: null
+        name: Date
+    IEC62325CIMVersion:
+        attributes:
+            date:
+                description: Form is YYYY-MM-DD for example for January 5, 2009 it
+                    is 2009-01-05.
+                multivalued: false
+                name: date
+                range: date
+                required: false
+                slot_uri: cim:IEC62325CIMVersion.date
+            version:
+                description: Form is IEC62325CIMXXvYY where XX is the major CIM package
+                    version and the YY is the minor version. For example IEC62325CIM10v03.
+                multivalued: false
+                name: version
+                range: string
+                required: false
+                slot_uri: cim:IEC62325CIMVersion.version
+        class_uri: cim:IEC62325CIMVersion
+        description: IEC 62325 version number assigned to this UML model.
+        is_a: null
+        name: IEC62325CIMVersion
+    String:
+        attributes: {}
+        class_uri: cim:String
+        description: A string consisting of a sequence of characters. The character
+            encoding is UTF-8. The string length is unspecified and unlimited.
+        is_a: null
+        name: String
+enums: {}
+id: cim:IEC62325
+name: IEC62325

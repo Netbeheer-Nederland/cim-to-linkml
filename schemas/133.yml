@@ -1,0 +1,1166 @@
+classes:
+    Bearing:
+        attributes:
+            multiplier:
+                description: null
+                multivalued: false
+                name: multiplier
+                range: UnitMultiplier
+                required: false
+                slot_uri: cim:Bearing.multiplier
+            unit:
+                description: null
+                multivalued: false
+                name: unit
+                range: UnitSymbol
+                required: false
+                slot_uri: cim:Bearing.unit
+            value:
+                description: null
+                multivalued: false
+                name: value
+                range: float
+                required: false
+                slot_uri: cim:Bearing.value
+        class_uri: cim:Bearing
+        description: The bearing in degrees (with 360 degrees being True North).  Measured
+            in degrees clockwise from True North.  0 degrees indicates no direction
+            being given.
+        is_a: null
+        name: Bearing
+    Displacement:
+        attributes:
+            multiplier:
+                description: null
+                multivalued: false
+                name: multiplier
+                range: UnitMultiplier
+                required: false
+                slot_uri: cim:Displacement.multiplier
+            unit:
+                description: null
+                multivalued: false
+                name: unit
+                range: UnitSymbol
+                required: false
+                slot_uri: cim:Displacement.unit
+            value:
+                description: null
+                multivalued: false
+                name: value
+                range: float
+                required: false
+                slot_uri: cim:Displacement.value
+        class_uri: cim:Displacement
+        description: Unit of displacement relative to a reference position, hence
+            can be negative.
+        is_a: null
+        name: Displacement
+    Float:
+        attributes: {}
+        class_uri: cim:Float
+        description: "A floating point number. The range is unspecified and not limited.\r\
+            \n"
+        is_a: null
+        name: Float
+    MagneticField:
+        attributes:
+            multiplier:
+                description: null
+                multivalued: false
+                name: multiplier
+                range: UnitMultiplier
+                required: false
+                slot_uri: cim:MagneticField.multiplier
+            unit:
+                description: null
+                multivalued: false
+                name: unit
+                range: UnitSymbol
+                required: false
+                slot_uri: cim:MagneticField.unit
+            value:
+                description: null
+                multivalued: false
+                name: value
+                range: float
+                required: false
+                slot_uri: cim:MagneticField.value
+        class_uri: cim:MagneticField
+        description: Magnetic field in nanotesla.
+        is_a: null
+        name: MagneticField
+    ParticulateDensity:
+        attributes:
+            multiplier:
+                description: null
+                multivalued: false
+                name: multiplier
+                range: UnitMultiplier
+                required: false
+                slot_uri: cim:ParticulateDensity.multiplier
+            unit:
+                description: null
+                multivalued: false
+                name: unit
+                range: UnitSymbol
+                required: false
+                slot_uri: cim:ParticulateDensity.unit
+            value:
+                description: null
+                multivalued: false
+                name: value
+                range: float
+                required: false
+                slot_uri: cim:ParticulateDensity.value
+        class_uri: cim:ParticulateDensity
+        description: Particulate density as kg/m<sup>3</sup>.
+        is_a: null
+        name: ParticulateDensity
+    RelativeDisplacement:
+        attributes:
+            displacement:
+                description: null
+                multivalued: false
+                name: displacement
+                range: Displacement
+                required: false
+                slot_uri: cim:RelativeDisplacement.displacement
+            kind:
+                description: null
+                multivalued: false
+                name: kind
+                range: RelativeDisplacementKind
+                required: false
+                slot_uri: cim:RelativeDisplacement.kind
+        class_uri: cim:RelativeDisplacement
+        description: Vertical displacement relative to either sealevel, ground or
+            the center of the earth.
+        is_a: null
+        name: RelativeDisplacement
+enums:
+    AtmosphericAnalogKind:
+        description: Kinds of analogs (floats)  measuring an atmospheric condition.
+        enum_uri: cim:AtmosphericAnalogKind
+        name: AtmosphericAnalogKind
+        permissible_values:
+            albedo:
+                meaning: cim:AtmosphericAnalogKind.albedo
+                text: albedo
+            ambientTemperature:
+                meaning: cim:AtmosphericAnalogKind.ambientTemperature
+                text: ambientTemperature
+            atmosphericPressure:
+                meaning: cim:AtmosphericAnalogKind.atmosphericPressure
+                text: atmosphericPressure
+            ceiling:
+                meaning: cim:AtmosphericAnalogKind.ceiling
+                text: ceiling
+            dewPoint:
+                meaning: cim:AtmosphericAnalogKind.dewPoint
+                text: dewPoint
+            heatIndex:
+                meaning: cim:AtmosphericAnalogKind.heatIndex
+                text: heatIndex
+            horizontalVisibility:
+                meaning: cim:AtmosphericAnalogKind.horizontalVisibility
+                text: horizontalVisibility
+            humidity:
+                meaning: cim:AtmosphericAnalogKind.humidity
+                text: humidity
+            ice:
+                meaning: cim:AtmosphericAnalogKind.ice
+                text: ice
+            illuminanceDiffuseHorizontal:
+                meaning: cim:AtmosphericAnalogKind.illuminanceDiffuseHorizontal
+                text: illuminanceDiffuseHorizontal
+            illuminanceDirectNormal:
+                meaning: cim:AtmosphericAnalogKind.illuminanceDirectNormal
+                text: illuminanceDirectNormal
+            illuminanceGlobalHorizontal:
+                meaning: cim:AtmosphericAnalogKind.illuminanceGlobalHorizontal
+                text: illuminanceGlobalHorizontal
+            irradianceDiffuseHorizonal:
+                meaning: cim:AtmosphericAnalogKind.irradianceDiffuseHorizonal
+                text: irradianceDiffuseHorizonal
+            irradianceDirectNormal:
+                meaning: cim:AtmosphericAnalogKind.irradianceDirectNormal
+                text: irradianceDirectNormal
+            irradianceExtraTerrestrialHorizontal:
+                meaning: cim:AtmosphericAnalogKind.irradianceExtraTerrestrialHorizontal
+                text: irradianceExtraTerrestrialHorizontal
+            irradianceExtraTerrestrialVertical:
+                meaning: cim:AtmosphericAnalogKind.irradianceExtraTerrestrialVertical
+                text: irradianceExtraTerrestrialVertical
+            irradianceGlobalHorizontal:
+                meaning: cim:AtmosphericAnalogKind.irradianceGlobalHorizontal
+                text: irradianceGlobalHorizontal
+            luminanceZenith:
+                meaning: cim:AtmosphericAnalogKind.luminanceZenith
+                text: luminanceZenith
+            precipitation:
+                meaning: cim:AtmosphericAnalogKind.precipitation
+                text: precipitation
+            rain:
+                meaning: cim:AtmosphericAnalogKind.rain
+                text: rain
+            skyCoverageOpaque:
+                meaning: cim:AtmosphericAnalogKind.skyCoverageOpaque
+                text: skyCoverageOpaque
+            skyCoverageTotal:
+                meaning: cim:AtmosphericAnalogKind.skyCoverageTotal
+                text: skyCoverageTotal
+            snow:
+                meaning: cim:AtmosphericAnalogKind.snow
+                text: snow
+            verticalVisibility:
+                meaning: cim:AtmosphericAnalogKind.verticalVisibility
+                text: verticalVisibility
+            windChill:
+                meaning: cim:AtmosphericAnalogKind.windChill
+                text: windChill
+            windSpeedGust:
+                meaning: cim:AtmosphericAnalogKind.windSpeedGust
+                text: windSpeedGust
+            windSpeedInstantaneous:
+                meaning: cim:AtmosphericAnalogKind.windSpeedInstantaneous
+                text: windSpeedInstantaneous
+            windSpeedPeak:
+                meaning: cim:AtmosphericAnalogKind.windSpeedPeak
+                text: windSpeedPeak
+            windSpeedSustained:
+                meaning: cim:AtmosphericAnalogKind.windSpeedSustained
+                text: windSpeedSustained
+    CloudKind:
+        description: Kind of cloud.
+        enum_uri: cim:CloudKind
+        name: CloudKind
+        permissible_values:
+            altoCumulus:
+                meaning: cim:CloudKind.altoCumulus
+                text: altoCumulus
+            altoStratus:
+                meaning: cim:CloudKind.altoStratus
+                text: altoStratus
+            cirroCumulus:
+                meaning: cim:CloudKind.cirroCumulus
+                text: cirroCumulus
+            cirroStratus:
+                meaning: cim:CloudKind.cirroStratus
+                text: cirroStratus
+            cirrus:
+                meaning: cim:CloudKind.cirrus
+                text: cirrus
+            cumuloNimbus:
+                meaning: cim:CloudKind.cumuloNimbus
+                text: cumuloNimbus
+            cumulus:
+                meaning: cim:CloudKind.cumulus
+                text: cumulus
+            nimboStratus:
+                meaning: cim:CloudKind.nimboStratus
+                text: nimboStratus
+            other:
+                meaning: cim:CloudKind.other
+                text: other
+            stratoCumulus:
+                meaning: cim:CloudKind.stratoCumulus
+                text: stratoCumulus
+            stratus:
+                meaning: cim:CloudKind.stratus
+                text: stratus
+            toweringCumulus:
+                meaning: cim:CloudKind.toweringCumulus
+                text: toweringCumulus
+    CoverageCodeKind:
+        description: Kinds of weather condition coverage.
+        enum_uri: cim:CoverageCodeKind
+        name: CoverageCodeKind
+        permissible_values:
+            brief:
+                meaning: cim:CoverageCodeKind.brief
+                text: brief
+            frequent:
+                meaning: cim:CoverageCodeKind.frequent
+                text: frequent
+            intermittant:
+                meaning: cim:CoverageCodeKind.intermittant
+                text: intermittant
+            isolated:
+                meaning: cim:CoverageCodeKind.isolated
+                text: isolated
+            numerous:
+                meaning: cim:CoverageCodeKind.numerous
+                text: numerous
+            occasional:
+                meaning: cim:CoverageCodeKind.occasional
+                text: occasional
+            partly:
+                meaning: cim:CoverageCodeKind.partly
+                text: partly
+            patchy:
+                meaning: cim:CoverageCodeKind.patchy
+                text: patchy
+            periodsOf:
+                meaning: cim:CoverageCodeKind.periodsOf
+                text: periodsOf
+            scattered:
+                meaning: cim:CoverageCodeKind.scattered
+                text: scattered
+            widespread:
+                meaning: cim:CoverageCodeKind.widespread
+                text: widespread
+    EnvironmentalDiscreteKind:
+        description: Discrete (integer) measuring an environmental condition.
+        enum_uri: cim:EnvironmentalDiscreteKind
+        name: EnvironmentalDiscreteKind
+        permissible_values:
+            cloudCover:
+                meaning: cim:EnvironmentalDiscreteKind.cloudCover
+                text: cloudCover
+    FScale:
+        description: "Fujita scale (referred to as EF-scale starting in 2007) for\
+            \ tornado damage.  A set of wind estimates (not measurements) based on\
+            \ damage. It uses three-second gusts estimated at the point of damage\
+            \ based on a judgment of 8 levels of damage to 28 indicators. These estimates\
+            \ vary with height and exposure.  \r\nThe 3 second gust is not the same\
+            \ wind as in standard surface observations.\r\nEnumerations based on NOAA\
+            \ conventions."
+        enum_uri: cim:FScale
+        name: FScale
+        permissible_values:
+            five:
+                meaning: cim:FScale.five
+                text: five
+            four:
+                meaning: cim:FScale.four
+                text: four
+            minusNine:
+                meaning: cim:FScale.minusNine
+                text: minusNine
+            one:
+                meaning: cim:FScale.one
+                text: one
+            three:
+                meaning: cim:FScale.three
+                text: three
+            two:
+                meaning: cim:FScale.two
+                text: two
+            zero:
+                meaning: cim:FScale.zero
+                text: zero
+    GeosphericAnalogKind:
+        description: Kinds of analogs (floats) measuring a geospheric condition.
+        enum_uri: cim:GeosphericAnalogKind
+        name: GeosphericAnalogKind
+        permissible_values:
+            lightningDensity:
+                meaning: cim:GeosphericAnalogKind.lightningDensity
+                text: lightningDensity
+            seismicEastWest:
+                meaning: cim:GeosphericAnalogKind.seismicEastWest
+                text: seismicEastWest
+            seismicNorthSouth:
+                meaning: cim:GeosphericAnalogKind.seismicNorthSouth
+                text: seismicNorthSouth
+            seismicVertical:
+                meaning: cim:GeosphericAnalogKind.seismicVertical
+                text: seismicVertical
+            snowPackDepth:
+                meaning: cim:GeosphericAnalogKind.snowPackDepth
+                text: snowPackDepth
+            temperature:
+                meaning: cim:GeosphericAnalogKind.temperature
+                text: temperature
+    HydrosphericAnalogKind:
+        description: Kinds of analogs (floats) measuring a hydrospheric condition.
+        enum_uri: cim:HydrosphericAnalogKind
+        name: HydrosphericAnalogKind
+        permissible_values:
+            floodLevel:
+                meaning: cim:HydrosphericAnalogKind.floodLevel
+                text: floodLevel
+            stormSurgeHeight:
+                meaning: cim:HydrosphericAnalogKind.stormSurgeHeight
+                text: stormSurgeHeight
+            surfaceTemperature:
+                meaning: cim:HydrosphericAnalogKind.surfaceTemperature
+                text: surfaceTemperature
+            waterTemperature:
+                meaning: cim:HydrosphericAnalogKind.waterTemperature
+                text: waterTemperature
+            waveHeight:
+                meaning: cim:HydrosphericAnalogKind.waveHeight
+                text: waveHeight
+    IntensityCodeKind:
+        description: Kinds of weather condition intensity.
+        enum_uri: cim:IntensityCodeKind
+        name: IntensityCodeKind
+        permissible_values:
+            heavy:
+                meaning: cim:IntensityCodeKind.heavy
+                text: heavy
+            light:
+                meaning: cim:IntensityCodeKind.light
+                text: light
+            veryHeavy:
+                meaning: cim:IntensityCodeKind.veryHeavy
+                text: veryHeavy
+            veryLight:
+                meaning: cim:IntensityCodeKind.veryLight
+                text: veryLight
+    LocationKind:
+        description: The nature of the location being defined for an environmental
+            entity. Possible values are center, perimeter, primary, secondary.
+        enum_uri: cim:LocationKind
+        name: LocationKind
+        permissible_values:
+            center:
+                meaning: cim:LocationKind.center
+                text: center
+            extent:
+                meaning: cim:LocationKind.extent
+                text: extent
+            primary:
+                meaning: cim:LocationKind.primary
+                text: primary
+            secondary:
+                meaning: cim:LocationKind.secondary
+                text: secondary
+    RelativeDisplacementKind:
+        description: The types of relative displacement
+        enum_uri: cim:RelativeDisplacementKind
+        name: RelativeDisplacementKind
+        permissible_values:
+            centreEarth:
+                meaning: cim:RelativeDisplacementKind.centreEarth
+                text: centreEarth
+            ground:
+                meaning: cim:RelativeDisplacementKind.ground
+                text: ground
+            seaLevel:
+                meaning: cim:RelativeDisplacementKind.seaLevel
+                text: seaLevel
+    ReportingMethodKind:
+        description: Method by which information is gathered from station.
+        enum_uri: cim:ReportingMethodKind
+        name: ReportingMethodKind
+        permissible_values:
+            automated:
+                meaning: cim:ReportingMethodKind.automated
+                text: automated
+            manual:
+                meaning: cim:ReportingMethodKind.manual
+                text: manual
+            queried:
+                meaning: cim:ReportingMethodKind.queried
+                text: queried
+    SpaceAnalogKind:
+        description: Kinds of analogs (floats) measuring a space condition.
+        enum_uri: cim:SpaceAnalogKind
+        name: SpaceAnalogKind
+        permissible_values:
+            magneticFieldDirection:
+                meaning: cim:SpaceAnalogKind.magneticFieldDirection
+                text: magneticFieldDirection
+            magneticFieldStrength:
+                meaning: cim:SpaceAnalogKind.magneticFieldStrength
+                text: magneticFieldStrength
+    TestKind:
+        description: The test applied to determine if the condition is met.
+        enum_uri: cim:TestKind
+        name: TestKind
+        permissible_values:
+            equalTo:
+                meaning: cim:TestKind.equalTo
+                text: equalTo
+            greaterThan:
+                meaning: cim:TestKind.greaterThan
+                text: greaterThan
+            greaterThanOrEqualTo:
+                meaning: cim:TestKind.greaterThanOrEqualTo
+                text: greaterThanOrEqualTo
+            lessThan:
+                meaning: cim:TestKind.lessThan
+                text: lessThan
+            lessThanOrEqualTo:
+                meaning: cim:TestKind.lessThanOrEqualTo
+                text: lessThanOrEqualTo
+    TimePeriodUnit:
+        description: Units in which reporting frequency is specified.
+        enum_uri: cim:TimePeriodUnit
+        name: TimePeriodUnit
+        permissible_values:
+            days:
+                meaning: cim:TimePeriodUnit.days
+                text: days
+            hours:
+                meaning: cim:TimePeriodUnit.hours
+                text: hours
+            minutes:
+                meaning: cim:TimePeriodUnit.minutes
+                text: minutes
+            months:
+                meaning: cim:TimePeriodUnit.months
+                text: months
+            seconds:
+                meaning: cim:TimePeriodUnit.seconds
+                text: seconds
+            weeks:
+                meaning: cim:TimePeriodUnit.weeks
+                text: weeks
+    UncertaintyKind:
+        description: The type of uncertainty for a reading.
+        enum_uri: cim:UncertaintyKind
+        name: UncertaintyKind
+        permissible_values:
+            estimated:
+                meaning: cim:UncertaintyKind.estimated
+                text: estimated
+            interpolated:
+                meaning: cim:UncertaintyKind.interpolated
+                text: interpolated
+            standard:
+                meaning: cim:UncertaintyKind.standard
+                text: standard
+            unknown:
+                meaning: cim:UncertaintyKind.unknown
+                text: unknown
+    UnitMultiplier:
+        description: "The unit multipliers defined for the CIM.  When applied to unit\
+            \ symbols, the unit symbol is treated as a derived unit. Regardless of\
+            \ the contents of the unit symbol text, the unit symbol shall be treated\
+            \ as if it were a single-character unit symbol. Unit symbols should not\
+            \ contain multipliers, and it should be left to the multiplier to define\
+            \ the multiple for an entire data type. \r\n\r\nFor example, if a unit\
+            \ symbol is \"m2Pers\" and the multiplier is \"k\", then the value is\
+            \ k(m**2/s), and the multiplier applies to the entire final value, not\
+            \ to any individual part of the value. This can be conceptualized by substituting\
+            \ a derived unit symbol for the unit type. If one imagines that the symbol\
+            \ \"\xDE\" represents the derived unit \"m2Pers\", then applying the multiplier\
+            \ \"k\" can be conceptualized simply as \"k\xDE\".\r\n\r\nFor example,\
+            \ the SI unit for mass is \"kg\" and not \"g\".  If the unit symbol is\
+            \ defined as \"kg\", then the multiplier is applied to \"kg\" as a whole\
+            \ and does not replace the \"k\" in front of the \"g\". In this case,\
+            \ the multiplier of \"m\" would be used with the unit symbol of \"kg\"\
+            \ to represent one gram.  As a text string, this violates the instructions\
+            \ in IEC 80000-1. However, because the unit symbol in CIM is treated as\
+            \ a derived unit instead of as an SI unit, it makes more sense to conceptualize\
+            \ the \"kg\" as if it were replaced by one of the proposed replacements\
+            \ for the SI mass symbol. If one imagines that the \"kg\" were replaced\
+            \ by a symbol \"\xDE\", then it is easier to conceptualize the multiplier\
+            \ \"m\" as creating the proper unit \"m\xDE\", and not the forbidden unit\
+            \ \"mkg\"."
+        enum_uri: cim:UnitMultiplier
+        name: UnitMultiplier
+        permissible_values:
+            E:
+                meaning: cim:UnitMultiplier.E
+                text: E
+            G:
+                meaning: cim:UnitMultiplier.G
+                text: G
+            M:
+                meaning: cim:UnitMultiplier.M
+                text: M
+            P:
+                meaning: cim:UnitMultiplier.P
+                text: P
+            T:
+                meaning: cim:UnitMultiplier.T
+                text: T
+            Y:
+                meaning: cim:UnitMultiplier.Y
+                text: Y
+            Z:
+                meaning: cim:UnitMultiplier.Z
+                text: Z
+            a:
+                meaning: cim:UnitMultiplier.a
+                text: a
+            c:
+                meaning: cim:UnitMultiplier.c
+                text: c
+            d:
+                meaning: cim:UnitMultiplier.d
+                text: d
+            da:
+                meaning: cim:UnitMultiplier.da
+                text: da
+            f:
+                meaning: cim:UnitMultiplier.f
+                text: f
+            h:
+                meaning: cim:UnitMultiplier.h
+                text: h
+            k:
+                meaning: cim:UnitMultiplier.k
+                text: k
+            m:
+                meaning: cim:UnitMultiplier.m
+                text: m
+            micro:
+                meaning: cim:UnitMultiplier.micro
+                text: micro
+            n:
+                meaning: cim:UnitMultiplier.n
+                text: n
+            none:
+                meaning: cim:UnitMultiplier.none
+                text: none
+            p:
+                meaning: cim:UnitMultiplier.p
+                text: p
+            y:
+                meaning: cim:UnitMultiplier.y
+                text: y
+            z:
+                meaning: cim:UnitMultiplier.z
+                text: z
+    UnitSymbol:
+        description: "The derived units defined for usage in the CIM. In some cases,\
+            \ the derived unit is equal to an SI unit. Whenever possible, the standard\
+            \ derived symbol is used instead of the formula for the derived unit.\
+            \ For example, the unit symbol Farad is defined as \"F\" instead of \"\
+            CPerV\". In cases where a standard symbol does not exist for a derived\
+            \ unit, the formula for the unit is used as the unit symbol. For example,\
+            \ density does not have a standard symbol and so it is represented as\
+            \ \"kgPerm3\". With the exception of the \"kg\", which is an SI unit,\
+            \ the unit symbols do not contain multipliers and therefore represent\
+            \ the base derived unit to which a multiplier can be applied as a whole.\
+            \ \r\nEvery unit symbol is treated as an unparseable text as if it were\
+            \ a single-letter symbol. The meaning of each unit symbol is defined by\
+            \ the accompanying descriptive text and not by the text contents of the\
+            \ unit symbol.\r\nTo allow the widest possible range of serializations\
+            \ without requiring special character handling, several substitutions\
+            \ are made which deviate from the format described in IEC 80000-1. The\
+            \ division symbol \"/\" is replaced by the letters \"Per\". Exponents\
+            \ are written in plain text after the unit as \"m3\" instead of being\
+            \ formatted as \"m\" with a superscript of 3  or introducing a symbol\
+            \ as in \"m^3\". The degree symbol \"\xB0\" is replaced with the letters\
+            \ \"deg\". Any clarification of the meaning for a substitution is included\
+            \ in the description for the unit symbol.\r\nNon-SI units are included\
+            \ in list of unit symbols to allow sources of data to be correctly labelled\
+            \ with their non-SI units (for example, a GPS sensor that is reporting\
+            \ numbers that represent feet instead of meters). This allows software\
+            \ to use the unit symbol information correctly convert and scale the raw\
+            \ data of those sources into SI-based units. \r\nThe integer values are\
+            \ used for harmonization with IEC 61850."
+        enum_uri: cim:UnitSymbol
+        name: UnitSymbol
+        permissible_values:
+            A:
+                meaning: cim:UnitSymbol.A
+                text: A
+            A2:
+                meaning: cim:UnitSymbol.A2
+                text: A2
+            A2h:
+                meaning: cim:UnitSymbol.A2h
+                text: A2h
+            A2s:
+                meaning: cim:UnitSymbol.A2s
+                text: A2s
+            APerA:
+                meaning: cim:UnitSymbol.APerA
+                text: APerA
+            APerm:
+                meaning: cim:UnitSymbol.APerm
+                text: APerm
+            Ah:
+                meaning: cim:UnitSymbol.Ah
+                text: Ah
+            As:
+                meaning: cim:UnitSymbol.As
+                text: As
+            Bq:
+                meaning: cim:UnitSymbol.Bq
+                text: Bq
+            Btu:
+                meaning: cim:UnitSymbol.Btu
+                text: Btu
+            C:
+                meaning: cim:UnitSymbol.C
+                text: C
+            CPerkg:
+                meaning: cim:UnitSymbol.CPerkg
+                text: CPerkg
+            CPerm2:
+                meaning: cim:UnitSymbol.CPerm2
+                text: CPerm2
+            CPerm3:
+                meaning: cim:UnitSymbol.CPerm3
+                text: CPerm3
+            F:
+                meaning: cim:UnitSymbol.F
+                text: F
+            FPerm:
+                meaning: cim:UnitSymbol.FPerm
+                text: FPerm
+            G:
+                meaning: cim:UnitSymbol.G
+                text: G
+            Gy:
+                meaning: cim:UnitSymbol.Gy
+                text: Gy
+            GyPers:
+                meaning: cim:UnitSymbol.GyPers
+                text: GyPers
+            H:
+                meaning: cim:UnitSymbol.H
+                text: H
+            HPerm:
+                meaning: cim:UnitSymbol.HPerm
+                text: HPerm
+            Hz:
+                meaning: cim:UnitSymbol.Hz
+                text: Hz
+            HzPerHz:
+                meaning: cim:UnitSymbol.HzPerHz
+                text: HzPerHz
+            HzPers:
+                meaning: cim:UnitSymbol.HzPers
+                text: HzPers
+            J:
+                meaning: cim:UnitSymbol.J
+                text: J
+            JPerK:
+                meaning: cim:UnitSymbol.JPerK
+                text: JPerK
+            JPerkg:
+                meaning: cim:UnitSymbol.JPerkg
+                text: JPerkg
+            JPerkgK:
+                meaning: cim:UnitSymbol.JPerkgK
+                text: JPerkgK
+            JPerm2:
+                meaning: cim:UnitSymbol.JPerm2
+                text: JPerm2
+            JPerm3:
+                meaning: cim:UnitSymbol.JPerm3
+                text: JPerm3
+            JPermol:
+                meaning: cim:UnitSymbol.JPermol
+                text: JPermol
+            JPermolK:
+                meaning: cim:UnitSymbol.JPermolK
+                text: JPermolK
+            JPers:
+                meaning: cim:UnitSymbol.JPers
+                text: JPers
+            K:
+                meaning: cim:UnitSymbol.K
+                text: K
+            KPers:
+                meaning: cim:UnitSymbol.KPers
+                text: KPers
+            M:
+                meaning: cim:UnitSymbol.M
+                text: M
+            Mx:
+                meaning: cim:UnitSymbol.Mx
+                text: Mx
+            N:
+                meaning: cim:UnitSymbol.N
+                text: N
+            NPerm:
+                meaning: cim:UnitSymbol.NPerm
+                text: NPerm
+            Nm:
+                meaning: cim:UnitSymbol.Nm
+                text: Nm
+            Oe:
+                meaning: cim:UnitSymbol.Oe
+                text: Oe
+            Pa:
+                meaning: cim:UnitSymbol.Pa
+                text: Pa
+            PaPers:
+                meaning: cim:UnitSymbol.PaPers
+                text: PaPers
+            Pas:
+                meaning: cim:UnitSymbol.Pas
+                text: Pas
+            Q:
+                meaning: cim:UnitSymbol.Q
+                text: Q
+            Qh:
+                meaning: cim:UnitSymbol.Qh
+                text: Qh
+            S:
+                meaning: cim:UnitSymbol.S
+                text: S
+            SPerm:
+                meaning: cim:UnitSymbol.SPerm
+                text: SPerm
+            Sv:
+                meaning: cim:UnitSymbol.Sv
+                text: Sv
+            T:
+                meaning: cim:UnitSymbol.T
+                text: T
+            V:
+                meaning: cim:UnitSymbol.V
+                text: V
+            V2:
+                meaning: cim:UnitSymbol.V2
+                text: V2
+            V2h:
+                meaning: cim:UnitSymbol.V2h
+                text: V2h
+            VA:
+                meaning: cim:UnitSymbol.VA
+                text: VA
+            VAh:
+                meaning: cim:UnitSymbol.VAh
+                text: VAh
+            VAr:
+                meaning: cim:UnitSymbol.VAr
+                text: VAr
+            VArh:
+                meaning: cim:UnitSymbol.VArh
+                text: VArh
+            VPerHz:
+                meaning: cim:UnitSymbol.VPerHz
+                text: VPerHz
+            VPerV:
+                meaning: cim:UnitSymbol.VPerV
+                text: VPerV
+            VPerVA:
+                meaning: cim:UnitSymbol.VPerVA
+                text: VPerVA
+            VPerVAr:
+                meaning: cim:UnitSymbol.VPerVAr
+                text: VPerVAr
+            VPerm:
+                meaning: cim:UnitSymbol.VPerm
+                text: VPerm
+            Vh:
+                meaning: cim:UnitSymbol.Vh
+                text: Vh
+            Vs:
+                meaning: cim:UnitSymbol.Vs
+                text: Vs
+            W:
+                meaning: cim:UnitSymbol.W
+                text: W
+            WPerA:
+                meaning: cim:UnitSymbol.WPerA
+                text: WPerA
+            WPerW:
+                meaning: cim:UnitSymbol.WPerW
+                text: WPerW
+            WPerm2:
+                meaning: cim:UnitSymbol.WPerm2
+                text: WPerm2
+            WPerm2sr:
+                meaning: cim:UnitSymbol.WPerm2sr
+                text: WPerm2sr
+            WPermK:
+                meaning: cim:UnitSymbol.WPermK
+                text: WPermK
+            WPers:
+                meaning: cim:UnitSymbol.WPers
+                text: WPers
+            WPersr:
+                meaning: cim:UnitSymbol.WPersr
+                text: WPersr
+            Wb:
+                meaning: cim:UnitSymbol.Wb
+                text: Wb
+            Wh:
+                meaning: cim:UnitSymbol.Wh
+                text: Wh
+            anglemin:
+                meaning: cim:UnitSymbol.anglemin
+                text: anglemin
+            anglesec:
+                meaning: cim:UnitSymbol.anglesec
+                text: anglesec
+            bar:
+                meaning: cim:UnitSymbol.bar
+                text: bar
+            cd:
+                meaning: cim:UnitSymbol.cd
+                text: cd
+            charPers:
+                meaning: cim:UnitSymbol.charPers
+                text: charPers
+            character:
+                meaning: cim:UnitSymbol.character
+                text: character
+            cosPhi:
+                meaning: cim:UnitSymbol.cosPhi
+                text: cosPhi
+            count:
+                meaning: cim:UnitSymbol.count
+                text: count
+            d:
+                meaning: cim:UnitSymbol.d
+                text: d
+            dB:
+                meaning: cim:UnitSymbol.dB
+                text: dB
+            dBm:
+                meaning: cim:UnitSymbol.dBm
+                text: dBm
+            deg:
+                meaning: cim:UnitSymbol.deg
+                text: deg
+            degC:
+                meaning: cim:UnitSymbol.degC
+                text: degC
+            ft3:
+                meaning: cim:UnitSymbol.ft3
+                text: ft3
+            gPerg:
+                meaning: cim:UnitSymbol.gPerg
+                text: gPerg
+            gal:
+                meaning: cim:UnitSymbol.gal
+                text: gal
+            h:
+                meaning: cim:UnitSymbol.h
+                text: h
+            ha:
+                meaning: cim:UnitSymbol.ha
+                text: ha
+            kat:
+                meaning: cim:UnitSymbol.kat
+                text: kat
+            katPerm3:
+                meaning: cim:UnitSymbol.katPerm3
+                text: katPerm3
+            kg:
+                meaning: cim:UnitSymbol.kg
+                text: kg
+            kgPerJ:
+                meaning: cim:UnitSymbol.kgPerJ
+                text: kgPerJ
+            kgPerm3:
+                meaning: cim:UnitSymbol.kgPerm3
+                text: kgPerm3
+            kgm:
+                meaning: cim:UnitSymbol.kgm
+                text: kgm
+            kgm2:
+                meaning: cim:UnitSymbol.kgm2
+                text: kgm2
+            kn:
+                meaning: cim:UnitSymbol.kn
+                text: kn
+            l:
+                meaning: cim:UnitSymbol.l
+                text: l
+            lPerh:
+                meaning: cim:UnitSymbol.lPerh
+                text: lPerh
+            lPerl:
+                meaning: cim:UnitSymbol.lPerl
+                text: lPerl
+            lPers:
+                meaning: cim:UnitSymbol.lPers
+                text: lPers
+            lm:
+                meaning: cim:UnitSymbol.lm
+                text: lm
+            lx:
+                meaning: cim:UnitSymbol.lx
+                text: lx
+            m:
+                meaning: cim:UnitSymbol.m
+                text: m
+            m2:
+                meaning: cim:UnitSymbol.m2
+                text: m2
+            m2Pers:
+                meaning: cim:UnitSymbol.m2Pers
+                text: m2Pers
+            m3:
+                meaning: cim:UnitSymbol.m3
+                text: m3
+            m3Compensated:
+                meaning: cim:UnitSymbol.m3Compensated
+                text: m3Compensated
+            m3Perh:
+                meaning: cim:UnitSymbol.m3Perh
+                text: m3Perh
+            m3Perkg:
+                meaning: cim:UnitSymbol.m3Perkg
+                text: m3Perkg
+            m3Pers:
+                meaning: cim:UnitSymbol.m3Pers
+                text: m3Pers
+            m3Uncompensated:
+                meaning: cim:UnitSymbol.m3Uncompensated
+                text: m3Uncompensated
+            mPerm3:
+                meaning: cim:UnitSymbol.mPerm3
+                text: mPerm3
+            mPers:
+                meaning: cim:UnitSymbol.mPers
+                text: mPers
+            mPers2:
+                meaning: cim:UnitSymbol.mPers2
+                text: mPers2
+            min:
+                meaning: cim:UnitSymbol.min
+                text: min
+            mmHg:
+                meaning: cim:UnitSymbol.mmHg
+                text: mmHg
+            mol:
+                meaning: cim:UnitSymbol.mol
+                text: mol
+            molPerkg:
+                meaning: cim:UnitSymbol.molPerkg
+                text: molPerkg
+            molPerm3:
+                meaning: cim:UnitSymbol.molPerm3
+                text: molPerm3
+            molPermol:
+                meaning: cim:UnitSymbol.molPermol
+                text: molPermol
+            none:
+                meaning: cim:UnitSymbol.none
+                text: none
+            ohm:
+                meaning: cim:UnitSymbol.ohm
+                text: ohm
+            ohmPerm:
+                meaning: cim:UnitSymbol.ohmPerm
+                text: ohmPerm
+            ohmm:
+                meaning: cim:UnitSymbol.ohmm
+                text: ohmm
+            onePerHz:
+                meaning: cim:UnitSymbol.onePerHz
+                text: onePerHz
+            onePerm:
+                meaning: cim:UnitSymbol.onePerm
+                text: onePerm
+            ppm:
+                meaning: cim:UnitSymbol.ppm
+                text: ppm
+            rad:
+                meaning: cim:UnitSymbol.rad
+                text: rad
+            radPers:
+                meaning: cim:UnitSymbol.radPers
+                text: radPers
+            radPers2:
+                meaning: cim:UnitSymbol.radPers2
+                text: radPers2
+            rev:
+                meaning: cim:UnitSymbol.rev
+                text: rev
+            rotPers:
+                meaning: cim:UnitSymbol.rotPers
+                text: rotPers
+            s:
+                meaning: cim:UnitSymbol.s
+                text: s
+            sPers:
+                meaning: cim:UnitSymbol.sPers
+                text: sPers
+            sr:
+                meaning: cim:UnitSymbol.sr
+                text: sr
+            therm:
+                meaning: cim:UnitSymbol.therm
+                text: therm
+            tonne:
+                meaning: cim:UnitSymbol.tonne
+                text: tonne
+    WeatherCodeKind:
+        description: Kinds of weather conditions.
+        enum_uri: cim:WeatherCodeKind
+        name: WeatherCodeKind
+        permissible_values:
+            blowingDust:
+                meaning: cim:WeatherCodeKind.blowingDust
+                text: blowingDust
+            blowingSand:
+                meaning: cim:WeatherCodeKind.blowingSand
+                text: blowingSand
+            blowingSnow:
+                meaning: cim:WeatherCodeKind.blowingSnow
+                text: blowingSnow
+            cloudy:
+                meaning: cim:WeatherCodeKind.cloudy
+                text: cloudy
+            drizzle:
+                meaning: cim:WeatherCodeKind.drizzle
+                text: drizzle
+            fog:
+                meaning: cim:WeatherCodeKind.fog
+                text: fog
+            freezingDrizzle:
+                meaning: cim:WeatherCodeKind.freezingDrizzle
+                text: freezingDrizzle
+            freezingRain:
+                meaning: cim:WeatherCodeKind.freezingRain
+                text: freezingRain
+            freezingSpray:
+                meaning: cim:WeatherCodeKind.freezingSpray
+                text: freezingSpray
+            frost:
+                meaning: cim:WeatherCodeKind.frost
+                text: frost
+            hail:
+                meaning: cim:WeatherCodeKind.hail
+                text: hail
+            haze:
+                meaning: cim:WeatherCodeKind.haze
+                text: haze
+            iceCrystals:
+                meaning: cim:WeatherCodeKind.iceCrystals
+                text: iceCrystals
+            iceFog:
+                meaning: cim:WeatherCodeKind.iceFog
+                text: iceFog
+            mist:
+                meaning: cim:WeatherCodeKind.mist
+                text: mist
+            rain:
+                meaning: cim:WeatherCodeKind.rain
+                text: rain
+            rainShowers:
+                meaning: cim:WeatherCodeKind.rainShowers
+                text: rainShowers
+            rainSnowMix:
+                meaning: cim:WeatherCodeKind.rainSnowMix
+                text: rainSnowMix
+            sleet:
+                meaning: cim:WeatherCodeKind.sleet
+                text: sleet
+            smoke:
+                meaning: cim:WeatherCodeKind.smoke
+                text: smoke
+            snow:
+                meaning: cim:WeatherCodeKind.snow
+                text: snow
+            snowShowers:
+                meaning: cim:WeatherCodeKind.snowShowers
+                text: snowShowers
+            snowSleetMix:
+                meaning: cim:WeatherCodeKind.snowSleetMix
+                text: snowSleetMix
+            sunny:
+                meaning: cim:WeatherCodeKind.sunny
+                text: sunny
+            thunderStorms:
+                meaning: cim:WeatherCodeKind.thunderStorms
+                text: thunderStorms
+            volcanicAsh:
+                meaning: cim:WeatherCodeKind.volcanicAsh
+                text: volcanicAsh
+            waterSpouts:
+                meaning: cim:WeatherCodeKind.waterSpouts
+                text: waterSpouts
+            wintryMix:
+                meaning: cim:WeatherCodeKind.wintryMix
+                text: wintryMix
+id: cim:EnvDomain
+name: EnvDomain

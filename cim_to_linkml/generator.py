@@ -13,6 +13,34 @@ import cim_to_linkml.uml_model as uml_model
 CIM_PREFIX = "cim"
 
 
+### TEST
+import sqlite3
+import yaml
+from cim_to_linkml.read import read_uml_classes, read_uml_packages, read_uml_relations
+from cim_to_linkml.parser import parse_uml_package, parse_uml_class, parse_uml_relation
+
+
+db_file = "data/iec61970cim17v40_iec61968cim13v13b_iec62325cim03v17b_CIM100.1.1.1.qea"
+
+with sqlite3.connect(db_file) as conn:
+    uml_class_results = read_uml_classes(conn)
+    uml_relation_results = read_uml_relations(conn)
+    uml_package_results = read_uml_packages(conn)
+
+uml_packages = {pkg_row["id"]: parse_uml_package(pkg_row) for pkg_row in uml_package_results}
+uml_classes = uml_model.ProjectClasses(
+    {
+        class_id: parse_uml_class(list(class_rows))
+        for class_id, class_rows in groupby(uml_class_results, itemgetter("class_id"))
+    }
+)
+uml_relations = uml_model.ProjectRelations(
+    {rel_row["id"]: parse_uml_relation(rel_row) for rel_row in uml_relation_results}
+)
+
+uml_project = uml_model.Project(classes=uml_classes, packages=uml_packages, relations=uml_relations)
+
+
 def map_primitive_data_type(val):
     try:
         return {
@@ -57,9 +85,10 @@ def _get_package_hierarchy(
     return [pkgs[pkg.parent].id] + _get_package_hierarchy(pkg.parent, pkgs)
 
 
+@lru_cache(maxsize=2048)
 def _gen_class_deps(
     uml_class: uml_model.Class,
-    uml_project: uml_model.Project,
+    # uml_project: uml_model.Project,
     results: (
         tuple[dict[uml_model.ObjectID, uml_model.Class], dict[uml_model.ObjectID, uml_model.Class]]
         | None
@@ -67,41 +96,43 @@ def _gen_class_deps(
 ) -> tuple[dict[uml_model.ObjectID, uml_model.Class], dict[uml_model.ObjectID, uml_model.Class]]:
 
     # @lru_cache
-    def _go_deps(uml_class, results=None):
-        if results is None:
-            results = frozenset(), frozenset()
+    # def _go_deps(uml_class, results=None):
+    if results is None:
+        results = frozenset(), frozenset()
 
-        classes = frozenset()
-        enums = frozenset()
+    classes = frozenset()
+    enums = frozenset()
 
-        uml_super_class = get_super_class(uml_class, uml_project)
-        uml_type_classes = get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
-            uml_class, uml_project
-        )
+    # uml_super_class = get_super_class(uml_class, uml_project)
+    uml_super_class = get_super_class(uml_class)
+    # uml_type_classes = get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(uml_class, uml_project)
+    uml_type_classes = get_attr_type_classes(uml_class) | get_rel_type_classes(uml_class)
 
-        if uml_super_class:
-            classes |= {uml_super_class.id}
+    if uml_super_class:
+        classes |= {uml_super_class.id}
 
-        for uml_type_class in uml_type_classes.values():
-            if uml_type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
-                enums |= {uml_type_class.id}
-            else:  # Class.
-                classes |= {uml_type_class.id}
+    for uml_type_class in uml_type_classes.values():
+        if uml_type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
+            enums |= {uml_type_class.id}
+        else:  # Class.
+            classes |= {uml_type_class.id}
 
-        if (classes | results[0] == results[0]) and (enums | results[1] == results[1]):
-            return results
-
-        results = results[0] | classes, results[1] | enums
-
-        for cls_id in classes | enums:
-            c, e = _go_deps(uml_project.classes.by_id[cls_id], results)
-            results = results[0] | c, results[1] | e
+    if (classes | results[0] == results[0]) and (enums | results[1] == results[1]):
         return results
 
-    return _go_deps(uml_class, results)
+    results = results[0] | classes, results[1] | enums
+
+    for cls_id in classes | enums:
+        # c, e = _go_deps(uml_project.classes.by_id[cls_id], results)
+        c, e = _gen_class_deps(uml_project.classes.by_id[cls_id], results)
+        results = results[0] | c, results[1] | e
+    return results
+
+    # return _go_deps(uml_class, results)
 
 
-def gen_schema(uml_package_id: uml_model.ObjectID, uml_project: uml_model.Project):
+# def gen_schema(uml_package_id: uml_model.ObjectID, uml_project: uml_model.Project):
+def gen_schema(uml_package_id: uml_model.ObjectID):
     uml_package = uml_project.packages[uml_package_id]
     schema = {
         "id": gen_curie(uml_package.name, "cim"),
@@ -117,7 +148,7 @@ def gen_schema(uml_package_id: uml_model.ObjectID, uml_project: uml_model.Projec
     dep_enums = frozenset()
 
     for uml_class in uml_project.classes.by_id.values():
-        # for uml_class in uml_project.classes.by_pkg_id[uml_package_id]:
+    # for uml_class in uml_project.classes.by_pkg_id.get(uml_package_id, []):
         match uml_class.stereotype:
             case uml_model.ClassStereotype.PRIMITIVE:
                 continue
@@ -127,17 +158,18 @@ def gen_schema(uml_package_id: uml_model.ObjectID, uml_project: uml_model.Projec
             # case uml_model.ClassStereotype.CIMDATATYPE:
             #     ... # TODO
             case None | _:
-                class_ = gen_class(uml_class, uml_project)
+                # class_ = gen_class(uml_class, uml_project)
+                class_ = gen_class(uml_class)
                 schema["classes"][gen_safe_name(class_["name"])] = class_
 
                 print(uml_class.name)
-                dep_classes, dep_enums = _gen_class_deps(
-                    uml_class, uml_project, (dep_classes, dep_enums)
-                )
+                # dep_classes, dep_enums = _gen_class_deps(uml_class, uml_project, (dep_classes, dep_enums))
+                dep_classes, dep_enums = _gen_class_deps(uml_class, (dep_classes, dep_enums))
 
                 for c_id in dep_classes:
                     c = uml_project.classes.by_id[c_id]
-                    class_ = gen_class(c, uml_project)
+                    # class_ = gen_class(c, uml_project)
+                    class_ = gen_class(c)
                     schema["classes"][class_["name"]] = class_
                 for e_id in dep_enums:
                     e = uml_project.classes.by_id[e_id]
@@ -147,6 +179,7 @@ def gen_schema(uml_package_id: uml_model.ObjectID, uml_project: uml_model.Projec
     return schema
 
 
+@lru_cache(maxsize=2048)
 def gen_enum(uml_enum: uml_model.Class):
     assert uml_enum.stereotype == uml_model.ClassStereotype.ENUMERATION
     enum_name = gen_safe_name(uml_enum.name)
@@ -166,42 +199,42 @@ def gen_enum(uml_enum: uml_model.Class):
     }
 
 
-def get_super_class(
-    uml_class: uml_model.Class, uml_project: uml_model.Project
-) -> uml_model.Class | None:
-    @lru_cache
-    def _go(uml_class):
-        rels = uml_project.relations.by_source_id.get(uml_class.id, [])
-        for uml_relation in rels:
-            try:
-                source_class = uml_project.classes.by_id[uml_relation.source_class]
-            except KeyError as e:
-                continue  # Bad data, but no superclass for sure.
-            if (
-                uml_relation.type == uml_model.RelationType.GENERALIZATION
-                and source_class.id == uml_class.id
-            ):
-                super_class = uml_project.classes.by_id[uml_relation.dest_class]
-                return super_class
-        return None
+# def get_super_class(uml_class: uml_model.Class, uml_project: uml_model.Project) -> uml_model.Class | None:
+@lru_cache(maxsize=2048)
+def get_super_class(uml_class: uml_model.Class) -> uml_model.Class | None:
+    # @lru_cache
+    # def _go(uml_class):
+    rels = uml_project.relations.by_source_id.get(uml_class.id, [])
+    for uml_relation in rels:
+        try:
+            source_class = uml_project.classes.by_id[uml_relation.source_class]
+        except KeyError as e:
+            continue  # Bad data, but no superclass for sure.
+        if (
+            uml_relation.type == uml_model.RelationType.GENERALIZATION
+            and source_class.id == uml_class.id
+        ):
+            super_class = uml_project.classes.by_id[uml_relation.dest_class]
+            return super_class
+    return None
 
-    return _go(uml_class)
+    # return _go(uml_class)
 
 
-def get_super_classes(
-    uml_class: uml_model.Class, uml_project: uml_model.Project
-) -> list[uml_model.Class]:
-    super_class = get_super_class(uml_class, uml_project)
+# def get_super_classes(uml_class: uml_model.Class, uml_project: uml_model.Project) -> list[uml_model.Class]:
+def get_super_classes(uml_class: uml_model.Class) -> list[uml_model.Class]:
+    # super_class = get_super_class(uml_class, uml_project)
+    super_class = get_super_class(uml_class)
 
     if super_class is None:
         return []
 
-    return [super_class] + get_super_classes(super_class, uml_project)
+    # return [super_class] + get_super_classes(super_class, uml_project)
+    return [super_class] + get_super_classes(super_class)
 
 
-def get_attr_type_classes(
-    uml_class: uml_model.Class, uml_project: uml_model.Project
-) -> dict[uml_model.ObjectID, uml_model.Class]:
+# def get_attr_type_classes(uml_class: uml_model.Class, uml_project: uml_model.Project) -> dict[uml_model.ObjectID, uml_model.Class]:
+def get_attr_type_classes(uml_class: uml_model.Class) -> dict[uml_model.ObjectID, uml_model.Class]:
     type_classes = {
         class_.id: class_
         for attr in uml_class.attributes
@@ -212,9 +245,8 @@ def get_attr_type_classes(
     return type_classes
 
 
-def get_rel_type_classes(
-    uml_class: uml_model.Class, uml_project: uml_model.Project
-) -> dict[uml_model.ObjectID, uml_model.Class]:
+# def get_rel_type_classes(uml_class: uml_model.Class, uml_project: uml_model.Project) -> dict[uml_model.ObjectID, uml_model.Class]:
+def get_rel_type_classes(uml_class: uml_model.Class) -> dict[uml_model.ObjectID, uml_model.Class]:
     from_classes = {}
     to_classes = {}
 
@@ -232,9 +264,8 @@ def get_rel_type_classes(
     return from_classes | to_classes
 
 
-def gen_slot_from_attr(
-    uml_attr: uml_model.Attribute, uml_class: uml_model.Class, uml_project: uml_model.Project
-):
+# def gen_slot_from_attr(uml_attr: uml_model.Attribute, uml_class: uml_model.Class, uml_project: uml_model.Project):
+def gen_slot_from_attr(uml_attr: uml_model.Attribute, uml_class: uml_model.Class):
     range_ = None
     if uml_attr.type is not None:
         type_class = uml_project.classes.by_name[uml_attr.type]
@@ -261,9 +292,8 @@ def _slot_multivalued(upper_bound: uml_model.CardinalityValue) -> bool:
     return upper_bound == "*" or upper_bound > 1
 
 
-def gen_slot_from_relation(
-    uml_relation: uml_model.Relation, uml_project: uml_model.Project, direction
-):
+# def gen_slot_from_relation(uml_relation: uml_model.Relation, uml_project: uml_model.Project, direction):
+def gen_slot_from_relation(uml_relation: uml_model.Relation, direction):
     source_class = uml_project.classes.by_id[uml_relation.source_class]
     dest_class = uml_project.classes.by_id[uml_relation.dest_class]
 
@@ -298,13 +328,15 @@ def gen_slot_from_relation(
             }
 
 
-def gen_class(uml_class: uml_model.Class, uml_project: uml_model.Project):
-    super_class = get_super_class(uml_class, uml_project)
+# def gen_class(uml_class: uml_model.Class, uml_project: uml_model.Project):
+@lru_cache(maxsize=2048)
+def gen_class(uml_class: uml_model.Class):
+    # super_class = get_super_class(uml_class, uml_project)
+    super_class = get_super_class(uml_class)
 
     attr_slots = {
-        convert_camel_to_snake(gen_safe_name(attr.name)): gen_slot_from_attr(
-            attr, uml_class, uml_project
-        )
+        # convert_camel_to_snake(gen_safe_name(attr.name)): gen_slot_from_attr(attr, uml_class, uml_project)
+        convert_camel_to_snake(gen_safe_name(attr.name)): gen_slot_from_attr(attr, uml_class)
         for attr in uml_class.attributes
     }
 
@@ -313,7 +345,8 @@ def gen_class(uml_class: uml_model.Class, uml_project: uml_model.Project):
         for rel in uml_project.relations.by_source_id.get(uml_class.id, [])
         if rel
         if rel.type != uml_model.RelationType.GENERALIZATION
-        if (slot := gen_slot_from_relation(rel, uml_project, "source->dest"))
+        if (slot := gen_slot_from_relation(rel, "source->dest"))
+        # if (slot := gen_slot_from_relation(rel, uml_project, "source->dest"))
     }
 
     to_relation_slots = {
@@ -321,7 +354,8 @@ def gen_class(uml_class: uml_model.Class, uml_project: uml_model.Project):
         for rel in uml_project.relations.by_dest_id.get(uml_class.id, [])
         if rel
         if rel.type != uml_model.RelationType.GENERALIZATION
-        if (slot := gen_slot_from_relation(rel, uml_project, "dest->source"))
+        # if (slot := gen_slot_from_relation(rel, uml_project, "dest->source"))
+        if (slot := gen_slot_from_relation(rel, "dest->source"))
     }
 
     return {
