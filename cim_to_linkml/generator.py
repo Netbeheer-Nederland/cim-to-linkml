@@ -5,8 +5,6 @@ from operator import attrgetter, itemgetter, add
 from urllib.parse import quote
 from typing import Optional
 
-from linkml_runtime.utils.metamodelcore import Curie
-
 import cim_to_linkml.uml_model as uml_model
 import cim_to_linkml.linkml_model as linkml_model
 
@@ -75,39 +73,54 @@ def gen_curie(name: str, prefix: str) -> str:  # TODO: Implement and move.
 
 
 @lru_cache(maxsize=2048)
-def _gen_class_deps(
+def _gen_elements(
     uml_class: uml_model.Class,
     uml_project: uml_model.Project,
-    results: Optional[tuple[frozenset[uml_model.ObjectID], frozenset[uml_model.ObjectID]]] = None,
-) -> tuple[frozenset[uml_model.ObjectID], frozenset[uml_model.ObjectID]]:
+    results: Optional[
+        tuple[
+            frozenset[tuple[uml_model.ObjectID, linkml_model.Class]],
+            frozenset[tuple[str, linkml_model.Enum]],
+        ]
+    ] = None,
+) -> tuple[frozenset[tuple[str, linkml_model.Class]], frozenset[tuple[str, linkml_model.Enum]]]:
     if results is None:
         results = frozenset(), frozenset()
 
-    classes = frozenset()
-    enums = frozenset()
+    match uml_class.stereotype:
+        case uml_model.ClassStereotype.PRIMITIVE:
+            return results
+        case uml_model.ClassStereotype.ENUMERATION:
+            enum = gen_enum(uml_class, uml_project)
+            results = results[0], results[1] | {(enum.name, enum)}
+        case uml_model.ClassStereotype.CIMDATATYPE | None | _:
+            class_ = gen_class(uml_class, uml_project)
+            results = results[0] | {(class_.name, class_)}, results[1]
+
+    uml_dep_classes = set()
 
     uml_super_class = get_super_class(uml_class, uml_project)
-    uml_type_classes = get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
+    if uml_super_class:
+        uml_dep_classes.add(uml_super_class)
+        # results = {
+        #     (results[0] | new_classes, results[1] | new_enums)
+        #     for new_classes, new_enums in new_results
+        #     if (new_results := _gen_elements(uml_super_class, uml_project, results))
+        # }
+
+    uml_dep_classes |= get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
         uml_class, uml_project
     )
 
-    if uml_super_class:
-        classes |= {uml_super_class.id}
+    # if (dep_classes | results[0] == results[0]) and (enums | results[1] == results[1]):
+    #     return results
 
-    for uml_type_class in uml_type_classes.values():
-        if uml_type_class.stereotype == uml_model.ClassStereotype.ENUMERATION:
-            enums |= {uml_type_class.id}
-        else:  # Class.
-            classes |= {uml_type_class.id}
+    # results = results[0] | classes, results[1] | enums
 
-    if (classes | results[0] == results[0]) and (enums | results[1] == results[1]):
-        return results
-
-    results = results[0] | classes, results[1] | enums
-
-    for cls_id in classes | enums:
-        c, e = _gen_class_deps(uml_project.classes.by_id[cls_id], uml_project, results)
-        results = results[0] | c, results[1] | e
+    for uml_dep_class in uml_dep_classes:
+        if uml_dep_class.id in [c[1].ea_object_id for c in results[0]]:
+            continue
+        c, e = _gen_elements(uml_dep_class, uml_project, results)
+        results = frozenset(results[0] | c), frozenset(results[1] | e)
     return results
 
 
@@ -116,36 +129,15 @@ def gen_schema(
 ) -> linkml_model.Schema:
     uml_package = uml_project.packages.by_id[uml_package_id]
 
-    enums: set[tuple[str, linkml_model.Enum]] = set()
-    classes: set[tuple[str, linkml_model.Class]] = set()
+    classes = set()
+    enums = set()
+    # for uml_class in uml_project.classes.by_id.values():
+    for uml_class in uml_project.classes.by_pkg_id.get(uml_package_id, []):
+        print(uml_class.name)
+        new_classes, new_enums = _gen_elements(uml_class, uml_project)
 
-    dep_classes = dep_enums = frozenset()
-
-    for uml_class in uml_project.classes.by_id.values():
-        # for uml_class in uml_project.classes.by_pkg_id.get(uml_package_id, []):
-        match uml_class.stereotype:
-            case uml_model.ClassStereotype.PRIMITIVE:
-                continue
-            case uml_model.ClassStereotype.ENUMERATION:
-                enum = gen_enum(uml_class, uml_project)
-                enums.add((enum.name, enum))
-            case uml_model.ClassStereotype.CIMDATATYPE | None | _:
-                class_ = gen_class(uml_class, uml_project)
-                classes.add((class_.name, class_))
-
-                print(uml_class.name)
-                dep_classes, dep_enums = _gen_class_deps(
-                    uml_class, uml_project, (dep_classes, dep_enums)
-                )
-
-                for c_id in dep_classes:
-                    c = uml_project.classes.by_id[c_id]
-                    class_ = gen_class(c, uml_project)
-                    classes.add((class_.name, class_))
-                for e_id in dep_enums:
-                    e = uml_project.classes.by_id[e_id]
-                    enum = gen_enum(e, uml_project)
-                    enums.add((enum.name, enum))
+        classes |= new_classes
+        enums |= new_enums
 
     schema = linkml_model.Schema(
         id=gen_curie(uml_package.name, "cim"),
@@ -163,7 +155,8 @@ def gen_enum(uml_enum: uml_model.Class, uml_project: uml_model.Project) -> linkm
     enum_name = gen_safe_name(uml_enum.name)
 
     return linkml_model.Enum(
-        name=enum_name,
+        ea_object_id=uml_enum.id,
+        name=enum_name,  # TODO: `gen_safe_name`
         enum_uri=gen_curie(uml_enum.name, CIM_PREFIX),
         description=uml_enum.note,
         permissible_values=frozenset(
@@ -202,23 +195,23 @@ def get_super_class(
 
 def get_attr_type_classes(
     uml_class: uml_model.Class, uml_project: uml_model.Project
-) -> dict[uml_model.ObjectID, uml_model.Class]:
+) -> frozenset[uml_model.Class]:
     type_classes = {
-        class_.id: class_
+        class_
         for attr in uml_class.attributes
         if attr.type is not None
         if (class_ := uml_project.classes.by_name[attr.type])
     }
 
-    return type_classes
+    return frozenset(type_classes)
 
 
-# def get_rel_type_classes(uml_class: uml_model.Class, uml_project: uml_model.Project) -> dict[uml_model.ObjectID, uml_model.Class]:
+@lru_cache(maxsize=2048)
 def get_rel_type_classes(
     uml_class: uml_model.Class, uml_project: uml_model.Project
-) -> dict[uml_model.ObjectID, uml_model.Class]:
-    from_classes = {}
-    to_classes = {}
+) -> frozenset[uml_model.Class]:
+    from_classes = set()
+    to_classes = set()
 
     for rel in uml_project.relations.by_id.values():
         if rel.type == uml_model.RelationType.GENERALIZATION:
@@ -226,12 +219,12 @@ def get_rel_type_classes(
         match uml_class.id:
             case rel.source_class:
                 dest_class = uml_project.classes.by_id[rel.dest_class]
-                to_classes[dest_class.id] = dest_class
+                to_classes.add(dest_class)
             case rel.dest_class:
                 source_class = uml_project.classes.by_id[rel.source_class]
-                from_classes[source_class.id] = source_class
+                from_classes.add(source_class)
 
-    return from_classes | to_classes
+    return frozenset(from_classes | to_classes)
 
 
 def gen_slot_from_attr(
@@ -329,6 +322,7 @@ def gen_class(uml_class: uml_model.Class, uml_project: uml_model.Project) -> lin
     }
 
     class_ = linkml_model.Class(
+        ea_object_id=uml_class.id,
         name=gen_safe_name(uml_class.name),
         class_uri=gen_curie(uml_class.name, CIM_PREFIX),
         is_a=super_class.name if super_class else None,

@@ -17,7 +17,7 @@ from cim_to_linkml.generator import (
     gen_schema,
     get_super_class,
     get_rel_type_classes,
-    _gen_class_deps,
+    _gen_elements,
 )
 
 
@@ -55,7 +55,7 @@ def main():
 def frozenset_representer(dumper, data):
     assert type(data) == frozenset
     if len(data) == 0:
-        return dumper.represent_set(data)
+        return dumper.represent_none(data)
 
     for el in data:  # Only check first element.
         if type(el) == tuple and len(el) == 2:
