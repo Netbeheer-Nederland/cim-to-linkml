@@ -19,7 +19,8 @@ from cim_to_linkml.generator import (
     get_rel_type_classes,
     _gen_elements,
 )
-
+from cim_to_linkml.generator_class import LinkMLGenerator
+    
 
 def main():
     init_yaml_serializer()
@@ -47,9 +48,18 @@ def main():
         classes=uml_classes, packages=uml_packages, relations=uml_relations
     )
 
-    schema = gen_schema(11, uml_project)
-    with open("out.yml", "w") as f:
-        yaml.dump(schema, f, indent=4, default_flow_style=False)
+    ### OOP
+    gen = LinkMLGenerator(uml_project)
+    for pkg_id in uml_project.packages.by_id:
+        schema = gen.gen_schema(pkg_id)
+        with open(f"schemas/{pkg_id}.yml", "w") as f:
+            yaml.dump(schema, f, indent=4, default_flow_style=False)
+
+    ### FP
+    # for pkg_id in uml_project.packages.by_id:
+    #     schema = gen_schema(pkg_id, uml_project)
+    #     with open(f"schemas/{pkg_id}.yml", "w") as f:
+    #         yaml.dump(schema, f, indent=4, default_flow_style=False)
 
 
 def frozenset_representer(dumper, data):
@@ -93,5 +103,5 @@ def init_yaml_serializer():
 
 
 if __name__ == "__main__":
-    cProfile.run("main()", sort="cumtime")
-    # main()
+    # cProfile.run("main()", sort="cumtime")
+    main()

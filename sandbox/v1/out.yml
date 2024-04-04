@@ -1,3 +1,30 @@
+id: http://iec.ch/TC57/ns/CIM/CoreEquipment-EU#Package_CoreEquipmentProfile
+name: CoreEquipmentProfile
+description: This vocabulary is describing the core equipment profile from IEC 61970-600-2.
+title: Core Equipment Vocabulary
+prefixes:
+  linkml: https://w3id.org/linkml/
+  cim: http://iec.ch/TC57/CIM100#
+  cims: http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#
+  dc: http://purl.org/dc/elements/1.1/
+  dcat: http://www.w3.org/ns/dcat#
+  dct: http://purl.org/dc/terms/
+  eu: http://iec.ch/TC57/CIM100-European#
+  owl: http://www.w3.org/2002/07/owl#
+  profcim: http://iec.ch/TC57/ns/CIM/prof-cim#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  sh: http://www.w3.org/ns/shacl#
+  skos: http://www.w3.org/2004/02/skos/core#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  eq: http://iec.ch/TC57/ns/CIM/CoreEquipment-EU#
+  this: http://iec.ch/TC57/ns/CIM/CoreEquipment-EU#Package_CoreEquipmentProfile
+imports:
+- linkml:types
+default_curi_maps:
+- semweb_context
+default_range: string
+default_prefix: this
 classes:
     ACDCConverter:
         attributes:
@@ -31489,15 +31516,17 @@ classes:
         name: ProductBid
     Profile:
         attributes:
-            ProfileDatas:
-                description: A profile has profile data associated with it.
+            DataSet:
+                description: The data sets that make use of the profile.
                 multivalued: true
-                name: ProfileDatas
-                range: ProfileData
+                name: DataSet
+                range: DataSet
                 required: false
-                slot_uri: cim:Profile.ProfileDatas
+                slot_uri: cim:Profile.DataSet
         class_uri: cim:Profile
-        description: "A profile is a simpler curve type.\r\n"
+        description: Describes the existence of a profile.  The MRID is usually defined
+            as a static value by the document or artifact that defines the contents
+            of the profile and the rules for using the profile.
         is_a: IdentifiedObject
         name: Profile
     ProfileData:
@@ -32208,11 +32237,10 @@ classes:
                 required: false
                 slot_uri: cim:Quantity.quality
             quantity:
-                description: "The quantity value.\r\nThe association role provides\
-                    \ the information about what is expressed."
+                description: null
                 multivalued: false
                 name: quantity
-                range: double
+                range: Quantity
                 required: false
                 slot_uri: cim:Quantity.quantity
             type:
@@ -36360,40 +36388,107 @@ classes:
     ResourceCertification:
         attributes:
             RegisteredResource:
-                description: RegisteredResources are qualified for resource ancillary
-                    service types (which include market product types as well as other
-                    types such as BlackStart) by the association to the class ResourceAncillaryServiceQualification.
-                multivalued: false
+                description: null
+                multivalued: true
                 name: RegisteredResource
                 range: RegisteredResource
-                required: true
-                slot_uri: cim:ResourceCertification.RegisteredResource
-            market:
-                description: "market type\r\n"
-                multivalued: false
-                name: market
-                range: MarketType
                 required: false
-                slot_uri: cim:ResourceCertification.market
-            qualificationFlag:
-                description: "Status of the qualification ('Y' = Active, 'N' = Inactive)\r\
-                    \n"
+                slot_uri: cim:ResourceCertification.RegisteredResource
+            certifiedDAM:
+                description: null
                 multivalued: false
-                name: qualificationFlag
+                name: certifiedDAM
                 range: YesNo
                 required: false
-                slot_uri: cim:ResourceCertification.qualificationFlag
-            type:
-                description: "Type of service based on ResourceAncillaryServiceType\
-                    \ enumeration\r\n"
+                slot_uri: cim:ResourceCertification.certifiedDAM
+            certifiedNonspinDAM:
+                description: null
                 multivalued: false
-                name: type
-                range: ResourceCertificationKind
+                name: certifiedNonspinDAM
+                range: YesNo
                 required: false
-                slot_uri: cim:ResourceCertification.type
+                slot_uri: cim:ResourceCertification.certifiedNonspinDAM
+            certifiedNonspinDAMMw:
+                description: null
+                multivalued: false
+                name: certifiedNonspinDAMMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinDAMMw
+            certifiedNonspinRTM:
+                description: null
+                multivalued: false
+                name: certifiedNonspinRTM
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinRTM
+            certifiedNonspinRTMMw:
+                description: null
+                multivalued: false
+                name: certifiedNonspinRTMMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedNonspinRTMMw
+            certifiedPIRP:
+                description: null
+                multivalued: false
+                name: certifiedPIRP
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedPIRP
+            certifiedRTM:
+                description: null
+                multivalued: false
+                name: certifiedRTM
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRTM
+            certifiedRUC:
+                description: null
+                multivalued: false
+                name: certifiedRUC
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRUC
+            certifiedRegulation:
+                description: null
+                multivalued: false
+                name: certifiedRegulation
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRegulation
+            certifiedRegulationMw:
+                description: null
+                multivalued: false
+                name: certifiedRegulationMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedRegulationMw
+            certifiedReplaceAS:
+                description: null
+                multivalued: false
+                name: certifiedReplaceAS
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedReplaceAS
+            certifiedSpin:
+                description: null
+                multivalued: false
+                name: certifiedSpin
+                range: YesNo
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedSpin
+            certifiedSpinMw:
+                description: null
+                multivalued: false
+                name: certifiedSpinMw
+                range: float
+                required: false
+                slot_uri: cim:ResourceCertification.certifiedSpinMw
         class_uri: cim:ResourceCertification
-        description: Specifies certification for a resource to participate in a specific
-            markets.
+        description: "This class represent the resource certification for a specific\
+            \ product type. For example, a resource is certified for Non-Spinning\
+            \ reserve for RTM.\r\n"
         is_a: null
         name: ResourceCertification
     ResourceClearing:
@@ -53164,6 +53259,9 @@ enums:
         enum_uri: cim:TroubleReportingKind
         name: TroubleReportingKind
         permissible_values:
+            app:
+                meaning: cim:TroubleReportingKind.app
+                text: app
             call:
                 meaning: cim:TroubleReportingKind.call
                 text: call
@@ -53179,6 +53277,12 @@ enums:
             other:
                 meaning: cim:TroubleReportingKind.other
                 text: other
+            sms:
+                meaning: cim:TroubleReportingKind.sms
+                text: sms
+            web:
+                meaning: cim:TroubleReportingKind.web
+                text: web
     TroubleSymptomsExtentKind:
         description: The enumerated values that define the extent of the problem.
         enum_uri: cim:TroubleSymptomsExtentKind
@@ -54165,5 +54269,3 @@ enums:
             'YES':
                 meaning: cim:YesNo.YES
                 text: 'YES'
-id: cim:Wires
-name: Wires

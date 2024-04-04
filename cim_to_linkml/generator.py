@@ -72,7 +72,7 @@ def gen_curie(name: str, prefix: str) -> str:  # TODO: Implement and move.
     return f"{prefix}:{quote(name)}"
 
 
-@lru_cache(maxsize=2048)
+# @lru_cache(maxsize=2048)
 def _gen_elements(
     uml_class: uml_model.Class,
     uml_project: uml_model.Project,
@@ -193,6 +193,7 @@ def get_super_class(
     return None
 
 
+@lru_cache(maxsize=2048)
 def get_attr_type_classes(
     uml_class: uml_model.Class, uml_project: uml_model.Project
 ) -> frozenset[uml_model.Class]:
