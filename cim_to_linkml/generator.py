@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 from typing import Optional
 from urllib.parse import quote
@@ -10,7 +11,7 @@ class LinkMLGenerator:
     def __init__(self, uml_project: uml_model.Project) -> None:
         self.uml_project = uml_project
 
-    def _build_package_path(self, start_pkg_id, package_path=None):
+    def _get_package_path(self, start_pkg_id, package_path=None):
         if package_path is None:
             package_path = []
 
@@ -19,7 +20,7 @@ class LinkMLGenerator:
         if package.parent in (0, None):
             return package_path
 
-        return self._build_package_path(package.parent, package_path + [package.name])
+        return self._get_package_path(package.parent, [package.name] + package_path)
 
     @staticmethod
     def map_primitive_data_type(val):
@@ -68,7 +69,7 @@ class LinkMLGenerator:
                 continue
             self._gen_class_with_deps(uml_dep_class)
 
-    def gen_schema(self, uml_package_id: uml_model.ObjectID) -> linkml_model.Schema:
+    def gen_schema_for_package(self, uml_package_id: uml_model.ObjectID) -> linkml_model.Schema:
         uml_package = self.uml_project.packages.by_id[uml_package_id]
 
         # Set or reset state.
@@ -79,13 +80,15 @@ class LinkMLGenerator:
         for uml_class in self.uml_project.classes.by_pkg_id.get(uml_package_id, []):
             self._gen_class_with_deps(uml_class)
 
+        qualified_package_name = ".".join(self._get_package_path(uml_package_id))
+
         schema = linkml_model.Schema(
             id=self.gen_curie(uml_package.name, "cim"),
-            name=uml_package.name,
+            name=qualified_package_name,
             title=uml_package.name,
-            enums={enum.name: enum for enum in self.enums.values()},
             description=uml_package.notes,
-            classes={class_.name: class_ for class_ in self.classes.values()},
+            enums={enum.name: enum for enum in self.enums.values()} or None,  # TODO: BUG: Why is the empty `enums` dict shown as an empty key rather than simply being left out (in the YAML)?
+            classes={class_.name: class_ for class_ in self.classes.values()} or None,
             imports=["linkml:types"],
             prefixes={
                 "linkml": "https://w3id.org/linkml/",
