@@ -2,9 +2,9 @@ import os
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Literal, NamedTuple, Optional
 from itertools import groupby
 from operator import attrgetter, itemgetter
+from typing import Literal, NamedTuple, Optional
 
 ObjectID = int
 ConnectorID = int

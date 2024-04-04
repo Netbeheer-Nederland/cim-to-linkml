@@ -1,9 +1,9 @@
 from functools import lru_cache
-from urllib.parse import quote
 from typing import Optional
+from urllib.parse import quote
 
-import cim_to_linkml.uml_model as uml_model
 import cim_to_linkml.linkml_model as linkml_model
+import cim_to_linkml.uml_model as uml_model
 
 
 class LinkMLGenerator:
@@ -19,7 +19,6 @@ class LinkMLGenerator:
         if package.parent in (0, None):
             return package_path
 
-        parent = self.uml_project.packages.by_id[package.parent]
         return self._build_package_path(package.parent, package_path + [package.name])
 
     @staticmethod
@@ -39,26 +38,6 @@ class LinkMLGenerator:
             }[val]
         except KeyError:
             raise TypeError(f"Data type `{val}` is not a CIM Primitive.")
-
-    @staticmethod
-    def gen_safe_name(name: str) -> str:  # TODO: Implement and move.
-        # Cleanup colons and weird characters.
-        return name
-
-    @staticmethod
-    def convert_camel_to_snake(name: str) -> str:  # TODO: Implement.
-        """
-        USA -> usa
-        ACLineSegment -> ac_line_segment
-        mRID -> m_rid
-        bch -> bch
-        iaIrRatio -> ia_ir_ratio
-        """
-
-        if len(name) <= 1:
-            return name.lower()
-
-        return f"{name[0].lower()}{'_' if name[0].islower() and name[1].isupper() else ''}{LinkMLGenerator.convert_camel_to_snake(name[1:])}"
 
     @staticmethod
     def gen_curie(name: str, prefix: str) -> str:  # TODO: Implement and move.
@@ -102,7 +81,7 @@ class LinkMLGenerator:
 
         schema = linkml_model.Schema(
             id=self.gen_curie(uml_package.name, "cim"),
-            name=self.gen_safe_name(self.convert_camel_to_snake(uml_package.name)),
+            name=uml_package.name,
             title=uml_package.name,
             enums={enum.name: enum for enum in self.enums.values()},
             description=uml_package.notes,
@@ -122,10 +101,9 @@ class LinkMLGenerator:
     @lru_cache(maxsize=2048)
     def gen_enum(self, uml_enum: uml_model.Class) -> linkml_model.Enum:
         assert uml_enum.stereotype == uml_model.ClassStereotype.ENUMERATION
-        enum_name = self.gen_safe_name(uml_enum.name)
 
         return linkml_model.Enum(
-            name=self.gen_safe_name(enum_name),
+            name=uml_enum.name,
             enum_uri=self.gen_curie(uml_enum.name, linkml_model.CIM_PREFIX),
             description=uml_enum.note,
             permissible_values=frozenset(
@@ -133,11 +111,10 @@ class LinkMLGenerator:
                     (
                         uml_enum_val.name,
                         linkml_model.PermissibleValue(
-                            meaning=self.gen_curie(f"{enum_name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX),
+                            meaning=self.gen_curie(f"{uml_enum.name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX),
                         ),
                     )
                     for uml_enum_val in uml_enum.attributes
-                    # if (enum_val := self.convert_camel_to_snake(self.gen_safe_name(uml_enum_val.name)))
                 }
             ),
         )
@@ -191,10 +168,10 @@ class LinkMLGenerator:
         if type_class.stereotype == uml_model.ClassStereotype.PRIMITIVE:
             range_ = self.map_primitive_data_type(uml_attr.type)
         else:
-            range_ = self.convert_camel_to_snake(self.gen_safe_name(type_class.name))
+            range_ = type_class.name
 
         return linkml_model.Slot(
-            name=self.convert_camel_to_snake(self.gen_safe_name(uml_attr.name)),
+            name=uml_attr.name,
             range=range_,
             description=uml_attr.notes,
             required=self._slot_required(uml_attr.lower_bound),
@@ -217,8 +194,8 @@ class LinkMLGenerator:
         match direction:
             case "source->dest":
                 return linkml_model.Slot(
-                    name=self.convert_camel_to_snake(self.gen_safe_name(uml_relation.dest_role or dest_class.name)),
-                    range=self.gen_safe_name(dest_class.name),
+                    name=uml_relation.dest_role or dest_class.name,
+                    range=dest_class.name,
                     description=uml_relation.dest_role_note,
                     required=self._slot_required(uml_relation.dest_card.lower_bound),
                     multivalued=self._slot_multivalued(uml_relation.dest_card.upper_bound),
@@ -229,8 +206,8 @@ class LinkMLGenerator:
                 )
             case "dest->source":
                 return linkml_model.Slot(
-                    name=self.convert_camel_to_snake(self.gen_safe_name(uml_relation.source_role or source_class.name)),
-                    range=self.gen_safe_name(source_class.name),
+                    name=uml_relation.source_role or source_class.name,
+                    range=source_class.name,
                     description=uml_relation.source_role_note,
                     required=self._slot_required(uml_relation.source_card.lower_bound),
                     multivalued=self._slot_multivalued(uml_relation.source_card.upper_bound),
@@ -267,7 +244,7 @@ class LinkMLGenerator:
         }
 
         class_ = linkml_model.Class(
-            name=self.gen_safe_name(uml_class.name),
+            name=uml_class.name,
             class_uri=self.gen_curie(uml_class.name, linkml_model.CIM_PREFIX),
             is_a=super_class.name if super_class else None,
             description=uml_class.note,

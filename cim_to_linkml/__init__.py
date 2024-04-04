@@ -1,17 +1,19 @@
+import cProfile
 import os
-import yaml
+import sqlite3
 from itertools import groupby
 from operator import itemgetter
-import sqlite3
-import cProfile
 
-import cim_to_linkml.uml_model as uml_model
+import yaml
+
 import cim_to_linkml.linkml_model as linkml_model
-
-from cim_to_linkml.read import read_uml_classes, read_uml_relations, read_uml_packages
-from cim_to_linkml.parser import parse_uml_package, parse_uml_class, parse_uml_relation
-from cim_to_linkml.generator import LinkMLGenerator
 import cim_to_linkml.serializer as serializer
+import cim_to_linkml.uml_model as uml_model
+from cim_to_linkml.generator import LinkMLGenerator
+from cim_to_linkml.parser import (parse_uml_class, parse_uml_package,
+                                  parse_uml_relation)
+from cim_to_linkml.read import (read_uml_classes, read_uml_packages,
+                                read_uml_relations)
 
 
 def init_yaml_serializer():
@@ -33,6 +35,7 @@ def main():
         uml_relation_results = read_uml_relations(conn)
         uml_package_results = read_uml_packages(conn)
 
+    # TODO: Wrap in some function, somewhere.
     uml_packages = uml_model.Packages({parse_uml_package(pkg_row) for pkg_row in uml_package_results})
     uml_classes = uml_model.Classes(
         {parse_uml_class(list(class_rows)) for _, class_rows in groupby(uml_class_results, itemgetter("class_id"))}
