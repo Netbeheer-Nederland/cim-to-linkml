@@ -22,7 +22,12 @@ def main():
         if pkg_id == 2:
             continue  # `Model` base package.
 
+        # DEBUG.
+        if pkg_id != 3:
+            continue
+
         schema = generator.gen_schema_for_package(pkg_id)
+        print(schema.enums)
         write_schema(schema)
 
 
