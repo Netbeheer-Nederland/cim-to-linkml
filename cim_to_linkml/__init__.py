@@ -1,3 +1,4 @@
+import os
 import yaml
 from collections import OrderedDict
 from pprint import pprint
@@ -52,11 +53,19 @@ def main():
     ### OOP
     gen = LinkMLGenerator(uml_project)
     for pkg_id in uml_project.packages.by_id:
-        pkg_id = 11
+        # pkg_id = 11
+        pkg_path_parts = gen._build_package_path(pkg_id)[::-1]
+
+        if not pkg_path_parts:
+            continue
+
+        pkg_dir_path = os.path.join("schemas", os.sep.join(pkg_path_parts[:-1]))
+        pkg_filename = pkg_path_parts[-1] + ".yml"
+        os.makedirs(pkg_dir_path, exist_ok=True)
         schema = gen.gen_schema(pkg_id)
-        with open(f"schemas/{pkg_id}.yml", "w") as f:
+        with open(os.path.join(pkg_dir_path, pkg_filename), "w") as f:
             yaml.dump(schema, f, indent=4, default_flow_style=False, sort_keys=False)
-        break
+        # break
 
     ### FP
     # for pkg_id in uml_project.packages.by_id:

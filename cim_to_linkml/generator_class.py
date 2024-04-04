@@ -10,6 +10,19 @@ class LinkMLGenerator:
     def __init__(self, uml_project: uml_model.Project) -> None:
         self.uml_project = uml_project
 
+    def _build_package_path(self, start_pkg_id, package_path=None):
+        if package_path is None:
+            package_path = []
+
+        package = self.uml_project.packages.by_id[start_pkg_id]
+
+        if package.parent in (0, None):
+            return package_path
+
+        parent = self.uml_project.packages.by_id[package.parent]
+        return self._build_package_path(package.parent, package_path + [package.name])
+
+
     @staticmethod
     def map_primitive_data_type(val):
         try:
