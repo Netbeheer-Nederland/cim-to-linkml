@@ -1,5 +1,4 @@
 from functools import lru_cache
-from itertools import takewhile, groupby
 from typing import Optional
 from urllib.parse import quote
 
@@ -39,58 +38,6 @@ class LinkMLGenerator:
             }[val]
         except KeyError:
             raise TypeError(f"Data type `{val}` is not a CIM Primitive.")
-
-    @staticmethod
-    def gen_safe_name(name: str) -> str:  # TODO: Implement and move.
-        # Cleanup colons and weird characters.
-        return name
-
-    @staticmethod
-    def convert_camel_to_snake(name: str) -> str:  # TODO: Implement.
-        """
-        Object_Type -> object_type
-        object_type -> object_type
-        _a -> a
-        a_ -> a
-        bch -> bch
-        USA -> usa
-        mRID -> m_rid
-        ACLineSegment -> ac_line_segment
-        AlongACLineSegment -> along_ac_line_segment
-        iaIrRatio -> ia_ir_ratio
-        uPerCLinch -> u_per_c_linch
-        UPerCLinch -> u_per_c_linch
-        MktContingencyA -> mkt_contingency_a
-        DesignLocationCUs -> design_location_cus
-        PerDHLMail -> per_dhl_mail
-        MoreCUsPerUnit -> more_cu_s_per_unit
-
-        Method:
-            * Start at the right of the name.
-            * Split on capitalization.
-            * First (most right) part is always entirely lowercase.
-            * From there, join groups right to left, and include the first
-                * Each time you encounter
-        """
-
-        # groups = groupby(name[::-1], str.isupper)
-        # for k, v in groups:
-        #     print(list(v))
-        # snake_name += v + 
-        return "".join("_" + c.lower() if c.isupper() else c for c in name)
-
-
-        # parts = []
-        # remainder = name
-        # while remainder:
-        #     upper_chars = takewhile(str.isupper, remainder)
-        #     parts.extend(upper_chars)
-        #     lower_chars = takewhile(str.islower, remainder[len(upper_chars)])
-        #     parts.extend(takewhile(str.islower, name))
-        # print(list(parts))
-        # print(name)
-        # print(next(name_iter))
-        return 0
 
     @staticmethod
     def gen_curie(name: str, prefix: str) -> str:  # TODO: Implement and move.
@@ -134,7 +81,7 @@ class LinkMLGenerator:
 
         schema = linkml_model.Schema(
             id=self.gen_curie(uml_package.name, "cim"),
-            name=self.gen_safe_name(self.convert_camel_to_snake(uml_package.name)),
+            name=uml_package.name,
             title=uml_package.name,
             enums={enum.name: enum for enum in self.enums.values()},
             description=uml_package.notes,
@@ -154,10 +101,9 @@ class LinkMLGenerator:
     @lru_cache(maxsize=2048)
     def gen_enum(self, uml_enum: uml_model.Class) -> linkml_model.Enum:
         assert uml_enum.stereotype == uml_model.ClassStereotype.ENUMERATION
-        enum_name = self.gen_safe_name(uml_enum.name)
 
         return linkml_model.Enum(
-            name=self.gen_safe_name(enum_name),
+            name=uml_enum.name,
             enum_uri=self.gen_curie(uml_enum.name, linkml_model.CIM_PREFIX),
             description=uml_enum.note,
             permissible_values=frozenset(
@@ -165,11 +111,10 @@ class LinkMLGenerator:
                     (
                         uml_enum_val.name,
                         linkml_model.PermissibleValue(
-                            meaning=self.gen_curie(f"{enum_name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX),
+                            meaning=self.gen_curie(f"{uml_enum.name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX),
                         ),
                     )
                     for uml_enum_val in uml_enum.attributes
-                    # if (enum_val := self.convert_camel_to_snake(self.gen_safe_name(uml_enum_val.name)))
                 }
             ),
         )
@@ -223,10 +168,10 @@ class LinkMLGenerator:
         if type_class.stereotype == uml_model.ClassStereotype.PRIMITIVE:
             range_ = self.map_primitive_data_type(uml_attr.type)
         else:
-            range_ = self.convert_camel_to_snake(self.gen_safe_name(type_class.name))
+            range_ = type_class.name
 
         return linkml_model.Slot(
-            name=self.convert_camel_to_snake(self.gen_safe_name(uml_attr.name)),
+            name=uml_attr.name,
             range=range_,
             description=uml_attr.notes,
             required=self._slot_required(uml_attr.lower_bound),
@@ -249,8 +194,8 @@ class LinkMLGenerator:
         match direction:
             case "source->dest":
                 return linkml_model.Slot(
-                    name=self.convert_camel_to_snake(self.gen_safe_name(uml_relation.dest_role or dest_class.name)),
-                    range=self.gen_safe_name(dest_class.name),
+                    name=uml_relation.dest_role or dest_class.name,
+                    range=dest_class.name,
                     description=uml_relation.dest_role_note,
                     required=self._slot_required(uml_relation.dest_card.lower_bound),
                     multivalued=self._slot_multivalued(uml_relation.dest_card.upper_bound),
@@ -261,8 +206,8 @@ class LinkMLGenerator:
                 )
             case "dest->source":
                 return linkml_model.Slot(
-                    name=self.convert_camel_to_snake(self.gen_safe_name(uml_relation.source_role or source_class.name)),
-                    range=self.gen_safe_name(source_class.name),
+                    name=uml_relation.source_role or source_class.name,
+                    range=source_class.name,
                     description=uml_relation.source_role_note,
                     required=self._slot_required(uml_relation.source_card.lower_bound),
                     multivalued=self._slot_multivalued(uml_relation.source_card.upper_bound),
@@ -299,7 +244,7 @@ class LinkMLGenerator:
         }
 
         class_ = linkml_model.Class(
-            name=self.gen_safe_name(uml_class.name),
+            name=uml_class.name,
             class_uri=self.gen_curie(uml_class.name, linkml_model.CIM_PREFIX),
             is_a=super_class.name if super_class else None,
             description=uml_class.note,

@@ -45,24 +45,23 @@ def main():
     uml_project = uml_model.Project(classes=uml_classes, packages=uml_packages, relations=uml_relations)
 
     generator = LinkMLGenerator(uml_project)
-    print(generator.convert_camel_to_snake("CutACLineSegment"))
-    # for pkg_id in uml_project.packages.by_id:
-    #     pkg_id = 11
+    for pkg_id in uml_project.packages.by_id:
+        pkg_id = 11
 
-    #     # TODO: This logic could probably be moved to the generator class.
-    #     pkg_path_parts = generator._build_package_path(pkg_id)[::-1]
+        # TODO: This logic could probably be moved to the generator class.
+        pkg_path_parts = generator._build_package_path(pkg_id)[::-1]
 
-    #     if not pkg_path_parts:
-    #         continue
+        if not pkg_path_parts:
+            continue
 
-    #     pkg_dir_path = os.path.join("schemas", os.sep.join(pkg_path_parts[:-1]))
-    #     pkg_filename = pkg_path_parts[-1] + ".yml"
-    #     os.makedirs(pkg_dir_path, exist_ok=True)
+        pkg_dir_path = os.path.join("schemas", os.sep.join(pkg_path_parts[:-1]))
+        pkg_filename = pkg_path_parts[-1] + ".yml"
+        os.makedirs(pkg_dir_path, exist_ok=True)
 
-    #     schema = generator.gen_schema(pkg_id)
-    #     with open(os.path.join(pkg_dir_path, pkg_filename), "w") as f:
-    #         yaml.dump(schema, f, indent=4, default_flow_style=False, sort_keys=False)
-    #     break
+        schema = generator.gen_schema(pkg_id)
+        with open(os.path.join(pkg_dir_path, pkg_filename), "w") as f:
+            yaml.dump(schema, f, indent=4, default_flow_style=False, sort_keys=False)
+        break
 
 
 if __name__ == "__main__":
