@@ -1,15 +1,9 @@
-from pprint import pprint
-from itertools import groupby, chain
 from functools import lru_cache
-from operator import attrgetter, itemgetter, add
 from urllib.parse import quote
 from typing import Optional
 
 import cim_to_linkml.uml_model as uml_model
 import cim_to_linkml.linkml_model as linkml_model
-
-
-CIM_PREFIX = "cim"
 
 
 class LinkMLGenerator:
@@ -83,14 +77,23 @@ class LinkMLGenerator:
 
         # for uml_class in self.uml_project.classes.by_id.values():
         for uml_class in self.uml_project.classes.by_pkg_id.get(uml_package_id, []):
-            print(uml_class.name)
             self._gen_class_with_deps(uml_class)
 
         schema = linkml_model.Schema(
             id=self.gen_curie(uml_package.name, "cim"),
-            name=uml_package.name,
+            name=self.gen_safe_name(self.convert_camel_to_snake(uml_package.name)),
+            title=uml_package.name,
             enums={enum.name: enum for enum in self.enums.values()},
+            description=uml_package.notes,
             classes={class_.name: class_ for class_ in self.classes.values()},
+            imports=["linkml:types"],
+            prefixes={
+                "linkml": "https://w3id.org/linkml/",
+                linkml_model.CIM_PREFIX: linkml_model.CIM_BASE_URI,
+            },
+            default_curi_maps=["semweb_context"],
+            default_prefix=linkml_model.CIM_PREFIX,
+            default_range="string",
         )
 
         return schema
@@ -102,7 +105,7 @@ class LinkMLGenerator:
 
         return linkml_model.Enum(
             name=self.gen_safe_name(enum_name),
-            enum_uri=self.gen_curie(uml_enum.name, CIM_PREFIX),
+            enum_uri=self.gen_curie(uml_enum.name, linkml_model.CIM_PREFIX),
             description=uml_enum.note,
             permissible_values=frozenset(
                 {
@@ -110,7 +113,9 @@ class LinkMLGenerator:
                         uml_enum_val.name,
                         linkml_model.PermissibleValue(
                             text=enum_val,
-                            meaning=self.gen_curie(f"{enum_name}.{enum_val}", CIM_PREFIX),
+                            meaning=self.gen_curie(
+                                f"{enum_name}.{enum_val}", linkml_model.CIM_PREFIX
+                            ),
                         ),
                     )
                     for uml_enum_val in uml_enum.attributes
@@ -185,7 +190,7 @@ class LinkMLGenerator:
             description=uml_attr.notes,
             required=self._slot_required(uml_attr.lower_bound),
             multivalued=self._slot_multivalued(uml_attr.lower_bound),
-            slot_uri=self.gen_curie(f"{uml_class.name}.{uml_attr.name}", CIM_PREFIX),
+            slot_uri=self.gen_curie(f"{uml_class.name}.{uml_attr.name}", linkml_model.CIM_PREFIX),
         )
 
     @staticmethod
@@ -214,7 +219,7 @@ class LinkMLGenerator:
                     multivalued=self._slot_multivalued(uml_relation.dest_card.upper_bound),
                     slot_uri=self.gen_curie(
                         f"{source_class.name}.{uml_relation.dest_role or dest_class.name}",
-                        CIM_PREFIX,
+                        linkml_model.CIM_PREFIX,
                     ),
                 )
             case "dest->source":
@@ -228,7 +233,7 @@ class LinkMLGenerator:
                     multivalued=self._slot_multivalued(uml_relation.source_card.upper_bound),
                     slot_uri=self.gen_curie(
                         f"{dest_class.name}.{uml_relation.source_role or source_class.name}",
-                        CIM_PREFIX,
+                        linkml_model.CIM_PREFIX,
                     ),
                 )
             case _:
@@ -262,7 +267,7 @@ class LinkMLGenerator:
 
         class_ = linkml_model.Class(
             name=self.gen_safe_name(uml_class.name),
-            class_uri=self.gen_curie(uml_class.name, CIM_PREFIX),
+            class_uri=self.gen_curie(uml_class.name, linkml_model.CIM_PREFIX),
             is_a=super_class.name if super_class else None,
             description=uml_class.note,
             attributes=frozenset(attr_slots | from_relation_slots | to_relation_slots),

@@ -1,5 +1,8 @@
 from typing import NamedTuple, Optional
 
+CIM_PREFIX = "cim"
+CIM_BASE_URI = "https://cim.ucaiug.io/ns#"
+
 
 class PermissibleValue(NamedTuple):
     text: str
@@ -33,5 +36,12 @@ class Class(NamedTuple):
 class Schema(NamedTuple):
     id: str
     name: str
-    enums: frozenset[tuple[str, Enum]] = frozenset()
-    classes: frozenset[tuple[str, Class]] = frozenset()
+    title: Optional[str] = None
+    description: Optional[str] = None
+    imports: Optional[list[str]] = None
+    prefixes: Optional[dict[str, str]] = None
+    default_curi_maps: Optional[list[str]] = None
+    default_prefix: Optional[str] = None
+    default_range: Optional[str] = None
+    classes: Optional[frozenset[tuple[str, Class]]] = None
+    enums: Optional[frozenset[tuple[str, Enum]]] = None

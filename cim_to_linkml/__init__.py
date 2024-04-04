@@ -1,4 +1,5 @@
 import yaml
+from collections import OrderedDict
 from pprint import pprint
 from itertools import groupby
 from operator import itemgetter
@@ -20,7 +21,7 @@ from cim_to_linkml.generator import (
     _gen_elements,
 )
 from cim_to_linkml.generator_class import LinkMLGenerator
-    
+
 
 def main():
     init_yaml_serializer()
@@ -51,9 +52,11 @@ def main():
     ### OOP
     gen = LinkMLGenerator(uml_project)
     for pkg_id in uml_project.packages.by_id:
+        pkg_id = 11
         schema = gen.gen_schema(pkg_id)
         with open(f"schemas/{pkg_id}.yml", "w") as f:
-            yaml.dump(schema, f, indent=4, default_flow_style=False)
+            yaml.dump(schema, f, indent=4, default_flow_style=False, sort_keys=False)
+        break
 
     ### FP
     # for pkg_id in uml_project.packages.by_id:
@@ -76,6 +79,26 @@ def frozenset_representer(dumper, data):
 
 def linkml_namedtuple_representer(dumper, data):
     return dumper.represent_dict(data._asdict())
+
+
+# def linkml_schema_representer(dumper, data):
+#     return dumper.represent_dict(
+#         OrderedDict(
+#             {
+#                 "id": data.id,
+#                 "name": data.name,
+#                 "title": data.title,
+#                 "description": data.description,
+#                 "imports": data.imports,
+#                 "prefixes": data.prefixes,
+#                 "default_curi_maps": data.default_curi_maps,
+#                 "default_prefix": data.default_prefix,
+#                 "default_range": data.default_range,
+#                 "classes": data.classes,
+#                 "enums": data.enums,
+#             }
+#         )
+#     )
 
 
 def init_yaml_serializer():
@@ -103,5 +126,5 @@ def init_yaml_serializer():
 
 
 if __name__ == "__main__":
-    # cProfile.run("main()", sort="cumtime")
+    # cProfile.run("main()", sort="tottime")
     main()
