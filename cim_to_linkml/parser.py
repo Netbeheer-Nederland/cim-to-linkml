@@ -1,7 +1,7 @@
 import sqlite3
+from datetime import datetime
 from itertools import groupby
 from operator import itemgetter
-from datetime import datetime
 
 import cim_to_linkml.uml_model as uml_model
 

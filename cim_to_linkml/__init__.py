@@ -1,17 +1,19 @@
+import cProfile
 import os
-import yaml
+import sqlite3
 from itertools import groupby
 from operator import itemgetter
-import sqlite3
-import cProfile
 
-import cim_to_linkml.uml_model as uml_model
+import yaml
+
 import cim_to_linkml.linkml_model as linkml_model
-
-from cim_to_linkml.read import read_uml_classes, read_uml_relations, read_uml_packages
-from cim_to_linkml.parser import parse_uml_package, parse_uml_class, parse_uml_relation
-from cim_to_linkml.generator import LinkMLGenerator
 import cim_to_linkml.serializer as serializer
+import cim_to_linkml.uml_model as uml_model
+from cim_to_linkml.generator import LinkMLGenerator
+from cim_to_linkml.parser import (parse_uml_class, parse_uml_package,
+                                  parse_uml_relation)
+from cim_to_linkml.read import (read_uml_classes, read_uml_packages,
+                                read_uml_relations)
 
 
 def init_yaml_serializer():
@@ -33,6 +35,7 @@ def main():
         uml_relation_results = read_uml_relations(conn)
         uml_package_results = read_uml_packages(conn)
 
+    # TODO: Wrap in some function, somewhere.
     uml_packages = uml_model.Packages({parse_uml_package(pkg_row) for pkg_row in uml_package_results})
     uml_classes = uml_model.Classes(
         {parse_uml_class(list(class_rows)) for _, class_rows in groupby(uml_class_results, itemgetter("class_id"))}
@@ -42,23 +45,24 @@ def main():
     uml_project = uml_model.Project(classes=uml_classes, packages=uml_packages, relations=uml_relations)
 
     generator = LinkMLGenerator(uml_project)
-    for pkg_id in uml_project.packages.by_id:
-        pkg_id = 11
+    print(generator.convert_camel_to_snake("CutACLineSegment"))
+    # for pkg_id in uml_project.packages.by_id:
+    #     pkg_id = 11
 
-        # TODO: This logic could probably be moved to the generator class.
-        pkg_path_parts = generator._build_package_path(pkg_id)[::-1]
+    #     # TODO: This logic could probably be moved to the generator class.
+    #     pkg_path_parts = generator._build_package_path(pkg_id)[::-1]
 
-        if not pkg_path_parts:
-            continue
+    #     if not pkg_path_parts:
+    #         continue
 
-        pkg_dir_path = os.path.join("schemas", os.sep.join(pkg_path_parts[:-1]))
-        pkg_filename = pkg_path_parts[-1] + ".yml"
-        os.makedirs(pkg_dir_path, exist_ok=True)
+    #     pkg_dir_path = os.path.join("schemas", os.sep.join(pkg_path_parts[:-1]))
+    #     pkg_filename = pkg_path_parts[-1] + ".yml"
+    #     os.makedirs(pkg_dir_path, exist_ok=True)
 
-        schema = generator.gen_schema(pkg_id)
-        with open(os.path.join(pkg_dir_path, pkg_filename), "w") as f:
-            yaml.dump(schema, f, indent=4, default_flow_style=False, sort_keys=False)
-        break
+    #     schema = generator.gen_schema(pkg_id)
+    #     with open(os.path.join(pkg_dir_path, pkg_filename), "w") as f:
+    #         yaml.dump(schema, f, indent=4, default_flow_style=False, sort_keys=False)
+    #     break
 
 
 if __name__ == "__main__":

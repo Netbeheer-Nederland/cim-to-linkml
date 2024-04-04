@@ -1,9 +1,10 @@
 from functools import lru_cache
-from urllib.parse import quote
+from itertools import takewhile, groupby
 from typing import Optional
+from urllib.parse import quote
 
-import cim_to_linkml.uml_model as uml_model
 import cim_to_linkml.linkml_model as linkml_model
+import cim_to_linkml.uml_model as uml_model
 
 
 class LinkMLGenerator:
@@ -47,17 +48,49 @@ class LinkMLGenerator:
     @staticmethod
     def convert_camel_to_snake(name: str) -> str:  # TODO: Implement.
         """
-        USA -> usa
-        ACLineSegment -> ac_line_segment
-        mRID -> m_rid
+        Object_Type -> object_type
+        object_type -> object_type
+        _a -> a
+        a_ -> a
         bch -> bch
+        USA -> usa
+        mRID -> m_rid
+        ACLineSegment -> ac_line_segment
+        AlongACLineSegment -> along_ac_line_segment
         iaIrRatio -> ia_ir_ratio
+        uPerCLinch -> u_per_c_linch
+        UPerCLinch -> u_per_c_linch
+        MktContingencyA -> mkt_contingency_a
+        DesignLocationCUs -> design_location_cus
+        PerDHLMail -> per_dhl_mail
+        MoreCUsPerUnit -> more_cu_s_per_unit
+
+        Method:
+            * Start at the right of the name.
+            * Split on capitalization.
+            * First (most right) part is always entirely lowercase.
+            * From there, join groups right to left, and include the first
+                * Each time you encounter
         """
 
-        if len(name) <= 1:
-            return name.lower()
+        # groups = groupby(name[::-1], str.isupper)
+        # for k, v in groups:
+        #     print(list(v))
+        # snake_name += v + 
+        return "".join("_" + c.lower() if c.isupper() else c for c in name)
 
-        return f"{name[0].lower()}{'_' if name[0].islower() and name[1].isupper() else ''}{LinkMLGenerator.convert_camel_to_snake(name[1:])}"
+
+        # parts = []
+        # remainder = name
+        # while remainder:
+        #     upper_chars = takewhile(str.isupper, remainder)
+        #     parts.extend(upper_chars)
+        #     lower_chars = takewhile(str.islower, remainder[len(upper_chars)])
+        #     parts.extend(takewhile(str.islower, name))
+        # print(list(parts))
+        # print(name)
+        # print(next(name_iter))
+        return 0
 
     @staticmethod
     def gen_curie(name: str, prefix: str) -> str:  # TODO: Implement and move.
