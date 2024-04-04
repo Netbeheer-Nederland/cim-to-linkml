@@ -133,12 +133,11 @@ class LinkMLGenerator:
                     (
                         uml_enum_val.name,
                         linkml_model.PermissibleValue(
-                            text=enum_val,
-                            meaning=self.gen_curie(f"{enum_name}.{enum_val}", linkml_model.CIM_PREFIX),
+                            meaning=self.gen_curie(f"{enum_name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX),
                         ),
                     )
                     for uml_enum_val in uml_enum.attributes
-                    if (enum_val := self.convert_camel_to_snake(self.gen_safe_name(uml_enum_val.name)))
+                    # if (enum_val := self.convert_camel_to_snake(self.gen_safe_name(uml_enum_val.name)))
                 }
             ),
         )

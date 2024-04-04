@@ -45,7 +45,6 @@ def main():
     for pkg_id in uml_project.packages.by_id:
         pkg_id = 11
 
-        # Build p
         # TODO: This logic could probably be moved to the generator class.
         pkg_path_parts = generator._build_package_path(pkg_id)[::-1]
 

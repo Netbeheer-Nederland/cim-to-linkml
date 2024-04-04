@@ -77,7 +77,7 @@ def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
     )
 
 
-def parse_uml_class_attr(attr: dict) -> uml_model.Attribute:
+def _parse_uml_class_attr(attr: dict) -> uml_model.Attribute:
     try:
         stereotype = uml_model.AttributeStereotype(attr["attr_stereotype"])
     except ValueError:
@@ -108,7 +108,7 @@ def parse_uml_class(class_rows: list[sqlite3.Cursor]) -> uml_model.Class:
         author=class_rows[0]["class_author"],
         package=class_rows[0]["class_package_id"],
         attributes=frozenset(
-            parse_uml_class_attr(attr)
+            _parse_uml_class_attr(attr)
             for attr_name, attr_ in groupby(class_rows, itemgetter("attr_name"))
             if (attr := next(attr_))
             if attr["attr_id"] is not None

@@ -5,7 +5,6 @@ CIM_BASE_URI = "https://cim.ucaiug.io/ns#"
 
 
 class PermissibleValue(NamedTuple):
-    text: str
     meaning: Optional[str] = None
 
 
