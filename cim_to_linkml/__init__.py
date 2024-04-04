@@ -10,7 +10,7 @@ import cim_to_linkml.linkml_model as linkml_model
 
 from cim_to_linkml.read import read_uml_classes, read_uml_relations, read_uml_packages
 from cim_to_linkml.parser import parse_uml_package, parse_uml_class, parse_uml_relation
-from cim_to_linkml.generator_class import LinkMLGenerator
+from cim_to_linkml.generator import LinkMLGenerator
 import cim_to_linkml.serializer as serializer
 
 
