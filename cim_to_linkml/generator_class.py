@@ -46,14 +46,19 @@ class LinkMLGenerator:
         return name
 
     @staticmethod
-    def convert_camel_to_snake(name: str) -> str:  # TODO: Implement and move.
+    def convert_camel_to_snake(name: str) -> str:  # TODO: Implement.
         """
+        USA -> usa
         ACLineSegment -> ac_line_segment
-        mRID -> mrid
+        mRID -> m_rid
         bch -> bch
+        iaIrRatio -> ia_ir_ratio
         """
 
-        return name
+        if len(name) <= 1:
+            return name.lower()
+
+        return f"{name[0].lower()}{'_' if name[0].islower() and name[1].isupper() else ''}{LinkMLGenerator.convert_camel_to_snake(name[1:])}"
 
     @staticmethod
     def gen_curie(name: str, prefix: str) -> str:  # TODO: Implement and move.
