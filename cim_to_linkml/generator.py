@@ -19,7 +19,6 @@ class LinkMLGenerator:
         if package.parent in (0, None):
             return package_path
 
-        parent = self.uml_project.packages.by_id[package.parent]
         return self._build_package_path(package.parent, package_path + [package.name])
 
     @staticmethod
