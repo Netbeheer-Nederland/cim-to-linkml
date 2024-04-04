@@ -26,7 +26,9 @@ from cim_to_linkml.generator_class import LinkMLGenerator
 
 def main():
     init_yaml_serializer()
-    db_file = "data/iec61970cim17v40_iec61968cim13v13b_iec62325cim03v17b_CIM100.1.1.1.qea"
+    db_file = (
+        "data/iec61970cim17v40_iec61968cim13v13b_iec62325cim03v17b_CIM100.1.1.1.qea"
+    )
 
     with sqlite3.connect(db_file) as conn:
         uml_class_results = read_uml_classes(conn)

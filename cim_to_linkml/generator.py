@@ -65,10 +65,18 @@ def _gen_elements(
             return results
         case uml_model.ClassStereotype.ENUMERATION:
             enum = gen_enum(uml_class, uml_project)
-            results = results[0], results[1] | {(enum.name, enum)}, results[2] | {uml_class.id}
+            results = (
+                results[0],
+                results[1] | {(enum.name, enum)},
+                results[2] | {uml_class.id},
+            )
         case uml_model.ClassStereotype.CIMDATATYPE | None | _:
             class_ = gen_class(uml_class, uml_project)
-            results = results[0] | {(class_.name, class_)}, results[1], results[2] | {uml_class.id}
+            results = (
+                results[0] | {(class_.name, class_)},
+                results[1],
+                results[2] | {uml_class.id},
+            )
 
     uml_dep_classes = set()
 
@@ -76,9 +84,9 @@ def _gen_elements(
     if uml_super_class:
         uml_dep_classes.add(uml_super_class)
 
-    uml_dep_classes |= get_attr_type_classes(uml_class, uml_project) | get_rel_type_classes(
+    uml_dep_classes |= get_attr_type_classes(
         uml_class, uml_project
-    )
+    ) | get_rel_type_classes(uml_class, uml_project)
 
     for uml_dep_class in uml_dep_classes:
         if uml_dep_class.id in results[2]:
@@ -119,7 +127,9 @@ def gen_schema(
 
 
 @lru_cache(maxsize=2048)
-def gen_enum(uml_enum: uml_model.Class, uml_project: uml_model.Project) -> linkml_model.Enum:
+def gen_enum(
+    uml_enum: uml_model.Class, uml_project: uml_model.Project
+) -> linkml_model.Enum:
     assert uml_enum.stereotype == uml_model.ClassStereotype.ENUMERATION
     enum_name = gen_safe_name(uml_enum.name)
 
@@ -132,11 +142,14 @@ def gen_enum(uml_enum: uml_model.Class, uml_project: uml_model.Project) -> linkm
                 (
                     uml_enum_val.name,
                     linkml_model.PermissibleValue(
-                        text=enum_val, meaning=gen_curie(f"{enum_name}.{enum_val}", CIM_PREFIX)
+                        text=enum_val,
+                        meaning=gen_curie(f"{enum_name}.{enum_val}", CIM_PREFIX),
                     ),
                 )
                 for uml_enum_val in uml_enum.attributes
-                if (enum_val := convert_camel_to_snake(gen_safe_name(uml_enum_val.name)))
+                if (
+                    enum_val := convert_camel_to_snake(gen_safe_name(uml_enum_val.name))
+                )
             }
         ),
     )
@@ -197,7 +210,9 @@ def get_rel_type_classes(
 
 
 def gen_slot_from_attr(
-    uml_attr: uml_model.Attribute, uml_class: uml_model.Class, uml_project: uml_model.Project
+    uml_attr: uml_model.Attribute,
+    uml_class: uml_model.Class,
+    uml_project: uml_model.Project,
 ) -> linkml_model.Slot:
     # range_ = None
     # if uml_attr.type is not None:
@@ -267,7 +282,9 @@ def gen_slot_from_relation(
 
 
 @lru_cache(maxsize=2048)
-def gen_class(uml_class: uml_model.Class, uml_project: uml_model.Project) -> linkml_model.Class:
+def gen_class(
+    uml_class: uml_model.Class, uml_project: uml_model.Project
+) -> linkml_model.Class:
     super_class = get_super_class(uml_class, uml_project)
 
     attr_slots = {

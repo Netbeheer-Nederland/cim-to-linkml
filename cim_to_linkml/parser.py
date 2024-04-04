@@ -2,8 +2,6 @@ import sqlite3
 from itertools import groupby
 from operator import itemgetter
 from datetime import datetime
-from pprint import pprint
-
 
 import cim_to_linkml.uml_model as uml_model
 

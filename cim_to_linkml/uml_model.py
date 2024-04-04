@@ -87,7 +87,9 @@ class Attribute(NamedTuple):
     name: AttributeName
     lower_bound: CardinalityValue = 0
     upper_bound: CardinalityValue = 1
-    type: Optional[ClassName] = None  # `NULL` for enumeration values, a class name otherwise.
+    type: Optional[
+        ClassName
+    ] = None  # `NULL` for enumeration values, a class name otherwise.
     default: Optional[str] = None
     notes: Optional[str] = None
     stereotype: Optional[AttributeStereotype] = None
@@ -130,7 +132,9 @@ class Classes:
 class Relations:
     def __init__(self, relations):
         self.by_id = group_by(relations, attr="id", singleton_groups=True)
-        self.by_source_id = group_by(relations, attr="source_class", singleton_groups=False)
+        self.by_source_id = group_by(
+            relations, attr="source_class", singleton_groups=False
+        )
         self.by_dest_id = group_by(relations, attr="dest_class", singleton_groups=False)
 
 
@@ -140,7 +144,9 @@ class Packages:
 
 
 class Project:
-    def __init__(self, packages: Packages, classes: Classes, relations: Relations) -> None:
+    def __init__(
+        self, packages: Packages, classes: Classes, relations: Relations
+    ) -> None:
         self.packages = packages
         self.classes = classes
         self.relations = relations
