@@ -20,17 +20,17 @@ class Slot(NamedTuple):
 
 class Enum(NamedTuple):
     name: str
+    permissible_values: frozenset[tuple[str, PermissibleValue]]
     enum_uri: Optional[str] = None
     description: Optional[str] = None
-    permissible_values: frozenset[tuple[str, PermissibleValue]] = frozenset()
 
 
 class Class(NamedTuple):
     name: str
+    attributes: Optional[frozenset[tuple[str, Slot]]] = None
     class_uri: Optional[str] = None
     is_a: Optional[str] = None
     description: Optional[str] = None
-    attributes: frozenset[tuple[str, Slot]] = frozenset()
 
 
 class Schema(NamedTuple):

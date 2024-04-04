@@ -47,6 +47,12 @@ class LinkMLGenerator:
 
     @staticmethod
     def convert_camel_to_snake(name: str) -> str:  # TODO: Implement and move.
+        """
+        ACLineSegment -> ac_line_segment
+        mRID -> mrid
+        bch -> bch
+        """
+
         return name
 
     @staticmethod
@@ -71,9 +77,7 @@ class LinkMLGenerator:
         if uml_super_class:
             uml_dep_classes.add(uml_super_class)
 
-        uml_dep_classes |= self.get_attr_type_classes(
-            uml_class
-        ) | self.get_rel_type_classes(uml_class)
+        uml_dep_classes |= self.get_attr_type_classes(uml_class) | self.get_rel_type_classes(uml_class)
 
         for uml_dep_class in uml_dep_classes:
             if uml_dep_class.id in self.classes:
@@ -125,17 +129,11 @@ class LinkMLGenerator:
                         uml_enum_val.name,
                         linkml_model.PermissibleValue(
                             text=enum_val,
-                            meaning=self.gen_curie(
-                                f"{enum_name}.{enum_val}", linkml_model.CIM_PREFIX
-                            ),
+                            meaning=self.gen_curie(f"{enum_name}.{enum_val}", linkml_model.CIM_PREFIX),
                         ),
                     )
                     for uml_enum_val in uml_enum.attributes
-                    if (
-                        enum_val := self.convert_camel_to_snake(
-                            self.gen_safe_name(uml_enum_val.name)
-                        )
-                    )
+                    if (enum_val := self.convert_camel_to_snake(self.gen_safe_name(uml_enum_val.name)))
                 }
             ),
         )
@@ -148,18 +146,13 @@ class LinkMLGenerator:
                 source_class = self.uml_project.classes.by_id[uml_relation.source_class]
             except KeyError as e:
                 continue  # Bad data, but no superclass for sure.
-            if (
-                uml_relation.type == uml_model.RelationType.GENERALIZATION
-                and source_class.id == uml_class.id
-            ):
+            if uml_relation.type == uml_model.RelationType.GENERALIZATION and source_class.id == uml_class.id:
                 super_class = self.uml_project.classes.by_id[uml_relation.dest_class]
                 return super_class
         return None
 
     @lru_cache(maxsize=2048)
-    def get_attr_type_classes(
-        self, uml_class: uml_model.Class
-    ) -> frozenset[uml_model.Class]:
+    def get_attr_type_classes(self, uml_class: uml_model.Class) -> frozenset[uml_model.Class]:
         type_classes = {
             class_
             for attr in uml_class.attributes
@@ -170,9 +163,7 @@ class LinkMLGenerator:
         return frozenset(type_classes)
 
     @lru_cache(maxsize=2048)
-    def get_rel_type_classes(
-        self, uml_class: uml_model.Class
-    ) -> frozenset[uml_model.Class]:
+    def get_rel_type_classes(self, uml_class: uml_model.Class) -> frozenset[uml_model.Class]:
         from_classes = set()
         to_classes = set()
 
@@ -189,9 +180,7 @@ class LinkMLGenerator:
 
         return frozenset(from_classes | to_classes)
 
-    def gen_slot_from_attr(
-        self, uml_attr: uml_model.Attribute, uml_class: uml_model.Class
-    ) -> linkml_model.Slot:
+    def gen_slot_from_attr(self, uml_attr: uml_model.Attribute, uml_class: uml_model.Class) -> linkml_model.Slot:
         # range_ = None
         # if uml_attr.type is not None:
         type_class = self.uml_project.classes.by_name[uml_attr.type]
@@ -206,9 +195,7 @@ class LinkMLGenerator:
             description=uml_attr.notes,
             required=self._slot_required(uml_attr.lower_bound),
             multivalued=self._slot_multivalued(uml_attr.lower_bound),
-            slot_uri=self.gen_curie(
-                f"{uml_class.name}.{uml_attr.name}", linkml_model.CIM_PREFIX
-            ),
+            slot_uri=self.gen_curie(f"{uml_class.name}.{uml_attr.name}", linkml_model.CIM_PREFIX),
         )
 
     @staticmethod
@@ -219,24 +206,18 @@ class LinkMLGenerator:
     def _slot_multivalued(upper_bound: uml_model.CardinalityValue) -> bool:
         return upper_bound == "*" or upper_bound > 1
 
-    def gen_slot_from_relation(
-        self, uml_relation: uml_model.Relation, direction
-    ) -> linkml_model.Slot:
+    def gen_slot_from_relation(self, uml_relation: uml_model.Relation, direction) -> linkml_model.Slot:
         source_class = self.uml_project.classes.by_id[uml_relation.source_class]
         dest_class = self.uml_project.classes.by_id[uml_relation.dest_class]
 
         match direction:
             case "source->dest":
                 return linkml_model.Slot(
-                    name=self.convert_camel_to_snake(
-                        self.gen_safe_name(uml_relation.dest_role or dest_class.name)
-                    ),
+                    name=self.convert_camel_to_snake(self.gen_safe_name(uml_relation.dest_role or dest_class.name)),
                     range=self.gen_safe_name(dest_class.name),
                     description=uml_relation.dest_role_note,
                     required=self._slot_required(uml_relation.dest_card.lower_bound),
-                    multivalued=self._slot_multivalued(
-                        uml_relation.dest_card.upper_bound
-                    ),
+                    multivalued=self._slot_multivalued(uml_relation.dest_card.upper_bound),
                     slot_uri=self.gen_curie(
                         f"{source_class.name}.{uml_relation.dest_role or dest_class.name}",
                         linkml_model.CIM_PREFIX,
@@ -244,26 +225,18 @@ class LinkMLGenerator:
                 )
             case "dest->source":
                 return linkml_model.Slot(
-                    name=self.convert_camel_to_snake(
-                        self.gen_safe_name(
-                            uml_relation.source_role or source_class.name
-                        )
-                    ),
+                    name=self.convert_camel_to_snake(self.gen_safe_name(uml_relation.source_role or source_class.name)),
                     range=self.gen_safe_name(source_class.name),
                     description=uml_relation.source_role_note,
                     required=self._slot_required(uml_relation.source_card.lower_bound),
-                    multivalued=self._slot_multivalued(
-                        uml_relation.source_card.upper_bound
-                    ),
+                    multivalued=self._slot_multivalued(uml_relation.source_card.upper_bound),
                     slot_uri=self.gen_curie(
                         f"{dest_class.name}.{uml_relation.source_role or source_class.name}",
                         linkml_model.CIM_PREFIX,
                     ),
                 )
             case _:
-                raise TypeError(
-                    f"Provided direction value was invalid. (relation ID: {uml_relation.id})"
-                )
+                raise TypeError(f"Provided direction value was invalid. (relation ID: {uml_relation.id})")
 
     @lru_cache(maxsize=2048)
     def gen_class(self, uml_class: uml_model.Class) -> linkml_model.Class:
@@ -294,7 +267,7 @@ class LinkMLGenerator:
             class_uri=self.gen_curie(uml_class.name, linkml_model.CIM_PREFIX),
             is_a=super_class.name if super_class else None,
             description=uml_class.note,
-            attributes=frozenset(attr_slots | from_relation_slots | to_relation_slots),
+            attributes=frozenset(attr_slots | from_relation_slots | to_relation_slots) or None,
         )
 
         return class_
