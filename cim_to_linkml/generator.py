@@ -89,9 +89,8 @@ class LinkMLGenerator:
         self.enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
 
         # for uml_class in self.uml_project.classes.by_id.values():
-        for uml_class in self.uml_project.classes.by_pkg_id.get(uml_package_id, []):
+        for uml_class in self.uml_project.classes.by_package.get(uml_package_id, []):
             self._gen_class_with_deps(uml_class)
-
         qualified_package_name = ".".join(self._get_package_path(uml_package_id))
 
         schema = linkml_model.Schema(
@@ -137,7 +136,7 @@ class LinkMLGenerator:
 
     @lru_cache(maxsize=2048)
     def get_super_class(self, uml_class: uml_model.Class) -> Optional[uml_model.Class]:
-        rels = self.uml_project.relations.by_source_id.get(uml_class.id, [])
+        rels = self.uml_project.relations.by_source_class.get(uml_class.id, [])
         for uml_relation in rels:
             if uml_relation.type != uml_model.RelationType.GENERALIZATION:
                 continue
@@ -251,14 +250,14 @@ class LinkMLGenerator:
 
         from_relation_slots = {
             (slot.name, slot)
-            for rel in self.uml_project.relations.by_source_id.get(uml_class.id, [])
+            for rel in self.uml_project.relations.by_source_class.get(uml_class.id, [])
             if rel and rel.type != uml_model.RelationType.GENERALIZATION
             if (slot := self.gen_slot_from_relation(rel, "source->dest"))
         }
 
         to_relation_slots = {
             (slot.name, slot)
-            for rel in self.uml_project.relations.by_dest_id.get(uml_class.id, [])
+            for rel in self.uml_project.relations.by_dest_class.get(uml_class.id, [])
             if rel and rel.type != uml_model.RelationType.GENERALIZATION
             if (slot := self.gen_slot_from_relation(rel, "dest->source"))
         }

@@ -126,16 +126,15 @@ class Classes:
 
     @cached_property
     def by_id(self):
-        key = attrgetter("id")
-        return {id_: next(class_) for id_, class_ in groupby(sorted(self._data, key=key), key=key)}
+        return {c.id: c for c in sorted(self._data, key=attrgetter("id"))}
 
     @cached_property
     def by_name(self):
         key = attrgetter("name")
 
         classes_by_name = {}
-        for name, class_ in groupby(sorted(self._data, key=key), key=key):
-            classes = list(sorted(class_, key=attrgetter("id")))
+        for name, classes in groupby(sorted(self._data, key=key), key=key):
+            classes = list(sorted(classes, key=attrgetter("id")))
             class_ = classes[0]
             if len(classes) > 1:
                 print(
@@ -146,17 +145,56 @@ class Classes:
 
         return classes_by_name
 
+    @cached_property
+    def by_package(self):
+        key = attrgetter("package")
+
+        classes_by_package = {}
+        for package_id, classes in groupby(sorted(self._data, key=key), key=key):
+            classes = list(sorted(classes, key=attrgetter("id")))
+            classes_by_package[package_id] = classes
+
+        return classes_by_package
+
 
 class Relations:
     def __init__(self, relations):
-        self.by_id = group_by(relations, attr="id", singleton_groups=True)
-        self.by_source_id = group_by(relations, attr="source_class", singleton_groups=False)
-        self.by_dest_id = group_by(relations, attr="dest_class", singleton_groups=False)
+        self._data = relations
+
+    @cached_property
+    def by_id(self):
+        return {r.id: r for r in sorted(self._data, key=attrgetter("id"))}
+
+    @cached_property
+    def by_source_class(self):
+        key = attrgetter("source_class")
+
+        relations_by_source_class = {}
+        for source_class, relations in groupby(sorted(self._data, key=key), key=key):
+            relations = list(sorted(relations, key=attrgetter("id")))
+            relations_by_source_class[source_class] = relations
+
+        return relations_by_source_class
+
+    @cached_property
+    def by_dest_class(self):
+        key = attrgetter("dest_class")
+
+        relations_by_dest_class = {}
+        for dest_class, relations in groupby(sorted(self._data, key=key), key=key):
+            relations = list(sorted(relations, key=attrgetter("id")))
+            relations_by_dest_class[dest_class] = relations
+
+        return relations_by_dest_class
 
 
 class Packages:
     def __init__(self, packages):
-        self.by_id = group_by(packages, attr="id", singleton_groups=True)
+        self._data = packages
+
+    @cached_property
+    def by_id(self):
+        return {p.id: p for p in sorted(self._data, key=attrgetter("id"))}
 
 
 class Project:
