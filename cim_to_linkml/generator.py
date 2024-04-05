@@ -1,4 +1,6 @@
 from functools import lru_cache
+from itertools import chain
+from operator import attrgetter
 from typing import Optional
 from urllib.parse import quote
 
@@ -9,6 +11,10 @@ import cim_to_linkml.uml_model as uml_model
 class LinkMLGenerator:
     def __init__(self, uml_project: uml_model.Project) -> None:
         self.uml_project = uml_project
+
+    @lru_cache(maxsize=173)
+    def _get_fully_qualified_package_name(self, package_id):
+        return ".".join(self._get_package_path(package_id))
 
     def _get_package_path(self, start_pkg_id, package_path=None):
         if package_path is None:
@@ -79,11 +85,10 @@ class LinkMLGenerator:
         # for uml_class in self.uml_project.classes.by_id.values():
         for uml_class in self.uml_project.classes.by_package.get(uml_package_id, []):
             self._gen_class_with_deps(uml_class)
-        qualified_package_name = ".".join(self._get_package_path(uml_package_id))
 
         schema = linkml_model.Schema(
             id=self.gen_curie(uml_package.name, "cim"),
-            name=qualified_package_name,
+            name=self._get_fully_qualified_package_name(uml_package_id),
             title=uml_package.name,
             description=uml_package.notes,
             enums=self.enums
@@ -97,13 +102,18 @@ class LinkMLGenerator:
             default_curi_maps=["semweb_context"],
             default_prefix=linkml_model.CIM_PREFIX,
             default_range="string",
+            subsets={
+                subset_name: None
+                for subset_name in chain.from_iterable(map(attrgetter("in_subset"), (self.enums | self.classes).values()))
+            },
         )
 
         return schema
 
-    @lru_cache(maxsize=2048)
+    @lru_cache(maxsize=1942)
     def gen_enum(self, uml_enum: uml_model.Class) -> linkml_model.Enum:
         assert uml_enum.stereotype == uml_model.ClassStereotype.ENUMERATION
+        package = self.uml_project.packages.by_id[uml_enum.package]
 
         return linkml_model.Enum(
             name=uml_enum.name,
@@ -115,9 +125,10 @@ class LinkMLGenerator:
                 )._asdict()
                 for uml_enum_val in uml_enum.attributes
             },
+            in_subset=[self._get_fully_qualified_package_name(package.id)],
         )
 
-    @lru_cache(maxsize=2048)
+    @lru_cache(maxsize=1947)
     def get_super_class(self, uml_class: uml_model.Class) -> Optional[uml_model.Class]:
         rels = self.uml_project.relations.by_source_class.get(uml_class.id, [])
         for uml_relation in rels:
@@ -134,7 +145,7 @@ class LinkMLGenerator:
                 return super_class
         return None
 
-    @lru_cache(maxsize=2048)
+    @lru_cache(maxsize=1942)
     def get_attr_type_classes(self, uml_class: uml_model.Class) -> tuple[uml_model.Class]:
         type_classes = tuple(
             class_
@@ -145,7 +156,7 @@ class LinkMLGenerator:
 
         return type_classes
 
-    @lru_cache(maxsize=2048)
+    @lru_cache(maxsize=1942)
     def get_rel_type_classes(self, uml_class: uml_model.Class) -> tuple[uml_model.Class]:
         from_classes = tuple()
         to_classes = tuple()
@@ -219,9 +230,10 @@ class LinkMLGenerator:
             case _:
                 raise TypeError(f"Provided direction value was invalid. (relation ID: {uml_relation.id})")
 
-    @lru_cache(maxsize=2048)
+    @lru_cache(maxsize=1942)
     def gen_class(self, uml_class: uml_model.Class) -> linkml_model.Class:
         super_class = self.get_super_class(uml_class)
+        package = self.uml_project.packages.by_id[uml_class.package]
 
         attr_slots = tuple(
             slot for uml_attr in uml_class.attributes if (slot := self.gen_slot_from_attr(uml_attr, uml_class))
@@ -247,6 +259,7 @@ class LinkMLGenerator:
             is_a=super_class.name if super_class else None,
             description=uml_class.note,
             attributes={slot.name: slot for slot in (attr_slots + from_relation_slots + to_relation_slots)} or None,
+            in_subset=[self._get_fully_qualified_package_name(package.id)],
         )
 
         return class_
