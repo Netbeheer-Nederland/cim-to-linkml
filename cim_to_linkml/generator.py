@@ -50,31 +50,19 @@ class LinkMLGenerator:
                 # TODO: Log.
                 return
             case uml_model.ClassStereotype.ENUMERATION:
-                if uml_class.name in self.enums:
-                    print(
-                        f"UML enumeration class with name {uml_class.name} is already processed. "
-                        f"Skipping this one (object ID: {uml_class.id})."
-                    )
-                    return
                 enum = self.gen_enum(uml_class)
                 self.enums[uml_class.name] = enum
             case uml_model.ClassStereotype.CIMDATATYPE | None | _:
-                if uml_class.name in self.classes:
-                    print(
-                        f"UML class with name {uml_class.name} is already processed. "
-                        f"Skipping this one (object ID: {uml_class.id})."
-                    )
-                    return
                 class_ = self.gen_class(uml_class)
                 self.classes[uml_class.name] = class_
 
-        uml_dep_classes = set()
+        uml_dep_classes = tuple()
 
         uml_super_class = self.get_super_class(uml_class)
         if uml_super_class:
-            uml_dep_classes.add(uml_super_class)
+            uml_dep_classes = uml_dep_classes + (uml_super_class,)
 
-        uml_dep_classes |= self.get_attr_type_classes(uml_class) | self.get_rel_type_classes(uml_class)
+        uml_dep_classes = uml_dep_classes + self.get_attr_type_classes(uml_class) + self.get_rel_type_classes(uml_class)
 
         for uml_dep_class in uml_dep_classes:
             if uml_dep_class.name in self.classes:
@@ -121,17 +109,25 @@ class LinkMLGenerator:
             name=uml_enum.name,
             enum_uri=self.gen_curie(uml_enum.name, linkml_model.CIM_PREFIX),
             description=uml_enum.note,
-            permissible_values=frozenset(
-                {
-                    (
-                        uml_enum_val.name,
-                        linkml_model.PermissibleValue(
-                            meaning=self.gen_curie(f"{uml_enum.name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX),
-                        ),
-                    )
-                    for uml_enum_val in uml_enum.attributes
+            # permissible_values=tuple(
+            #     {
+            #         (
+            #             uml_enum_val.name,
+            #             linkml_model.PermissibleValue(
+            #                 meaning=self.gen_curie(f"{uml_enum.name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX),
+            #             ),
+            #         )
+            #         for uml_enum_val in uml_enum.attributes
+            #     }
+            # ),
+            permissible_values={
+                uml_enum_val.name: {
+                    "meaning": self.gen_curie(
+                        f"{uml_enum.name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX
+                    )  # TODO: Better data type.
                 }
-            ),
+                for uml_enum_val in uml_enum.attributes
+            },
         )
 
     @lru_cache(maxsize=2048)
@@ -152,20 +148,20 @@ class LinkMLGenerator:
         return None
 
     @lru_cache(maxsize=2048)
-    def get_attr_type_classes(self, uml_class: uml_model.Class) -> frozenset[uml_model.Class]:
-        type_classes = {
+    def get_attr_type_classes(self, uml_class: uml_model.Class) -> tuple[uml_model.Class]:
+        type_classes = tuple(
             class_
             for attr in uml_class.attributes
             if attr.type is not None
             if (class_ := self.uml_project.classes.by_name[attr.type])
-        }
+        )
 
-        return frozenset(type_classes)
+        return type_classes
 
     @lru_cache(maxsize=2048)
-    def get_rel_type_classes(self, uml_class: uml_model.Class) -> frozenset[uml_model.Class]:
-        from_classes = set()
-        to_classes = set()
+    def get_rel_type_classes(self, uml_class: uml_model.Class) -> tuple[uml_model.Class]:
+        from_classes = tuple()
+        to_classes = tuple()
 
         for rel in self.uml_project.relations.by_id.values():
             if rel.type == uml_model.RelationType.GENERALIZATION:
@@ -173,16 +169,14 @@ class LinkMLGenerator:
             match uml_class.id:
                 case rel.source_class:
                     dest_class = self.uml_project.classes.by_id[rel.dest_class]
-                    to_classes.add(dest_class)
+                    to_classes = to_classes + (dest_class,)
                 case rel.dest_class:
                     source_class = self.uml_project.classes.by_id[rel.source_class]
-                    from_classes.add(source_class)
+                    from_classes = from_classes + (source_class,)
 
-        return frozenset(from_classes | to_classes)
+        return from_classes + to_classes
 
     def gen_slot_from_attr(self, uml_attr: uml_model.Attribute, uml_class: uml_model.Class) -> linkml_model.Slot:
-        # range_ = None
-        # if uml_attr.type is not None:
         type_class = self.uml_project.classes.by_name[uml_attr.type]
         if type_class.stereotype == uml_model.ClassStereotype.PRIMITIVE:
             range_ = self.map_primitive_data_type(uml_attr.type)
@@ -242,32 +236,32 @@ class LinkMLGenerator:
     def gen_class(self, uml_class: uml_model.Class) -> linkml_model.Class:
         super_class = self.get_super_class(uml_class)
 
-        attr_slots = {
+        attr_slots = tuple(
             (slot.name, slot)
             for uml_attr in uml_class.attributes
             if (slot := self.gen_slot_from_attr(uml_attr, uml_class))
-        }
+        )
 
-        from_relation_slots = {
+        from_relation_slots = tuple(
             (slot.name, slot)
             for rel in self.uml_project.relations.by_source_class.get(uml_class.id, [])
             if rel and rel.type != uml_model.RelationType.GENERALIZATION
             if (slot := self.gen_slot_from_relation(rel, "source->dest"))
-        }
+        )
 
-        to_relation_slots = {
+        to_relation_slots = tuple(
             (slot.name, slot)
             for rel in self.uml_project.relations.by_dest_class.get(uml_class.id, [])
             if rel and rel.type != uml_model.RelationType.GENERALIZATION
             if (slot := self.gen_slot_from_relation(rel, "dest->source"))
-        }
+        )
 
         class_ = linkml_model.Class(
             name=uml_class.name,
             class_uri=self.gen_curie(uml_class.name, linkml_model.CIM_PREFIX),
             is_a=super_class.name if super_class else None,
             description=uml_class.note,
-            attributes=frozenset(attr_slots | from_relation_slots | to_relation_slots) or None,
+            attributes={slot[0]: slot[1] for slot in (attr_slots + from_relation_slots + to_relation_slots)} or None,
         )
 
         return class_

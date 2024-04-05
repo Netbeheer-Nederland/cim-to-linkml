@@ -119,7 +119,7 @@ def parse_uml_class(class_rows: list[sqlite3.Cursor]) -> uml_model.Class:
         name=class_rows[0]["class_name"],
         author=class_rows[0]["class_author"],
         package=class_rows[0]["class_package_id"],
-        attributes=frozenset(
+        attributes=tuple(
             _parse_uml_class_attr(attr)
             for _, attr_ in groupby(class_rows, itemgetter("attr_name"))
             if (attr := next(attr_))

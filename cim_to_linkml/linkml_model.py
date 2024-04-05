@@ -2,7 +2,7 @@ from typing import NamedTuple, Optional
 
 ClassName = str
 EnumName = str
-
+SlotName = str
 
 
 CIM_PREFIX = "cim"
@@ -24,14 +24,14 @@ class Slot(NamedTuple):
 
 class Enum(NamedTuple):
     name: str
-    permissible_values: frozenset[tuple[str, PermissibleValue]]
+    permissible_values: tuple[tuple[str, PermissibleValue]]
     enum_uri: Optional[str] = None
     description: Optional[str] = None
 
 
 class Class(NamedTuple):
     name: str
-    attributes: Optional[frozenset[tuple[str, Slot]]] = None
+    attributes: Optional[dict[SlotName, Slot]] = None
     class_uri: Optional[str] = None
     is_a: Optional[str] = None
     description: Optional[str] = None
@@ -47,5 +47,5 @@ class Schema(NamedTuple):
     default_curi_maps: Optional[list[str]] = None
     default_prefix: Optional[str] = None
     default_range: Optional[str] = None
-    classes: Optional[frozenset[tuple[str, Class]]] = None
-    enums: Optional[frozenset[tuple[str, Enum]]] = None
+    classes: Optional[dict[ClassName, Class]] = None
+    enums: Optional[dict[EnumName, Enum]] = None
