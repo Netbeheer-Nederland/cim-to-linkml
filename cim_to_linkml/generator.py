@@ -110,11 +110,9 @@ class LinkMLGenerator:
             enum_uri=self.gen_curie(uml_enum.name, linkml_model.CIM_PREFIX),
             description=uml_enum.note,
             permissible_values={
-                uml_enum_val.name: {
-                    "meaning": self.gen_curie(
-                        f"{uml_enum.name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX
-                    )  # TODO: Better data type.
-                }
+                uml_enum_val.name: linkml_model.PermissibleValue(
+                    meaning=self.gen_curie(f"{uml_enum.name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX)
+                )._asdict()
                 for uml_enum_val in uml_enum.attributes
             },
         )

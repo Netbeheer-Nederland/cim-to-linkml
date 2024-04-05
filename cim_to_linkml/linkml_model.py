@@ -1,8 +1,11 @@
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, TypedDict
 
 ClassName = str
 EnumName = str
 SlotName = str
+EnumValName = str
+URI = str
+CURIE = str
 
 
 CIM_PREFIX = "cim"
@@ -10,7 +13,7 @@ CIM_BASE_URI = "https://cim.ucaiug.io/ns#"
 
 
 class PermissibleValue(NamedTuple):
-    meaning: Optional[str] = None
+    meaning: Optional[URI | CURIE] = None
 
 
 class Slot(NamedTuple):
@@ -19,26 +22,26 @@ class Slot(NamedTuple):
     required: bool = False
     multivalued: bool = False
     description: Optional[str] = None
-    slot_uri: Optional[str] = None
+    slot_uri: Optional[URI | CURIE] = None
 
 
 class Enum(NamedTuple):
     name: str
-    permissible_values: tuple[tuple[str, PermissibleValue]]
-    enum_uri: Optional[str] = None
+    permissible_values: dict[EnumValName, PermissibleValue]
+    enum_uri: Optional[URI | CURIE] = None
     description: Optional[str] = None
 
 
 class Class(NamedTuple):
     name: str
     attributes: Optional[dict[SlotName, Slot]] = None
-    class_uri: Optional[str] = None
+    class_uri: Optional[URI | CURIE] = None
     is_a: Optional[str] = None
     description: Optional[str] = None
 
 
 class Schema(NamedTuple):
-    id: str
+    id: URI | CURIE
     name: str
     title: Optional[str] = None
     description: Optional[str] = None
