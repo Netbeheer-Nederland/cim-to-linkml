@@ -1,7 +1,9 @@
-import yaml
-import cim_to_linkml.linkml_model as linkml_model
 import os
 from typing import Optional
+
+import yaml
+
+import cim_to_linkml.linkml_model as linkml_model
 
 
 def init_yaml_serializer():

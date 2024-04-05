@@ -126,11 +126,15 @@ class LinkMLGenerator:
     def get_super_class(self, uml_class: uml_model.Class) -> Optional[uml_model.Class]:
         rels = self.uml_project.relations.by_source_id.get(uml_class.id, [])
         for uml_relation in rels:
+            if uml_relation.type != uml_model.RelationType.GENERALIZATION:
+                continue
+
             try:
                 source_class = self.uml_project.classes.by_id[uml_relation.source_class]
             except KeyError as e:
                 continue  # Bad data, but no superclass for sure.
-            if uml_relation.type == uml_model.RelationType.GENERALIZATION and source_class.id == uml_class.id:
+
+            if source_class.id == uml_class.id:
                 super_class = self.uml_project.classes.by_id[uml_relation.dest_class]
                 return super_class
         return None
