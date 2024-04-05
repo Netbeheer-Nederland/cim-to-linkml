@@ -2,7 +2,9 @@ import sqlite3
 import textwrap
 
 
-def read_uml_project(conn: sqlite3.Connection) -> tuple[sqlite3.Cursor, sqlite3.Cursor, sqlite3.Cursor]:
+def read_uml_project(
+    conn: sqlite3.Connection,
+) -> tuple[sqlite3.Cursor, sqlite3.Cursor, sqlite3.Cursor]:
     uml_package_results = read_uml_packages(conn)
     uml_class_results = read_uml_classes(conn)
     uml_relation_results = read_uml_relations(conn)

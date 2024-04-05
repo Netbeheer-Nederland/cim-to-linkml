@@ -39,7 +39,9 @@ def parse_iso_datetime_val(val: str | None) -> datetime:
 
 
 def parse_uml_project(
-    uml_package_results: sqlite3.Cursor, uml_class_results: sqlite3.Cursor, uml_relation_results: sqlite3.Cursor
+    uml_package_results: sqlite3.Cursor,
+    uml_class_results: sqlite3.Cursor,
+    uml_relation_results: sqlite3.Cursor,
 ) -> uml_model.Project:
     uml_packages = uml_model.Packages({parse_uml_package(pkg_row) for pkg_row in uml_package_results})
     uml_classes = uml_model.Classes(
