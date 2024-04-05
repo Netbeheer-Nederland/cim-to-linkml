@@ -23,9 +23,6 @@ def main():
         if pkg_id == 2:
             continue  # `Model` base package.
 
-        if pkg_id != 11:
-            continue
-
         schema = generator.gen_schema_for_package(pkg_id)
         write_schema(schema)
 
