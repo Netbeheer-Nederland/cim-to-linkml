@@ -109,17 +109,6 @@ class LinkMLGenerator:
             name=uml_enum.name,
             enum_uri=self.gen_curie(uml_enum.name, linkml_model.CIM_PREFIX),
             description=uml_enum.note,
-            # permissible_values=tuple(
-            #     {
-            #         (
-            #             uml_enum_val.name,
-            #             linkml_model.PermissibleValue(
-            #                 meaning=self.gen_curie(f"{uml_enum.name}.{uml_enum_val.name}", linkml_model.CIM_PREFIX),
-            #             ),
-            #         )
-            #         for uml_enum_val in uml_enum.attributes
-            #     }
-            # ),
             permissible_values={
                 uml_enum_val.name: {
                     "meaning": self.gen_curie(
@@ -237,20 +226,18 @@ class LinkMLGenerator:
         super_class = self.get_super_class(uml_class)
 
         attr_slots = tuple(
-            (slot.name, slot)
-            for uml_attr in uml_class.attributes
-            if (slot := self.gen_slot_from_attr(uml_attr, uml_class))
+            slot for uml_attr in uml_class.attributes if (slot := self.gen_slot_from_attr(uml_attr, uml_class))
         )
 
         from_relation_slots = tuple(
-            (slot.name, slot)
+            slot
             for rel in self.uml_project.relations.by_source_class.get(uml_class.id, [])
             if rel and rel.type != uml_model.RelationType.GENERALIZATION
             if (slot := self.gen_slot_from_relation(rel, "source->dest"))
         )
 
         to_relation_slots = tuple(
-            (slot.name, slot)
+            slot
             for rel in self.uml_project.relations.by_dest_class.get(uml_class.id, [])
             if rel and rel.type != uml_model.RelationType.GENERALIZATION
             if (slot := self.gen_slot_from_relation(rel, "dest->source"))
@@ -261,7 +248,7 @@ class LinkMLGenerator:
             class_uri=self.gen_curie(uml_class.name, linkml_model.CIM_PREFIX),
             is_a=super_class.name if super_class else None,
             description=uml_class.note,
-            attributes={slot[0]: slot[1] for slot in (attr_slots + from_relation_slots + to_relation_slots)} or None,
+            attributes={slot.name: slot for slot in (attr_slots + from_relation_slots + to_relation_slots)} or None,
         )
 
         return class_
