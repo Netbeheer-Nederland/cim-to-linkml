@@ -1,7 +1,7 @@
 import os
-from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from functools import cached_property
 from itertools import groupby
 from operator import attrgetter, itemgetter
 from typing import Literal, NamedTuple, Optional
@@ -87,9 +87,7 @@ class Attribute(NamedTuple):
     name: AttributeName
     lower_bound: CardinalityValue = 0
     upper_bound: CardinalityValue = 1
-    type: Optional[
-        ClassName
-    ] = None  # `NULL` for enumeration values, a class name otherwise.
+    type: Optional[ClassName] = None  # `NULL` for enumeration values, a class name otherwise.
     default: Optional[str] = None
     notes: Optional[str] = None
     stereotype: Optional[AttributeStereotype] = None
@@ -124,17 +122,35 @@ class Relation(NamedTuple):
 
 class Classes:
     def __init__(self, classes):
-        self.by_id = group_by(classes, attr="id", singleton_groups=True)
-        self.by_name = group_by(classes, attr="name", singleton_groups=True)
-        self.by_pkg_id = group_by(classes, attr="package", singleton_groups=False)
+        self._data = classes
+
+    @cached_property
+    def by_id(self):
+        key = attrgetter("id")
+        return {id_: next(class_) for id_, class_ in groupby(sorted(self._data, key=key), key=key)}
+
+    @cached_property
+    def by_name(self):
+        key = attrgetter("name")
+
+        classes_by_name = {}
+        for name, class_ in groupby(sorted(self._data, key=key), key=key):
+            classes = list(sorted(class_, key=attrgetter("id")))
+            class_ = classes[0]
+            if len(classes) > 1:
+                print(
+                    f"Multiple classes with name {name}. Choosing one (object ID: {class_[0]}) "
+                    f"and skipping the others (object IDs: {', '.join(str(c.id) for c in classes[1:])})."
+                )
+            classes_by_name[name] = class_
+
+        return classes_by_name
 
 
 class Relations:
     def __init__(self, relations):
         self.by_id = group_by(relations, attr="id", singleton_groups=True)
-        self.by_source_id = group_by(
-            relations, attr="source_class", singleton_groups=False
-        )
+        self.by_source_id = group_by(relations, attr="source_class", singleton_groups=False)
         self.by_dest_id = group_by(relations, attr="dest_class", singleton_groups=False)
 
 
@@ -144,9 +160,7 @@ class Packages:
 
 
 class Project:
-    def __init__(
-        self, packages: Packages, classes: Classes, relations: Relations
-    ) -> None:
+    def __init__(self, packages: Packages, classes: Classes, relations: Relations) -> None:
         self.packages = packages
         self.classes = classes
         self.relations = relations

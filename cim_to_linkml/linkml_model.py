@@ -1,5 +1,10 @@
 from typing import NamedTuple, Optional
 
+ClassName = str
+EnumName = str
+
+
+
 CIM_PREFIX = "cim"
 CIM_BASE_URI = "https://cim.ucaiug.io/ns#"
 

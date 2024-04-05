@@ -47,13 +47,26 @@ class LinkMLGenerator:
     def _gen_class_with_deps(self, uml_class: uml_model.Class) -> None:
         match uml_class.stereotype:
             case uml_model.ClassStereotype.PRIMITIVE:
+                # TODO: Log.
                 return
             case uml_model.ClassStereotype.ENUMERATION:
+                if uml_class.name in self.enums:
+                    print(
+                        f"UML enumeration class with name {uml_class.name} is already processed. "
+                        f"Skipping this one (object ID: {uml_class.id})."
+                    )
+                    return
                 enum = self.gen_enum(uml_class)
-                self.enums[uml_class.id] = enum
+                self.enums[uml_class.name] = enum
             case uml_model.ClassStereotype.CIMDATATYPE | None | _:
+                if uml_class.name in self.classes:
+                    print(
+                        f"UML class with name {uml_class.name} is already processed. "
+                        f"Skipping this one (object ID: {uml_class.id})."
+                    )
+                    return
                 class_ = self.gen_class(uml_class)
-                self.classes[uml_class.id] = class_
+                self.classes[uml_class.name] = class_
 
         uml_dep_classes = set()
 
@@ -64,7 +77,7 @@ class LinkMLGenerator:
         uml_dep_classes |= self.get_attr_type_classes(uml_class) | self.get_rel_type_classes(uml_class)
 
         for uml_dep_class in uml_dep_classes:
-            if uml_dep_class.id in self.classes:
+            if uml_dep_class.name in self.classes:
                 continue
             self._gen_class_with_deps(uml_dep_class)
 
@@ -72,8 +85,8 @@ class LinkMLGenerator:
         uml_package = self.uml_project.packages.by_id[uml_package_id]
 
         # Set or reset state.
-        self.classes: dict[uml_model.ObjectID, linkml_model.Class] = {}
-        self.enums: dict[uml_model.ObjectID, linkml_model.Enum] = {}
+        self.classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
+        self.enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
 
         # for uml_class in self.uml_project.classes.by_id.values():
         for uml_class in self.uml_project.classes.by_pkg_id.get(uml_package_id, []):
@@ -86,9 +99,9 @@ class LinkMLGenerator:
             name=qualified_package_name,
             title=uml_package.name,
             description=uml_package.notes,
-            enums={enum.name: enum for enum in self.enums.values()}
+            enums=self.enums
             or None,  # TODO: BUG: Why is the empty `enums` dict shown as an empty key rather than simply being left out (in the YAML)?
-            classes={class_.name: class_ for class_ in self.classes.values()} or None,
+            classes=self.classes or None,
             imports=["linkml:types"],
             prefixes={
                 "linkml": "https://w3id.org/linkml/",

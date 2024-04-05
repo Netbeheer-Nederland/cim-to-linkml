@@ -2,12 +2,13 @@ import sqlite3
 import textwrap
 
 
-def read_project(conn: sqlite3.Connection) -> tuple[sqlite3.Cursor, sqlite3.Cursor, sqlite3.Cursor]:
+def read_uml_project(conn: sqlite3.Connection) -> tuple[sqlite3.Cursor, sqlite3.Cursor, sqlite3.Cursor]:
     uml_package_results = read_uml_packages(conn)
     uml_class_results = read_uml_classes(conn)
     uml_relation_results = read_uml_relations(conn)
 
     return uml_package_results, uml_class_results, uml_relation_results
+
 
 def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
     conn.row_factory = sqlite3.Row
@@ -32,7 +33,7 @@ def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
 
         WHERE type  NOT IN ("Dependency", "NoteLink")
 
-        ORDER BY id, start_object_id, end_object_id
+        ORDER BY id
         """
     )
     rows = cur.execute(query)
@@ -60,6 +61,8 @@ def read_uml_packages(conn: sqlite3.Connection) -> sqlite3.Cursor:
         LEFT JOIN t_object AS Object
         ON Package.Package_ID = Object.Object_ID
         AND Object.Object_Type = "Package"
+
+        ORDER BY id
         """
     )
     rows = cur.execute(query)
@@ -96,7 +99,7 @@ def read_uml_classes(conn: sqlite3.Connection) -> sqlite3.Cursor:
         ON Class.Object_ID = Attribute.Object_ID
 
         WHERE Class.Object_Type = "Class"
-        -- AND Class.Object_ID = 84
+
         ORDER BY Class.Object_ID, Attribute.Name
         """
     )
