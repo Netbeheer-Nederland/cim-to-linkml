@@ -1,4 +1,3 @@
-import os
 from functools import lru_cache
 from typing import Optional
 from urllib.parse import quote
@@ -87,7 +86,8 @@ class LinkMLGenerator:
             name=qualified_package_name,
             title=uml_package.name,
             description=uml_package.notes,
-            enums={enum.name: enum for enum in self.enums.values()} or None,  # TODO: BUG: Why is the empty `enums` dict shown as an empty key rather than simply being left out (in the YAML)?
+            enums={enum.name: enum for enum in self.enums.values()}
+            or None,  # TODO: BUG: Why is the empty `enums` dict shown as an empty key rather than simply being left out (in the YAML)?
             classes={class_.name: class_ for class_ in self.classes.values()} or None,
             imports=["linkml:types"],
             prefixes={
