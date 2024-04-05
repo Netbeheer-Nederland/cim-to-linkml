@@ -1,7 +1,0 @@
-- Class en enum count is gelijk
-- Attributen verschillen in:
-    - Enum `TroubleReportingKind`
-    - Classes `Profile`, `DERFunction` en `UsagePoint`
-- Vergeet niet dat er verschillende klassen en enums zijn met gelijke namen. Dit kan fout gaan in één schema.
-    - Hoe mee om te gaan?
-    - Ook de URI's kunnen daardoor niet uniek zijn
