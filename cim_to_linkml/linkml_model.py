@@ -1,11 +1,19 @@
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, TypedDict
+
+ClassName = str
+EnumName = str
+SlotName = str
+EnumValName = str
+URI = str
+CURIE = str
+
 
 CIM_PREFIX = "cim"
 CIM_BASE_URI = "https://cim.ucaiug.io/ns#"
 
 
 class PermissibleValue(NamedTuple):
-    meaning: Optional[str] = None
+    meaning: Optional[URI | CURIE] = None
 
 
 class Slot(NamedTuple):
@@ -14,26 +22,26 @@ class Slot(NamedTuple):
     required: bool = False
     multivalued: bool = False
     description: Optional[str] = None
-    slot_uri: Optional[str] = None
+    slot_uri: Optional[URI | CURIE] = None
 
 
 class Enum(NamedTuple):
     name: str
-    permissible_values: frozenset[tuple[str, PermissibleValue]]
-    enum_uri: Optional[str] = None
+    permissible_values: dict[EnumValName, PermissibleValue]
+    enum_uri: Optional[URI | CURIE] = None
     description: Optional[str] = None
 
 
 class Class(NamedTuple):
     name: str
-    attributes: Optional[frozenset[tuple[str, Slot]]] = None
-    class_uri: Optional[str] = None
+    attributes: Optional[dict[SlotName, Slot]] = None
+    class_uri: Optional[URI | CURIE] = None
     is_a: Optional[str] = None
     description: Optional[str] = None
 
 
 class Schema(NamedTuple):
-    id: str
+    id: URI | CURIE
     name: str
     title: Optional[str] = None
     description: Optional[str] = None
@@ -42,5 +50,5 @@ class Schema(NamedTuple):
     default_curi_maps: Optional[list[str]] = None
     default_prefix: Optional[str] = None
     default_range: Optional[str] = None
-    classes: Optional[frozenset[tuple[str, Class]]] = None
-    enums: Optional[frozenset[tuple[str, Enum]]] = None
+    classes: Optional[dict[ClassName, Class]] = None
+    enums: Optional[dict[EnumName, Enum]] = None

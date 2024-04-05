@@ -38,8 +38,10 @@ def parse_iso_datetime_val(val: str | None) -> datetime:
     return datetime.fromisoformat(val)
 
 
-def parse_project(
-    uml_package_results: sqlite3.Cursor, uml_class_results: sqlite3.Cursor, uml_relation_results: sqlite3.Cursor
+def parse_uml_project(
+    uml_package_results: sqlite3.Cursor,
+    uml_class_results: sqlite3.Cursor,
+    uml_relation_results: sqlite3.Cursor,
 ) -> uml_model.Project:
     uml_packages = uml_model.Packages({parse_uml_package(pkg_row) for pkg_row in uml_package_results})
     uml_classes = uml_model.Classes(
@@ -53,7 +55,6 @@ def parse_project(
 
 
 def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
-    # uml_package: dict = dict(package_row)
     uml_package = package_row
 
     return uml_model.Package(
@@ -68,7 +69,6 @@ def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
 
 
 def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
-    # uml_relation: dict = dict(relation_row)
     uml_relation = relation_row
 
     try:
@@ -121,9 +121,9 @@ def parse_uml_class(class_rows: list[sqlite3.Cursor]) -> uml_model.Class:
         name=class_rows[0]["class_name"],
         author=class_rows[0]["class_author"],
         package=class_rows[0]["class_package_id"],
-        attributes=frozenset(
+        attributes=tuple(
             _parse_uml_class_attr(attr)
-            for attr_name, attr_ in groupby(class_rows, itemgetter("attr_name"))
+            for _, attr_ in groupby(class_rows, itemgetter("attr_name"))
             if (attr := next(attr_))
             if attr["attr_id"] is not None
         ),

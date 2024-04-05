@@ -1,7 +1,7 @@
 import os
-from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from functools import cached_property
 from itertools import groupby
 from operator import attrgetter, itemgetter
 from typing import Literal, NamedTuple, Optional
@@ -87,9 +87,7 @@ class Attribute(NamedTuple):
     name: AttributeName
     lower_bound: CardinalityValue = 0
     upper_bound: CardinalityValue = 1
-    type: Optional[
-        ClassName
-    ] = None  # `NULL` for enumeration values, a class name otherwise.
+    type: Optional[ClassName] = None  # `NULL` for enumeration values, a class name otherwise.
     default: Optional[str] = None
     notes: Optional[str] = None
     stereotype: Optional[AttributeStereotype] = None
@@ -99,7 +97,7 @@ class Class(NamedTuple):
     id: ObjectID
     name: ClassName
     package: ObjectID
-    attributes: frozenset[Attribute]
+    attributes: tuple[Attribute]
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()
     author: Optional[str] = None
@@ -124,29 +122,83 @@ class Relation(NamedTuple):
 
 class Classes:
     def __init__(self, classes):
-        self.by_id = group_by(classes, attr="id", singleton_groups=True)
-        self.by_name = group_by(classes, attr="name", singleton_groups=True)
-        self.by_pkg_id = group_by(classes, attr="package", singleton_groups=False)
+        self._data = classes
+
+    @cached_property
+    def by_id(self):
+        return {c.id: c for c in sorted(self._data, key=attrgetter("id"))}
+
+    @cached_property
+    def by_name(self):
+        key = attrgetter("name")
+
+        classes_by_name = {}
+        for name, classes in groupby(sorted(self._data, key=key), key=key):
+            classes = list(sorted(classes, key=attrgetter("id")))
+            class_ = classes[0]
+            if len(classes) > 1:
+                print(
+                    f"Multiple classes with name {name}. Choosing one (object ID: {class_[0]}) "
+                    f"and skipping the others (object IDs: {', '.join(str(c.id) for c in classes[1:])})."
+                )
+            classes_by_name[name] = class_
+
+        return classes_by_name
+
+    @cached_property
+    def by_package(self):
+        key = attrgetter("package")
+
+        classes_by_package = {}
+        for package_id, classes in groupby(sorted(self._data, key=key), key=key):
+            classes = list(sorted(classes, key=attrgetter("id")))
+            classes_by_package[package_id] = classes
+
+        return classes_by_package
 
 
 class Relations:
     def __init__(self, relations):
-        self.by_id = group_by(relations, attr="id", singleton_groups=True)
-        self.by_source_id = group_by(
-            relations, attr="source_class", singleton_groups=False
-        )
-        self.by_dest_id = group_by(relations, attr="dest_class", singleton_groups=False)
+        self._data = relations
+
+    @cached_property
+    def by_id(self):
+        return {r.id: r for r in sorted(self._data, key=attrgetter("id"))}
+
+    @cached_property
+    def by_source_class(self):
+        key = attrgetter("source_class")
+
+        relations_by_source_class = {}
+        for source_class, relations in groupby(sorted(self._data, key=key), key=key):
+            relations = list(sorted(relations, key=attrgetter("id")))
+            relations_by_source_class[source_class] = relations
+
+        return relations_by_source_class
+
+    @cached_property
+    def by_dest_class(self):
+        key = attrgetter("dest_class")
+
+        relations_by_dest_class = {}
+        for dest_class, relations in groupby(sorted(self._data, key=key), key=key):
+            relations = list(sorted(relations, key=attrgetter("id")))
+            relations_by_dest_class[dest_class] = relations
+
+        return relations_by_dest_class
 
 
 class Packages:
     def __init__(self, packages):
-        self.by_id = group_by(packages, attr="id", singleton_groups=True)
+        self._data = packages
+
+    @cached_property
+    def by_id(self):
+        return {p.id: p for p in sorted(self._data, key=attrgetter("id"))}
 
 
 class Project:
-    def __init__(
-        self, packages: Packages, classes: Classes, relations: Relations
-    ) -> None:
+    def __init__(self, packages: Packages, classes: Classes, relations: Relations) -> None:
         self.packages = packages
         self.classes = classes
         self.relations = relations

@@ -1,3 +1,5 @@
+from pprint import pprint
+import json
 import yaml
 
 with open("out.yml") as f:
@@ -19,6 +21,10 @@ print("Different classes:")
 for key in jemoeder_class_keys:
     if jemoeder["classes"][key] != out["classes"][key]:
         print(f"\t{key}")
+        print(f"\t\tjemoeder:")
+        print(json.dumps(sorted(list(jemoeder["classes"][key]["attributes"].keys()))))
+        print(f"\t\tout:")
+        print(json.dumps(sorted(list(out["classes"][key]["attributes"].keys()))))
 print()
 
 print("Different enums:")
