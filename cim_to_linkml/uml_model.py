@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 from datetime import datetime
 from enum import Enum
 from functools import cached_property
@@ -17,21 +18,6 @@ Many = Literal["*"]
 CardinalityValue = int | Many
 
 QEAFile = os.PathLike | str
-
-
-### Utils.
-def group_by(iterable, attr=None, item=None, singleton_groups=False) -> dict:
-    if attr is not None:
-        key = attrgetter(attr)
-    elif item is not None:
-        key = itemgetter(item)
-    else:
-        raise TypeError("Please supply either `item` or `attr`")
-
-    return {
-        name: next(group) if singleton_groups else list(group)
-        for name, group in groupby(sorted(iterable, key=key), key)
-    }
 
 
 class Cardinality(NamedTuple):
@@ -195,6 +181,25 @@ class Packages:
     @cached_property
     def by_id(self):
         return {p.id: p for p in sorted(self._data, key=attrgetter("id"))}
+
+    @cached_property
+    def by_qualified_name(self):
+        return {self.get_qualified_name(p_id): p for p_id, p in self.by_id.items()}
+
+    @lru_cache(maxsize=173)
+    def get_qualified_name(self, package_id):
+        return ".".join(self._get_package_path(package_id))
+
+    def _get_package_path(self, start_pkg_id, package_path=None):
+        if package_path is None:
+            package_path = []
+
+        package = self.by_id[start_pkg_id]
+
+        if package.parent in (0, None):
+            return package_path
+
+        return self._get_package_path(package.parent, [package.name] + package_path)
 
 
 class Project:

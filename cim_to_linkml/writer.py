@@ -12,6 +12,7 @@ def init_yaml_serializer():
     yaml.add_representer(linkml_model.Slot, linkml_namedtuple_representer)
     yaml.add_representer(linkml_model.Class, linkml_namedtuple_representer)
     yaml.add_representer(linkml_model.Enum, linkml_namedtuple_representer)
+    yaml.add_representer(linkml_model.Subset, linkml_namedtuple_representer)
     yaml.add_representer(linkml_model.Schema, linkml_namedtuple_representer)
     yaml.add_representer(linkml_model.PermissibleValue, linkml_namedtuple_representer)
 
