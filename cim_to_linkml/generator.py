@@ -1,4 +1,5 @@
 from functools import lru_cache
+from datetime import datetime
 from typing import Optional
 from urllib.parse import quote
 
@@ -90,6 +91,7 @@ class LinkMLGenerator:
             title=uml_package.name,
             description=uml_package.notes,
             created_by=GITHUB_REPO_URL,
+            generation_date=datetime.now(),
             metamodel_version=LINKML_METAMODEL_VERSION,
             imports=["linkml:types"],
             prefixes={

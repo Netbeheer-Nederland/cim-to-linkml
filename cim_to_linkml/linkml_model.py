@@ -1,4 +1,5 @@
 from typing import NamedTuple, Optional
+from datetime import datetime
 
 ClassName = str
 EnumName = str
@@ -55,6 +56,7 @@ class Schema(NamedTuple):
     title: Optional[str] = None
     description: Optional[str] = None
     created_by: Optional[URI | CURIE] = None
+    generation_date: Optional[datetime] = None
     metamodel_version: Optional[str] = None
     imports: Optional[list[str]] = None
     prefixes: Optional[dict[str, str]] = None
