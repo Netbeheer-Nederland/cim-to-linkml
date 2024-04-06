@@ -57,7 +57,7 @@ def represent_linkml_class(dumper, data):
 
 
 def represent_linkml_slot(dumper, data):
-    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}]}
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}, None]}
 
     return dumper.represent_dict(d)
 
