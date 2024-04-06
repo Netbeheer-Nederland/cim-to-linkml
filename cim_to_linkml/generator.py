@@ -1,7 +1,5 @@
 from datetime import datetime
 from functools import lru_cache
-from itertools import chain
-from operator import attrgetter
 from typing import Optional
 from urllib.parse import quote
 
@@ -16,6 +14,17 @@ GITHUB_REPO_URL = "https://github.com/bartkl/cim-to-linkml"
 class LinkMLGenerator:
     def __init__(self, uml_project: uml_model.Project) -> None:
         self.uml_project = uml_project
+
+    def gen_schema_id(self, uml_package: uml_model.Package) -> linkml_model.URI:
+        """
+        Example:
+        TC57CIM.IEC61970.Dynamics.StandardModels
+            ->
+        https://cim.ucaiug.io/ns#TC57CIM.IEC61970.Dynamics.StandardModels
+        """
+
+        qname = self.uml_project.packages.get_qualified_name(uml_package.id)
+        return linkml_model.CIM_BASE_URI + qname
 
     @staticmethod
     def map_primitive_data_type(val):
@@ -92,7 +101,7 @@ class LinkMLGenerator:
             self._gen_class_with_deps(uml_class)
 
         schema = linkml_model.Schema(
-            id=self.gen_curie(uml_package.name, linkml_model.CIM_PREFIX),  # TODO: Is this the best URI?
+            id=self.gen_schema_id(uml_package),
             name=self.uml_project.packages.get_qualified_name(uml_package_id),
             title=uml_package.name,
             description=uml_package.notes,
@@ -112,24 +121,9 @@ class LinkMLGenerator:
             default_range="string",
             classes=self.classes,
             enums=self.enums,
-            subsets={
-                subset_name: self.gen_subset(package)
-                for subset_name in sorted(
-                    set(chain.from_iterable(map(attrgetter("in_subset"), (self.enums | self.classes).values())))
-                )
-                if (package := self.uml_project.packages.by_qualified_name[subset_name])
-            },
         )
 
         return schema
-
-    @lru_cache(maxsize=173)
-    def gen_subset(self, uml_package: uml_model.Package) -> linkml_model.Subset:
-        return linkml_model.Subset(
-            name=uml_package.name,
-            # title=uml_package.name
-            description=uml_package.notes,
-        )
 
     @lru_cache(maxsize=1942)
     def gen_enum(self, uml_enum: uml_model.Class) -> linkml_model.Enum:
@@ -146,7 +140,7 @@ class LinkMLGenerator:
                 )._asdict()
                 for uml_enum_val in uml_enum.attributes
             },
-            in_subset=[self.uml_project.packages.get_qualified_name(package.id)],
+            from_schema=self.gen_schema_id(package),
         )
 
     @lru_cache(maxsize=1947)
@@ -285,7 +279,7 @@ class LinkMLGenerator:
             annotations=annotations,
             description=uml_class.note,
             attributes={slot.name: slot for slot in (attr_slots + from_relation_slots + to_relation_slots)} or None,
-            in_subset=[self.uml_project.packages.get_qualified_name(package.id)],
+            from_schema=self.gen_schema_id(package),
         )
 
         return class_

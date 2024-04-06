@@ -5,7 +5,6 @@ ClassName = str
 EnumName = str
 SlotName = str
 EnumValName = str
-SubsetName = str
 URI = str
 CURIE = str
 
@@ -31,7 +30,7 @@ class Enum(NamedTuple):
     name: str
     enum_uri: URI | CURIE
     description: Optional[str] = None
-    in_subset: Optional[list[SubsetName]] = None
+    from_schema: Optional[URI] = None
     permissible_values: Optional[dict[EnumValName, PermissibleValue]] = None
 
 
@@ -40,15 +39,9 @@ class Class(NamedTuple):
     class_uri: URI | CURIE
     is_a: Optional[str] = None
     annotations: Optional[dict[str, str]] = None
-    in_subset: Optional[list[SubsetName]] = None
+    from_schema: Optional[URI] = None
     description: Optional[str] = None
     attributes: Optional[dict[SlotName, Slot]] = None
-
-
-class Subset(NamedTuple):
-    name: str
-    # title: Optional[str] = None
-    description: Optional[str] = None
 
 
 class Schema(NamedTuple):
@@ -68,4 +61,3 @@ class Schema(NamedTuple):
     default_range: Optional[str] = None
     classes: Optional[dict[ClassName, Class]] = None
     enums: Optional[dict[EnumName, Enum]] = None
-    subsets: Optional[dict[SubsetName, Subset]] = None
