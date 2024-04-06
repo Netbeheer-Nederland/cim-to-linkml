@@ -36,6 +36,18 @@ class LinkMLGenerator:
         return f"{prefix}:{quote(name)}"
 
     def _gen_class_with_deps(self, uml_class: uml_model.Class) -> None:
+        """Generates the class dependencies.
+
+        This method does the heavy lifting. It recursively traverses all dependencies
+        of the given UML class, e.g. its ancestor classes, associated classes and
+        enum types, etc.
+
+        Every class dependency is either a class or enum class, and once generated to LinkML
+        elements they are stored in the `self.classes` and `self.enums` variables.
+
+        NOTE: This method is stateful.
+        """
+
         match uml_class.stereotype:
             case uml_model.ClassStereotype.PRIMITIVE:
                 # TODO: Log.
