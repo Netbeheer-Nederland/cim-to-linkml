@@ -40,6 +40,7 @@ class Class(NamedTuple):
     attributes: Optional[dict[SlotName, Slot]] = None
     class_uri: Optional[URI | CURIE] = None
     is_a: Optional[str] = None
+    annotations: Optional[dict[str, str]] = None
     description: Optional[str] = None
     in_subset: Optional[list[SubsetName]] = None
 

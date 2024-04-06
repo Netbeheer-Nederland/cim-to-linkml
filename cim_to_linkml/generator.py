@@ -60,7 +60,10 @@ class LinkMLGenerator:
             case uml_model.ClassStereotype.ENUMERATION:
                 enum = self.gen_enum(uml_class)
                 self.enums[uml_class.name] = enum
-            case uml_model.ClassStereotype.CIMDATATYPE | None | _:
+            case uml_model.ClassStereotype.CIMDATATYPE:
+                class_ = self.gen_class(uml_class)
+                self.classes[uml_class.name] = class_
+            case None | _:
                 class_ = self.gen_class(uml_class)
                 self.classes[uml_class.name] = class_
 
@@ -271,10 +274,15 @@ class LinkMLGenerator:
             if (slot := self.gen_slot_from_relation(rel, "dest->source"))
         )
 
+        annotations = {}
+        if uml_class.stereotype == uml_model.ClassStereotype.CIMDATATYPE:
+            annotations["represents_cim_data_type"] = True
+
         class_ = linkml_model.Class(
             name=uml_class.name,
             class_uri=self.gen_curie(uml_class.name, linkml_model.CIM_PREFIX),
             is_a=super_class.name if super_class else None,
+            annotations=annotations,
             description=uml_class.note,
             attributes={slot.name: slot for slot in (attr_slots + from_relation_slots + to_relation_slots)} or None,
             in_subset=[self.uml_project.packages.get_qualified_name(package.id)],
