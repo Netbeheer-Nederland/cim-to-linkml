@@ -8,33 +8,58 @@ import cim_to_linkml.linkml_model as linkml_model
 
 def init_yaml_serializer():
     yaml.add_representer(type(None), represent_none)
-    yaml.add_representer(linkml_model.Slot, linkml_element_representer(exclude_fields=["name"]))
-    yaml.add_representer(linkml_model.Class, linkml_element_representer(exclude_fields=["name"]))
-    yaml.add_representer(linkml_model.Enum, linkml_element_representer(exclude_fields=["name"]))
-    yaml.add_representer(linkml_model.Subset, linkml_element_representer(exclude_fields=["name"]))
-    yaml.add_representer(linkml_model.Schema, linkml_element_representer())
-    yaml.add_representer(linkml_model.PermissibleValue, linkml_element_representer())
+    yaml.add_representer(linkml_model.Slot, represent_linkml_slot)
+    yaml.add_representer(linkml_model.Class, represent_linkml_class)
+    yaml.add_representer(linkml_model.Enum, represent_linkml_enum)
+    yaml.add_representer(linkml_model.Subset, represent_linkml_subset)
+    yaml.add_representer(linkml_model.PermissibleValue, represent_linkml_permissible_value)
+    yaml.add_representer(linkml_model.Schema, represent_linkml_schema)
 
 
 def represent_none(self, _):
+    """Replace `null` with the empty string."""
+
     return self.represent_scalar("tag:yaml.org,2002:null", "")
 
 
-def linkml_element_representer(exclude_fields: list[str] | None = None):
-    def representer(dumper, data):
-        d = data._asdict()
+def represent_linkml_schema(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if v not in [[], {}, None]}
 
-        if exclude_fields is not None:
-            for k in exclude_fields:
-                del d[k]
+    for k, v in d.get("subsets", {}).items():
+        if not v.description:
+            d["subsets"][k] = None
 
-        empty_collection_fields = [k for k, v in d.items() if v in [[], {}]]
-        for k in empty_collection_fields:
-            del d[k]
+    return dumper.represent_dict(d)
 
-        return dumper.represent_dict(d)
 
-    return representer
+def represent_linkml_permissible_value(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if v is not None}
+
+    return dumper.represent_dict(d)
+
+
+def represent_linkml_subset(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}, None]}
+
+    return dumper.represent_dict(d)
+
+
+def represent_linkml_enum(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}, None]}
+
+    return dumper.represent_dict(d)
+
+
+def represent_linkml_class(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}, None]}
+
+    return dumper.represent_dict(d)
+
+
+def represent_linkml_slot(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}]}
+
+    return dumper.represent_dict(d)
 
 
 def write_schema(schema: linkml_model.Schema, out_file: Optional[os.PathLike | str] = None) -> None:
