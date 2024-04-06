@@ -13,21 +13,30 @@ init_yaml_serializer()
 
 
 @click.command()
-@click.argument("cim_db", type=click.Path(exists=True, path_type=Path), nargs=1)
+@click.argument("cim_db", type=click.Path(exists=True, path_type=Path), nargs=1, metavar="QEA_FILE")
 @click.option(
     "--package",
     "-p",
     type=str,
     show_default=True,
     multiple=True,
-    help="Qualified package name. Example: TC57CIM.IEC61970.Base.Core.",
+    help="Fully qualified package name. [example: TC57CIM.IEC61970.Base.Core]",
+)
+@click.option(
+    "--single-schema",
+    "-s",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="If false, a schema is generated per package. Otherwise everything will be outputted to a single schema.",
 )
 @click.option(
     "--output-dir",
     "-o",
     default=Path("schemas"),
+    show_default=True,
     type=click.Path(path_type=Path),
-    help="Directory where schemas will be outputted. (default: `schemas')",
+    help="Directory where schemas will be outputted.",
 )
 def cli(
     cim_db,
@@ -35,9 +44,21 @@ def cli(
     output_dir,
 ):
     """
-    Generates LinkML schemas for the provided packages from the supplied Sparx EA database file (QEA).
+    Generates LinkML schemas from the supplied Sparx EA QEA database file.
 
-    If no packages are supplied, the entire CIM will be outputted in a single LinkML schema called `CIM.yml'.
+
+    You can specify which packages in the UML model to generate schemas from
+    using the `--package` parameter, where you provide the fully qualified
+    package name (e.g. TC57CIM.IEC61970.Base.Core) of each package to select it.
+
+    If no packages are specified, the entire CIM will be selected.
+
+    By default, a LinkML schema will be generated for each specified package.
+    However, by setting the `--single-schema` flag everything is outputted to
+    a single LinkML schema.
+
+
+
     """
 
     with sqlite3.connect(cim_db) as conn:
@@ -55,8 +76,10 @@ def cli(
             schema = generator.gen_schema_for_package(package.id)
             write_schema(schema, base_output_dir=output_dir)
     else:
-        schema = generator.gen_schema_for_cim()
-        write_schema(schema, base_output_dir=output_dir)
+        for pkg_id in generator.uml_project.packages.by_id:
+            # schema = generator.gen_schema_for_cim()
+            schema = generator.gen_schema_for_package(pkg_id)
+            write_schema(schema, base_output_dir=output_dir)
 
 
 if __name__ == "__main__":
