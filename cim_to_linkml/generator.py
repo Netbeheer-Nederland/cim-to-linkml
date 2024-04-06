@@ -94,6 +94,7 @@ class LinkMLGenerator:
             contributors=["github:bartkl"],
             created_by=GITHUB_REPO_URL,
             generation_date=datetime.now(),
+            license="https://www.apache.org/licenses/LICENSE-2.0.txt",
             metamodel_version=LINKML_METAMODEL_VERSION,
             imports=["linkml:types"],
             prefixes={

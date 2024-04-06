@@ -58,6 +58,7 @@ class Schema(NamedTuple):
     contributors: Optional[list[URI | CURIE]] = None
     created_by: Optional[URI | CURIE] = None
     generation_date: Optional[datetime] = None
+    license: Optional[str] = None
     metamodel_version: Optional[str] = None
     imports: Optional[list[str]] = None
     prefixes: Optional[dict[str, str]] = None
