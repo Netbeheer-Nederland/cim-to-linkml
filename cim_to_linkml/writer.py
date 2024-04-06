@@ -8,33 +8,58 @@ import cim_to_linkml.linkml_model as linkml_model
 
 def init_yaml_serializer():
     yaml.add_representer(type(None), represent_none)
-    yaml.add_representer(frozenset, frozenset_representer)
-    yaml.add_representer(linkml_model.Slot, linkml_namedtuple_representer)
-    yaml.add_representer(linkml_model.Class, linkml_namedtuple_representer)
-    yaml.add_representer(linkml_model.Enum, linkml_namedtuple_representer)
-    yaml.add_representer(linkml_model.Subset, linkml_namedtuple_representer)
-    yaml.add_representer(linkml_model.Schema, linkml_namedtuple_representer)
-    yaml.add_representer(linkml_model.PermissibleValue, linkml_namedtuple_representer)
+    yaml.add_representer(linkml_model.Slot, represent_linkml_slot)
+    yaml.add_representer(linkml_model.Class, represent_linkml_class)
+    yaml.add_representer(linkml_model.Enum, represent_linkml_enum)
+    yaml.add_representer(linkml_model.Subset, represent_linkml_subset)
+    yaml.add_representer(linkml_model.PermissibleValue, represent_linkml_permissible_value)
+    yaml.add_representer(linkml_model.Schema, represent_linkml_schema)
 
 
 def represent_none(self, _):
+    """Replace `null` with the empty string."""
+
     return self.represent_scalar("tag:yaml.org,2002:null", "")
 
 
-def frozenset_representer(dumper, data):
-    assert type(data) == frozenset
-    if len(data) == 0:
-        return dumper.represent_none(data)
+def represent_linkml_schema(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if v not in [[], {}, None]}
 
-    for el in data:  # Only check first element.
-        if type(el) == tuple and len(el) == 2:
-            return dumper.represent_dict(dict(data))
-        else:
-            return dumper.represent_set(data)
+    for k, v in d.get("subsets", {}).items():
+        if not v.description:
+            d["subsets"][k] = None
+
+    return dumper.represent_dict(d)
 
 
-def linkml_namedtuple_representer(dumper, data):
-    return dumper.represent_dict(data._asdict())
+def represent_linkml_permissible_value(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if v is not None}
+
+    return dumper.represent_dict(d)
+
+
+def represent_linkml_subset(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}, None]}
+
+    return dumper.represent_dict(d)
+
+
+def represent_linkml_enum(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}, None]}
+
+    return dumper.represent_dict(d)
+
+
+def represent_linkml_class(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}, None]}
+
+    return dumper.represent_dict(d)
+
+
+def represent_linkml_slot(dumper, data):
+    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}]}
+
+    return dumper.represent_dict(d)
 
 
 def write_schema(schema: linkml_model.Schema, out_file: Optional[os.PathLike | str] = None) -> None:

@@ -1,4 +1,4 @@
-from typing import NamedTuple, Optional, TypedDict
+from typing import NamedTuple, Optional
 
 ClassName = str
 EnumName = str
