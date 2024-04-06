@@ -1,6 +1,4 @@
 from functools import lru_cache
-from itertools import chain
-from operator import attrgetter
 from typing import Optional
 from urllib.parse import quote
 
@@ -8,6 +6,8 @@ import cim_to_linkml.linkml_model as linkml_model
 import cim_to_linkml.uml_model as uml_model
 
 LINKML_METAMODEL_VERSION = "1.7.0"
+GITHUB_REPO_URL = "https://github.com/bartkl/cim-to-linkml"
+
 
 class LinkMLGenerator:
     def __init__(self, uml_project: uml_model.Project) -> None:
@@ -89,6 +89,7 @@ class LinkMLGenerator:
             name=self.uml_project.packages.get_qualified_name(uml_package_id),
             title=uml_package.name,
             description=uml_package.notes,
+            created_by=GITHUB_REPO_URL,
             metamodel_version=LINKML_METAMODEL_VERSION,
             imports=["linkml:types"],
             prefixes={
