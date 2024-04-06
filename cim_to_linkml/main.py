@@ -13,14 +13,14 @@ init_yaml_serializer()
 
 
 @click.command()
-@click.argument("cim_db", type=click.Path(exists=True, path_type=Path))
+@click.argument("cim_db", type=click.Path(exists=True, path_type=Path), nargs=1)
 @click.option(
     "--package",
     "-p",
     type=str,
     show_default=True,
     multiple=True,
-    help="Qualified package name. Example: TC57CIM.IEC61970.Base.Core",
+    help="Qualified package name. Example: TC57CIM.IEC61970.Base.Core.",
 )
 @click.option(
     "--output-dir",
@@ -34,6 +34,12 @@ def cli(
     package,
     output_dir,
 ):
+    """
+    Generates LinkML schemas for the provided packages from the supplied Sparx EA database file (QEA).
+
+    If no packages are supplied, the entire CIM will be outputted in a single LinkML schema called `CIM.yml'.
+    """
+
     with sqlite3.connect(cim_db) as conn:
         uml_project = parse_uml_project(*read_uml_project(conn))
 
