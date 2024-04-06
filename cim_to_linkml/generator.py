@@ -90,7 +90,7 @@ class LinkMLGenerator:
             self._gen_class_with_deps(uml_dep_class)
 
     def gen_schema_for_cim(self) -> linkml_model.Schema:
-        # Set or reset state of generator.
+        # Initialize generator state.
         self.classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
         self.enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
 
@@ -125,7 +125,7 @@ class LinkMLGenerator:
     def gen_schema_for_package(self, uml_package_id: uml_model.ObjectID) -> linkml_model.Schema:
         uml_package = self.uml_project.packages.by_id[uml_package_id]
 
-        # Set or reset state of generator.
+        # (Re-)initialize generator state.
         self.classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
         self.enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
 
