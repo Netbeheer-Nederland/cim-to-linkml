@@ -4,7 +4,24 @@ Make sure you have Python (≥ 3.11) and Poetry installed.
 Run `poetry install` to have it set up a virtual environment for you with the necessary dependencies installed and configuration taken care of.
 
 ## Running `cim2linkml`
-Either activate your virtual environment (e.g. using `poetry shell`) or use `poetry run` to run the `cim2linkml` script.
+
+#### From within the virtual environment
+Activate your virtual environment (e.g. using `poetry shell`) and you should be able to use the `cim2linkml` script.
+
+```
+$ poetry shell
+$ cim2linkml --help
+# ...
+```
+
+#### Using `poetry run`
+You can also run the script inside the virtual environment without activating it.
+
+```
+$ poetry run cim2linkml --help
+# ...
+```
+
 
 ### Usage
 ```
