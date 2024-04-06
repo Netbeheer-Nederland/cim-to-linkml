@@ -20,29 +20,29 @@ class PermissibleValue(NamedTuple):
 
 class Slot(NamedTuple):
     name: str
+    slot_uri: URI | CURIE
     range: str
     required: bool = False
     multivalued: bool = False
     description: Optional[str] = None
-    slot_uri: Optional[URI | CURIE] = None
 
 
 class Enum(NamedTuple):
     name: str
-    permissible_values: dict[EnumValName, PermissibleValue]
-    enum_uri: Optional[URI | CURIE] = None
+    enum_uri: URI | CURIE
     description: Optional[str] = None
     in_subset: Optional[list[SubsetName]] = None
+    permissible_values: Optional[dict[EnumValName, PermissibleValue]] = None
 
 
 class Class(NamedTuple):
     name: str
-    attributes: Optional[dict[SlotName, Slot]] = None
-    class_uri: Optional[URI | CURIE] = None
+    class_uri: URI | CURIE
     is_a: Optional[str] = None
     annotations: Optional[dict[str, str]] = None
-    description: Optional[str] = None
     in_subset: Optional[list[SubsetName]] = None
+    description: Optional[str] = None
+    attributes: Optional[dict[SlotName, Slot]] = None
 
 
 class Subset(NamedTuple):
