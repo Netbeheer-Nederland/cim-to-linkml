@@ -45,7 +45,7 @@ class Class(NamedTuple):
 
 class Subset(NamedTuple):
     name: str
-    title: Optional[str] = None
+    # title: Optional[str] = None
     description: Optional[str] = None
 
 
