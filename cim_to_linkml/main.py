@@ -27,7 +27,7 @@ init_yaml_serializer()
     "-o",
     default=Path("schemas"),
     type=click.Path(path_type=Path),
-    help="Directory where schemas will be outputted.",
+    help="Directory where schemas will be outputted. (default: `schemas')",
 )
 def cli(
     cim_db,
