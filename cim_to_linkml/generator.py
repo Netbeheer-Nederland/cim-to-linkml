@@ -89,7 +89,7 @@ class LinkMLGenerator:
             self._gen_class_with_deps(uml_class)
 
         schema = linkml_model.Schema(
-            id=self.gen_curie(uml_package.name, "cim"),
+            id=self.gen_curie(uml_package.name, linkml_model.CIM_PREFIX),  # TODO: Is this the best URI?
             name=self.uml_project.packages.get_qualified_name(uml_package_id),
             title=uml_package.name,
             description=uml_package.notes,
