@@ -55,6 +55,7 @@ class Schema(NamedTuple):
     name: str
     title: Optional[str] = None
     description: Optional[str] = None
+    contributors: Optional[list[URI | CURIE]] = None
     created_by: Optional[URI | CURIE] = None
     generation_date: Optional[datetime] = None
     metamodel_version: Optional[str] = None

@@ -7,6 +7,7 @@ import cim_to_linkml.linkml_model as linkml_model
 import cim_to_linkml.uml_model as uml_model
 
 LINKML_METAMODEL_VERSION = "1.7.0"
+GITHUB_BASE_URL = "https://github.com/"
 GITHUB_REPO_URL = "https://github.com/bartkl/cim-to-linkml"
 
 
@@ -90,12 +91,14 @@ class LinkMLGenerator:
             name=self.uml_project.packages.get_qualified_name(uml_package_id),
             title=uml_package.name,
             description=uml_package.notes,
+            contributors=["github:bartkl"],
             created_by=GITHUB_REPO_URL,
             generation_date=datetime.now(),
             metamodel_version=LINKML_METAMODEL_VERSION,
             imports=["linkml:types"],
             prefixes={
                 "linkml": "https://w3id.org/linkml/",
+                "github": "https://github.com/",
                 linkml_model.CIM_PREFIX: linkml_model.CIM_BASE_URI,
             },
             default_curi_maps=["semweb_context"],
