@@ -1,5 +1,8 @@
+from pathlib import Path
 import cProfile
 import sqlite3
+
+import click
 
 from cim_to_linkml.generator import LinkMLGenerator
 from cim_to_linkml.parser import parse_uml_project
@@ -9,20 +12,44 @@ from cim_to_linkml.writer import init_yaml_serializer, write_schema
 init_yaml_serializer()
 
 
-def main():
-    db_file = "data/iec61970cim17v40_iec61968cim13v13b_iec62325cim03v17b_CIM100.1.1.1.qea"
-    with sqlite3.connect(db_file) as conn:
+@click.command()
+@click.argument("cim_db", type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "--package",
+    "-p",
+    type=str,
+    required=True,
+    show_default=True,
+    multiple=True,
+    help="Qualified package name. Example: TC57CIM.IEC61970.Base.Core",
+)
+@click.option(
+    "--output-dir",
+    "-o",
+    default=Path("schemas"),
+    type=click.Path(path_type=Path),
+    help="Directory where schemas will be outputted.",
+)
+def cli(
+    cim_db,
+    package,
+    output_dir,
+):
+    with sqlite3.connect(cim_db) as conn:
         uml_project = parse_uml_project(*read_uml_project(conn))
 
     generator = LinkMLGenerator(uml_project)
-    for pkg_id in generator.uml_project.packages.by_id:
-        if pkg_id == 2:
-            continue  # `Model` base package.
+    for qname in package:
+        try:
+            package = uml_project.packages.by_qualified_name[qname]
+        except KeyError:
+            print(f"Ignoring unknown package: `{qname}'.")
+            continue
 
-        schema = generator.gen_schema_for_package(pkg_id)
-        write_schema(schema)
+        schema = generator.gen_schema_for_package(package.id)
+        write_schema(schema, base_output_dir=output_dir)
 
 
 if __name__ == "__main__":
     # cProfile.run("main()", sort="tottime")
-    main()
+    cli.main()

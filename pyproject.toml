@@ -11,10 +11,14 @@ line-length = 120
 [tool.poetry.dependencies]
 python = "^3.11"
 pyyaml = "^6.0.1"
+click = "^8.1.7"
 
 [tool.poetry.group.dev.dependencies]
 pyright = "^1.1.356"
 isort = "^5.13.2"
+
+[tool.poetry.scripts]
+cim2linkml = "cim_to_linkml.main:cli"
 
 [build-system]
 requires = ["poetry-core"]
