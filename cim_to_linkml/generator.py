@@ -96,16 +96,15 @@ class LinkMLGenerator:
             default_curi_maps=["semweb_context"],
             default_prefix=linkml_model.CIM_PREFIX,
             default_range="string",
-            classes=self.classes or None,
-            enums=self.enums or None,
+            classes=self.classes,
+            enums=self.enums,
             subsets={
                 subset_name: self.gen_subset(package)
                 for subset_name in sorted(
                     set(chain.from_iterable(map(attrgetter("in_subset"), (self.enums | self.classes).values())))
                 )
                 if (package := self.uml_project.packages.by_qualified_name[subset_name])
-            }
-            or None,
+            },
         )
 
         return schema

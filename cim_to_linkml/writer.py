@@ -25,8 +25,12 @@ def linkml_namedtuple_representer(exclude_fields: list[str] | None = None):
         d = data._asdict()
 
         if exclude_fields is not None:
-            for f in exclude_fields:
-                d.pop(f)
+            for k in exclude_fields:
+                del d[k]
+
+        empty_collection_fields = [k for k, v in d.items() if v in [[], {}]]
+        for k in empty_collection_fields:
+            del d[k]
 
         return dumper.represent_dict(d)
 
