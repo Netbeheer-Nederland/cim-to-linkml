@@ -8,19 +8,19 @@ import cim_to_linkml.linkml_model as linkml_model
 
 def init_yaml_serializer():
     yaml.add_representer(type(None), represent_none)
-    yaml.add_representer(linkml_model.Slot, linkml_namedtuple_representer(exclude_fields=["name"]))
-    yaml.add_representer(linkml_model.Class, linkml_namedtuple_representer(exclude_fields=["name"]))
-    yaml.add_representer(linkml_model.Enum, linkml_namedtuple_representer(exclude_fields=["name"]))
-    yaml.add_representer(linkml_model.Subset, linkml_namedtuple_representer(exclude_fields=["name"]))
-    yaml.add_representer(linkml_model.Schema, linkml_namedtuple_representer())
-    yaml.add_representer(linkml_model.PermissibleValue, linkml_namedtuple_representer())
+    yaml.add_representer(linkml_model.Slot, linkml_element_representer(exclude_fields=["name"]))
+    yaml.add_representer(linkml_model.Class, linkml_element_representer(exclude_fields=["name"]))
+    yaml.add_representer(linkml_model.Enum, linkml_element_representer(exclude_fields=["name"]))
+    yaml.add_representer(linkml_model.Subset, linkml_element_representer(exclude_fields=["name"]))
+    yaml.add_representer(linkml_model.Schema, linkml_element_representer())
+    yaml.add_representer(linkml_model.PermissibleValue, linkml_element_representer())
 
 
 def represent_none(self, _):
     return self.represent_scalar("tag:yaml.org,2002:null", "")
 
 
-def linkml_namedtuple_representer(exclude_fields: list[str] | None = None):
+def linkml_element_representer(exclude_fields: list[str] | None = None):
     def representer(dumper, data):
         d = data._asdict()
 
