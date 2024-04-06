@@ -11,7 +11,6 @@ def init_yaml_serializer():
     yaml.add_representer(linkml_model.Slot, represent_linkml_slot)
     yaml.add_representer(linkml_model.Class, represent_linkml_class)
     yaml.add_representer(linkml_model.Enum, represent_linkml_enum)
-    yaml.add_representer(linkml_model.Subset, represent_linkml_subset)
     yaml.add_representer(linkml_model.PermissibleValue, represent_linkml_permissible_value)
     yaml.add_representer(linkml_model.Schema, represent_linkml_schema)
 
@@ -25,21 +24,11 @@ def represent_none(self, _):
 def represent_linkml_schema(dumper, data):
     d = {k: v for k, v in data._asdict().items() if v not in [[], {}, None]}
 
-    for k, v in d.get("subsets", {}).items():
-        if not v.description:
-            d["subsets"][k] = None
-
     return dumper.represent_dict(d)
 
 
 def represent_linkml_permissible_value(dumper, data):
     d = {k: v for k, v in data._asdict().items() if v is not None}
-
-    return dumper.represent_dict(d)
-
-
-def represent_linkml_subset(dumper, data):
-    d = {k: v for k, v in data._asdict().items() if k not in ["name"] if v not in [[], {}, None]}
 
     return dumper.represent_dict(d)
 
