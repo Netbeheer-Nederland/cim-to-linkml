@@ -54,6 +54,7 @@ class Schema(NamedTuple):
     name: str
     title: Optional[str] = None
     description: Optional[str] = None
+    metamodel_version: Optional[str] = None
     imports: Optional[list[str]] = None
     prefixes: Optional[dict[str, str]] = None
     default_curi_maps: Optional[list[str]] = None
