@@ -73,9 +73,9 @@ def cli(
 
     If the provided package is a non-leaf package, by default its subpackages are
     included and a schema file per package is created. A single schema file can also
-    be created by passing `--single-schema`.
-    Finally, it's possible to ignore all subpackages and create single schema file
-    just for the specified package alone. To achieve this, pass `--ignore-subpackages`.
+    be created by passing `--single-schema'.
+    Finally, it's possible to ignore all subpackages and create a single schema file
+    just for the specified package alone. To achieve this, pass `--ignore-subpackages'.
 
     """
 
