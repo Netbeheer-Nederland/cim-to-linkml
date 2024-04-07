@@ -6,7 +6,7 @@ Run `poetry install` to have it set up a virtual environment for you with the ne
 ## Running `cim2linkml`
 
 #### From within the virtual environment
-Activate your virtual environment (e.g. using `poetry shell`) and you should be able to use the `cim2linkml` script.
+Activate your virtual environment and you should be able to use the `cim2linkml` script.
 
 ```
 $ poetry shell
@@ -52,26 +52,46 @@ Options:
 
 ### Examples
 
-#### The entire CIM with a schema file for each package
+#### The entire CIM
+
+##### Schema per package
+If no package is specified, it defaults to TC57CIM, i.e. the entire CIM. For non-leaf
+packages like this one, the default behavior is to generate a schema for each subpackage.
 
 ```shell
 $ cim2linkml data/cim.qea
 ```
 
-#### The entire CIM as a single schema
+##### Single schema
+If generating a single schema file is desired, this can be done as follows:
 
 ```shell
 $ cim2linkml data/cim.qea --single-schema
 ```
 
-#### A schema for a specific package, e.g. the Core package from IEC61970, outputted to a specified directory
+#### Leaf package
+Leaf peackages by definition don't have subpackages and therefore always become a single schema.
 
 ```shell
-$ cim2linkml data/cim.qea -p TC57CIM.IEC61970.Base.Core -o /data/output/
+$ cim2linkml data/cim.qea -p TC57CIM.IEC61970.Base.Wires
 ```
 
-#### A schema for a specific package including its subpackages
+#### Non-leaf package
+
+##### Including subpackages
+By default, when providing a non-leaf package, all subpackages are included and schema files are
+created for each package.
 
 ```shell
-$ cim2linkml data/cim.qea -p TC57CIM.IEC61970 -r
+$ cim2linkml data/cim.qea -p TC57CIM.IEC61970
+```
+
+If a single schema file is desired, `--single-schema` can be passed.
+
+##### Ignoring subpackages
+If only selecting the package itself is desired, i.e. not including subpackages, one can pass `--ignore-subpackages`.
+Note that in this case, it is always a single schema file (`--single-schema` is implied).
+
+```shell
+$ cim2linkml data/cim.qea -p TC57CIM.IEC61970 --ignore-subpackages
 ```

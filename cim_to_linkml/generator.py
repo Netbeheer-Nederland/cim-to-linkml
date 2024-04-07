@@ -89,47 +89,16 @@ class LinkMLGenerator:
                 continue
             self._gen_class_with_deps(uml_dep_class)
 
-    def gen_schema_for_cim(self) -> linkml_model.Schema:
-        # Initialize generator state.
-        self.classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
-        self.enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
-
-        for uml_class in self.uml_project.classes.by_id.values():
-            self._gen_class_with_deps(uml_class)
-
-        schema = linkml_model.Schema(
-            id=linkml_model.CIM_BASE_URI + "CIM",
-            name="CIM",
-            title="Common Information Model",
-            description="The Common Information Model.",
-            contributors=["github:bartkl"],
-            created_by=GITHUB_REPO_URL,
-            generation_date=datetime.now(),
-            license="https://www.apache.org/licenses/LICENSE-2.0.txt",
-            metamodel_version=LINKML_METAMODEL_VERSION,
-            imports=["linkml:types"],
-            prefixes={
-                "linkml": "https://w3id.org/linkml/",
-                "github": "https://github.com/",
-                linkml_model.CIM_PREFIX: linkml_model.CIM_BASE_URI,
-            },
-            default_curi_maps=["semweb_context"],
-            default_prefix=linkml_model.CIM_PREFIX,
-            default_range="string",
-            classes=self.classes,
-            enums=self.enums,
-        )
-
-        return schema
-
-    def gen_schema_for_package(self, uml_package_id: uml_model.ObjectID) -> linkml_model.Schema:
+    def gen_schema_for_package(
+        self, uml_package_id: uml_model.ObjectID, uml_classes: list[uml_model.Class]
+    ) -> linkml_model.Schema:
         uml_package = self.uml_project.packages.by_id[uml_package_id]
 
         # (Re-)initialize generator state.
         self.classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
         self.enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
 
-        for uml_class in self.uml_project.classes.by_package.get(uml_package_id, []):
+        for uml_class in uml_classes:
             self._gen_class_with_deps(uml_class)
 
         schema = linkml_model.Schema(

@@ -189,6 +189,9 @@ class Packages:
     def get_qualified_name(self, package_id):
         return ".".join(self._get_package_path(package_id))
 
+    def is_leaf_package(self, qname: str):
+        return len([qn for qn in self.by_qualified_name if qn.startswith(qname)]) == 1
+
     def _get_package_path(self, start_pkg_id, package_path=None):
         if package_path is None:
             package_path = []

@@ -51,16 +51,6 @@ def represent_linkml_slot(dumper, data):
     return dumper.represent_dict(d)
 
 
-def write_schema(schema: linkml_model.Schema, base_output_dir: Optional[os.PathLike | str] = None) -> None:
-    if base_output_dir is None:
-        base_output_dir = "schemas"
-
-    path_parts = schema.name.split(".")  # TODO: Is this dependency on `name` a bad idea?
-    dir_path = os.path.join(base_output_dir, os.path.sep.join(path_parts[:-1]))
-    file_name = f"{path_parts[-1]}.yml"
-    out_file = os.path.join(dir_path, file_name)
-
-    os.makedirs(dir_path, exist_ok=True)
-
+def write_schema(schema: linkml_model.Schema, out_file: Optional[os.PathLike | str] = None) -> None:
     with open(out_file, "w") as f:
         yaml.dump(schema, f, indent=2, default_flow_style=False, sort_keys=False)
