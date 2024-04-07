@@ -31,20 +31,25 @@ Usage: cim2linkml [OPTIONS] QEA_FILE
 
   You can specify which packages in the UML model to generate schemas from
   using the `--package` parameter, where you provide the fully qualified
-  package name (e.g. TC57CIM.IEC61970.Base.Core) of each package to select it.
+  package name (e.g. `TC57CIM.IEC61970.Base.Core') of the package to select
+  it.
 
-  If no packages are specified, the entire CIM will be selected.
+  If the specified package is a leaf package, a single schema file will be
+  generated.
 
-  By default, a LinkML schema will be generated for each specified package.
-  However, by setting the `--single-schema` flag everything is outputted to a
-  single LinkML schema.
+  If the provided package is a non-leaf package, by default its subpackages
+  are included and a schema file per package is created. A single schema file
+  can also be created by passing `--single-schema'. Finally, it's possible to
+  ignore all subpackages and create a single schema file just for the
+  specified package alone. To achieve this, pass `--ignore-subpackages'.
 
 Options:
-  -p, --package TEXT     Fully qualified package name. [example:
-                         TC57CIM.IEC61970.Base.Core]
-  -s, --single-schema    If false, a schema is generated per package.
-                         Otherwise everything will be outputted to a single
-                         schema.
+  -p, --package TEXT     Fully qualified package name.  [default: TC57CIM]
+  --single-schema        If true, a single schema is created, a schema per
+                         package otherwise.
+  --ignore-subpackages   If passed, all subpackages of the provided package
+                         are ignored, i.e. only the package itself is
+                         selected.
   -o, --output-dir PATH  Directory where schemas will be outputted.  [default:
                          schemas]
   --help                 Show this message and exit.
