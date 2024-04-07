@@ -4,7 +4,6 @@ import os
 import sqlite3
 from itertools import chain
 from pathlib import Path
-from pprint import pprint
 
 import click
 
