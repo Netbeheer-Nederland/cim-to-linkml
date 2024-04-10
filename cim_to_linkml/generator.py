@@ -49,7 +49,9 @@ class LinkMLGenerator:
         # Also escape characters.
         return f"{prefix}:{quote(name)}"
 
-    def _gen_class_with_deps(self, uml_class: uml_model.Class) -> None:
+    def _gen_class_with_deps(
+        self, uml_class: uml_model.Class, results: tuple[dict, dict] | None = None
+    ) -> tuple[dict, dict]:
         """Generates the class dependencies.
 
         This method does the heavy lifting. It recursively traverses all dependencies
@@ -62,19 +64,22 @@ class LinkMLGenerator:
         NOTE: This method is stateful.
         """
 
+        if results is None:
+            results = {}, {}
+
         match uml_class.stereotype:
             case uml_model.ClassStereotype.PRIMITIVE:
                 # TODO: Log.
-                return
+                return results
             case uml_model.ClassStereotype.ENUMERATION:
                 enum = self.gen_enum(uml_class)
-                self.enums[uml_class.name] = enum
+                results[1][uml_class.name] = enum
             case uml_model.ClassStereotype.CIMDATATYPE:
                 class_ = self.gen_class(uml_class)
-                self.classes[uml_class.name] = class_
+                results[0][uml_class.name] = class_
             case None | _:
                 class_ = self.gen_class(uml_class)
-                self.classes[uml_class.name] = class_
+                results[0][uml_class.name] = class_
 
         uml_dep_classes = tuple()  # TODO: Now duplicates can be stored. Improve this.
 
@@ -85,9 +90,10 @@ class LinkMLGenerator:
         uml_dep_classes = uml_dep_classes + self.get_attr_type_classes(uml_class) + self.get_rel_type_classes(uml_class)
 
         for uml_dep_class in uml_dep_classes:
-            if uml_dep_class.name in self.classes:
+            if uml_dep_class.name in results[0]:
                 continue
-            self._gen_class_with_deps(uml_dep_class)
+            results = self._gen_class_with_deps(uml_dep_class, results)
+        return results
 
     def gen_schema_for_package(
         self, uml_package_id: uml_model.ObjectID, uml_classes: list[uml_model.Class]
@@ -95,11 +101,13 @@ class LinkMLGenerator:
         uml_package = self.uml_project.packages.by_id[uml_package_id]
 
         # (Re-)initialize generator state.
-        self.classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
-        self.enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
+        classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
+        enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
 
         for uml_class in uml_classes:
-            self._gen_class_with_deps(uml_class)
+            results = self._gen_class_with_deps(uml_class)
+            classes.update(results[0])
+            enums.update(results[1])
 
         schema = linkml_model.Schema(
             id=self.gen_schema_id(uml_package),
@@ -120,8 +128,8 @@ class LinkMLGenerator:
             default_curi_maps=["semweb_context"],
             default_prefix=linkml_model.CIM_PREFIX,
             default_range="string",
-            classes=self.classes,
-            enums=self.enums,
+            classes=classes,
+            enums=enums,
         )
 
         return schema
