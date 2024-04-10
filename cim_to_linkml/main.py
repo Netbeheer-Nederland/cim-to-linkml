@@ -107,14 +107,14 @@ def cli(
                 uml_class for p in uml_packages if (uml_class := uml_project.classes.by_package.get(p.id))
             )
         )
-        schema = gen_schema_for_package(uml_package.id, uml_classes, uml_project)
+        schema = gen_schema_for_package(uml_package, uml_classes, uml_project)
 
         schema_path = os.path.join(output_dir, package) + ".yml"
         write_schema(schema, schema_path)
     else:
         for uml_package in uml_packages:
             uml_classes = uml_project.classes.by_package.get(uml_package.id, [])
-            schema = gen_schema_for_package(uml_package.id, uml_classes, uml_project)
+            schema = gen_schema_for_package(uml_package, uml_classes, uml_project)
 
             qname = uml_project.packages.get_qualified_name(uml_package.id)
             package_path = qname.split(".")

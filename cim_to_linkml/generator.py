@@ -94,10 +94,8 @@ def _gen_class_with_deps(
 
 
 def gen_schema_for_package(
-    uml_package_id: uml_model.ObjectID, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
+    uml_package: uml_model.ObjectID, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
 ) -> linkml_model.Schema:
-    uml_package = uml_project.packages.by_id[uml_package_id]
-
     # (Re-)initialize generator state.
     classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
     enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
@@ -109,7 +107,7 @@ def gen_schema_for_package(
 
     schema = linkml_model.Schema(
         id=gen_schema_id(uml_package, uml_project),
-        name=uml_project.packages.get_qualified_name(uml_package_id),
+        name=uml_project.packages.get_qualified_name(uml_package.id),
         title=uml_package.name,
         description=uml_package.notes,
         contributors=["github:bartkl"],
