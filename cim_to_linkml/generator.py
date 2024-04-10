@@ -94,7 +94,7 @@ def _gen_class_with_deps(
 
 
 def gen_schema_for_package(
-    uml_package: uml_model.ObjectID, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
+    uml_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
 ) -> linkml_model.Schema:
     # (Re-)initialize generator state.
     classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
