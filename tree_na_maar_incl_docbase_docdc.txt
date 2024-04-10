@@ -1,0 +1,134 @@
+(cim-to-linkml-py3.11) $ tree schemas/
+schemas/
+├── TC57CIM
+│   ├── IEC61968
+│   │   ├── AssetInfo
+│   │   │   └── DetailedDiagrams.yml
+│   │   ├── AssetInfo.yml
+│   │   ├── AssetMeas.yml
+│   │   ├── Assets
+│   │   │   └── DetailedDiagrams.yml
+│   │   ├── Assets.yml
+│   │   ├── Common
+│   │   │   └── DetailedDiagrams.yml
+│   │   ├── Common.yml
+│   │   ├── Customers.yml
+│   │   ├── DER.yml
+│   │   ├── LoadControl.yml
+│   │   ├── Metering
+│   │   │   └── DetailedDiagrams.yml
+│   │   ├── Metering.yml
+│   │   ├── Operations
+│   │   │   └── DetailedDiagrams.yml
+│   │   ├── Operations.yml
+│   │   ├── PaymentMetering
+│   │   │   └── DetailedDiagrams.yml
+│   │   ├── PaymentMetering.yml
+│   │   ├── Work
+│   │   │   └── DetailedDiagrams.yml
+│   │   └── Work.yml
+│   ├── IEC61968.yml
+│   ├── IEC61970
+│   │   ├── Base
+│   │   │   ├── AuxiliaryEquipment.yml
+│   │   │   ├── Contingency.yml
+│   │   │   ├── ControlArea.yml
+│   │   │   ├── Core.yml
+│   │   │   ├── DC
+│   │   │   │   ├── DetailedDiagrams.yml
+│   │   │   │   └── DocDC.yml
+│   │   │   ├── DC.yml
+│   │   │   ├── DiagramLayout.yml
+│   │   │   ├── DocBase.yml
+│   │   │   ├── Domain.yml
+│   │   │   ├── Equivalents.yml
+│   │   │   ├── Faults.yml
+│   │   │   ├── Generation
+│   │   │   │   ├── GenerationTrainingSimulation.yml
+│   │   │   │   └── Production.yml
+│   │   │   ├── Generation.yml
+│   │   │   ├── ICCPConfiguration
+│   │   │   │   └── DetailedDiagrams.yml
+│   │   │   ├── ICCPConfiguration.yml
+│   │   │   ├── LoadModel.yml
+│   │   │   ├── Meas.yml
+│   │   │   ├── OperationalLimits.yml
+│   │   │   ├── Protection.yml
+│   │   │   ├── SCADA.yml
+│   │   │   ├── StateVariables.yml
+│   │   │   ├── Topology.yml
+│   │   │   └── Wires.yml
+│   │   ├── Base.yml
+│   │   ├── Dynamics
+│   │   │   ├── Examples.yml
+│   │   │   ├── StandardInterconnections.yml
+│   │   │   ├── StandardModels
+│   │   │   │   ├── AsynchronousMachineDynamics.yml
+│   │   │   │   ├── DiscontinuousExcitationControlDynamics.yml
+│   │   │   │   ├── ExcitationSystemDynamics.yml
+│   │   │   │   ├── HVDCDynamics.yml
+│   │   │   │   ├── LoadDynamics.yml
+│   │   │   │   ├── MechanicalLoadDynamics.yml
+│   │   │   │   ├── OverexcitationLimiterDynamics.yml
+│   │   │   │   ├── PFVArControllerType1Dynamics.yml
+│   │   │   │   ├── PFVArControllerType2Dynamics.yml
+│   │   │   │   ├── PowerSystemStabilizerDynamics.yml
+│   │   │   │   ├── StaticVarCompensatorDynamics.yml
+│   │   │   │   ├── SynchronousMachineDynamics.yml
+│   │   │   │   ├── TurbineGovernorDynamics.yml
+│   │   │   │   ├── TurbineLoadControllerDynamics.yml
+│   │   │   │   ├── UnderexcitationLimiterDynamics.yml
+│   │   │   │   ├── VoltageAdjusterDynamics.yml
+│   │   │   │   ├── VoltageCompensatorDynamics.yml
+│   │   │   │   └── WindDynamics.yml
+│   │   │   ├── StandardModels.yml
+│   │   │   └── UserDefinedModels.yml
+│   │   └── Dynamics.yml
+│   ├── IEC61970.yml
+│   ├── IEC62325
+│   │   ├── Environmental
+│   │   │   ├── DetailedDiagrams.yml
+│   │   │   └── EnvDomain.yml
+│   │   ├── Environmental.yml
+│   │   ├── MarketCommon
+│   │   │   └── DetailedDiagrams.yml
+│   │   ├── MarketCommon.yml
+│   │   ├── MarketManagement
+│   │   │   └── DetailedDiagrams.yml
+│   │   ├── MarketManagement.yml
+│   │   ├── MarketOperations
+│   │   │   ├── CongestionRevenueRights
+│   │   │   │   └── DetailedDiagrams.yml
+│   │   │   ├── CongestionRevenueRights.yml
+│   │   │   ├── MarketOpCommon
+│   │   │   │   └── DetailedDiagrams.yml
+│   │   │   ├── MarketOpCommon.yml
+│   │   │   ├── MarketPlan
+│   │   │   │   └── DetailedDiagrams.yml
+│   │   │   ├── MarketPlan.yml
+│   │   │   ├── MarketQualitySystem
+│   │   │   │   └── DetailedDiagrams.yml
+│   │   │   ├── MarketQualitySystem.yml
+│   │   │   ├── MarketSystem
+│   │   │   │   ├── ExternalInputs
+│   │   │   │   │   └── DetailedDiagrams.yml
+│   │   │   │   ├── ExternalInputs.yml
+│   │   │   │   ├── MarketResults
+│   │   │   │   │   └── DetailedDiagrams.yml
+│   │   │   │   └── MarketResults.yml
+│   │   │   ├── MarketSystem.yml
+│   │   │   ├── MktDomain
+│   │   │   │   └── DetailedDiagrams.yml
+│   │   │   ├── MktDomain.yml
+│   │   │   ├── ParticipantInterfaces
+│   │   │   │   └── DetailedDiagrams.yml
+│   │   │   ├── ParticipantInterfaces.yml
+│   │   │   ├── ReferenceData
+│   │   │   │   └── DetailedDiagrams.yml
+│   │   │   └── ReferenceData.yml
+│   │   └── MarketOperations.yml
+│   ├── IEC62325.yml
+│   └── PackageDependencies.yml
+└── TC57CIM.yml
+
+31 directories, 99 files
