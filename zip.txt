@@ -1,0 +1,55 @@
+>>> operator.or_(x[0], x[1])
+{'a': 1, 'c': 3}
+>>> x
+({'a': 1}, {'c': 3}, {'e': 5})
+>>> reduce(operator.or_, x)
+{'a': 1, 'c': 3, 'e': 5}
+>>> zip(*[X,Y,Z])
+<zip object at 0x717cc603d900>
+>>> zip([X,Y,Z])
+<zip object at 0x717cc5fe1e40>
+>>> list(_)
+[(({'a': 1}, {'b': 2}),), (({'c': 3}, {'d': 4}),), (({'e': 5}, {'f': 6}),)]
+>>> X,Y,Z
+(({'a': 1}, {'b': 2}), ({'c': 3}, {'d': 4}), ({'e': 5}, {'f': 6}))
+>>> zip(X,Y)
+<zip object at 0x717cc5fe0a80>
+>>>
+>>> list(zip(X,Y))
+[({'a': 1}, {'c': 3}), ({'b': 2}, {'d': 4})]
+>>> list(zip([X,Y]))
+[(({'a': 1}, {'b': 2}),), (({'c': 3}, {'d': 4}),)]
+>>> list(zip(*[X,Y]))
+[({'a': 1}, {'c': 3}), ({'b': 2}, {'d': 4})]
+>>> map(partial(reduce, operator.or_), list(zip(*[X,Y]))
+...
+...
+... )
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'partial' is not defined
+>>> map(partial(reduce, operator.or_), list(zip(*[X,Y])))
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'partial' is not defined
+>>> from functools import partial
+>>> map(partial(reduce, operator.or_), list(zip(*[X,Y])))
+<map object at 0x717cc608a920>
+>>> list(map(partial(reduce, operator.or_), list(zip(*[X,Y]))))
+[{'a': 1, 'c': 3}, {'b': 2, 'd': 4}]
+>>> a, b = map(partial(reduce, operator.or_), list(zip(*[X,Y])))
+>>> a
+{'a': 1, 'c': 3}
+>>> bn
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'bn' is not defined. Did you mean: 'b'?
+>>> b
+{'b': 2, 'd': 4}
+>>> a, b = map(partial(reduce, operator.or_), zip(*[X,Y]))
+>>> a
+{'a': 1, 'c': 3}
+>>> b
+{'b': 2, 'd': 4}
+>>>
+>>>

@@ -1,6 +1,7 @@
 from datetime import datetime
-from functools import lru_cache
+from functools import lru_cache, reduce, partial
 from typing import Optional
+from operator import or_
 from urllib.parse import quote
 
 import cim_to_linkml.linkml_model as linkml_model
@@ -96,14 +97,24 @@ def _gen_class_with_deps(
 def gen_schema_for_package(
     uml_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
 ) -> linkml_model.Schema:
-    # (Re-)initialize generator state.
-    classes: dict[linkml_model.ClassName, linkml_model.Class] = {}
-    enums: dict[linkml_model.EnumName, linkml_model.Enum] = {}
+    # print(uml_classes)
+    merge_dict = partial(reduce, or_)
+    gen_class_with_deps = partial(_gen_class_with_deps, uml_project=uml_project)
+    # xxx = zip(*map(gen_class_with_deps, uml_classes))
+    # ^ This object is empty?! But iterating through the thing yields more than two items, which is also weird...
+    # for x in xxx:
+    #     print(x)
+    #     input()
 
-    for uml_class in uml_classes:
-        results = _gen_class_with_deps(uml_class, uml_project)
-        classes.update(results[0])
-        enums.update(results[1])
+    results = zip(*map(gen_class_with_deps, uml_classes))  # WHY CAN IT BE EMPTY?
+    classes, enums = map(merge_dict, results) if results else {}, {}  # WHY ARE THE RESULTS SO WEIRD AND BIG IN SIZE
+    # classes = {}
+    # enums = {}
+
+    # for uml_class in uml_classes:
+    #     results = _gen_class_with_deps(uml_class, uml_project)
+    #     classes.update(results[0])
+    #     enums.update(results[1])
 
     schema = linkml_model.Schema(
         id=gen_schema_id(uml_package, uml_project),
