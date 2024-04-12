@@ -7,7 +7,7 @@ from pathlib import Path
 
 import click
 
-from cim_to_linkml.generator import LinkMLGenerator
+from cim_to_linkml.generator import generate_schema
 from cim_to_linkml.parser import parse_uml_project
 from cim_to_linkml.read import read_uml_project
 from cim_to_linkml.writer import init_yaml_serializer, write_schema
@@ -98,7 +98,6 @@ def cli(
     else:
         uml_packages = [p for qname, p in uml_project.packages.by_qualified_name.items() if qname.startswith(package)]
 
-    generator = LinkMLGenerator(uml_project)
     os.makedirs(output_dir, exist_ok=True)
 
     if single_schema:
@@ -107,20 +106,21 @@ def cli(
                 uml_class for p in uml_packages if (uml_class := uml_project.classes.by_package.get(p.id))
             )
         )
-        schema = generator.gen_schema_for_package(uml_package.id, uml_classes)
+        schema = generate_schema(uml_package, uml_classes, uml_project)
 
         schema_path = os.path.join(output_dir, package) + ".yml"
         write_schema(schema, schema_path)
     else:
         for uml_package in uml_packages:
             uml_classes = uml_project.classes.by_package.get(uml_package.id, [])
-            schema = generator.gen_schema_for_package(uml_package.id, uml_classes)
+            schema = generate_schema(uml_package, uml_classes, uml_project)
 
             qname = uml_project.packages.get_qualified_name(uml_package.id)
             package_path = qname.split(".")
             dir_path = os.path.join(output_dir, os.path.sep.join(package_path[:-1]))
             file_name = package_path[-1] + ".yml"
             out_file = os.path.join(dir_path, file_name)
+
             os.makedirs(dir_path, exist_ok=True)
             write_schema(schema, out_file)
 

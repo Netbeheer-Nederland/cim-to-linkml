@@ -82,7 +82,7 @@ class Class(NamedTuple):
     id: ObjectID
     name: ClassName
     package: ObjectID
-    attributes: tuple[Attribute]
+    attributes: tuple[Attribute, ...]
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()
     author: Optional[str] = None

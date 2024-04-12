@@ -12,16 +12,13 @@ def parse_cardinality(val: str | None) -> uml_model.Cardinality:
 
     lb, _, ub = val.partition("..")
 
-    lower_bound = parse_cardinality_val(lb)
-    upper_bound = parse_cardinality_val(ub)
-
     return uml_model.Cardinality(
-        lower_bound=parse_cardinality_val(lower_bound),
-        upper_bound=parse_cardinality_val(upper_bound),
+        lower_bound=parse_cardinality_val(lb),
+        upper_bound=parse_cardinality_val(ub),
     )
 
 
-def parse_cardinality_val(val: str | None) -> uml_model.CardinalityValue | None:
+def parse_cardinality_val(val: str | None) -> uml_model.CardinalityValue:
     match val:
         case "" | None:
             return 0
@@ -55,7 +52,7 @@ def parse_uml_project(
 
 
 def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
-    uml_package = package_row
+    uml_package = dict(package_row)
 
     return uml_model.Package(
         id=uml_package["id"],
@@ -69,7 +66,7 @@ def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
 
 
 def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
-    uml_relation = relation_row
+    uml_relation = dict(relation_row)
 
     try:
         direction = uml_model.RelationDirection(uml_relation["direction"])
@@ -111,24 +108,25 @@ def _parse_uml_class_attr(attr: dict) -> uml_model.Attribute:
 
 
 def parse_uml_class(class_rows: list[sqlite3.Cursor]) -> uml_model.Class:
+    class_rows_ = [dict(row) for row in class_rows]
     try:
-        stereotype = uml_model.ClassStereotype(class_rows[0]["class_stereotype"])
+        stereotype = uml_model.ClassStereotype(class_rows_[0]["class_stereotype"])
     except ValueError:
         stereotype = None
 
     return uml_model.Class(
-        id=class_rows[0]["class_id"],
-        name=class_rows[0]["class_name"],
-        author=class_rows[0]["class_author"],
-        package=class_rows[0]["class_package_id"],
+        id=class_rows_[0]["class_id"],
+        name=class_rows_[0]["class_name"],
+        author=class_rows_[0]["class_author"],
+        package=class_rows_[0]["class_package_id"],
         attributes=tuple(
             _parse_uml_class_attr(attr)
-            for _, attr_ in groupby(class_rows, itemgetter("attr_name"))
+            for _, attr_ in groupby(class_rows_, itemgetter("attr_name"))
             if (attr := next(attr_))
             if attr["attr_id"] is not None
         ),
-        created_date=parse_iso_datetime_val(class_rows[0]["class_created_date"]),
-        modified_date=parse_iso_datetime_val(class_rows[0]["class_modified_date"]),
-        note=class_rows[0]["class_note"],
+        created_date=parse_iso_datetime_val(class_rows_[0]["class_created_date"]),
+        modified_date=parse_iso_datetime_val(class_rows_[0]["class_modified_date"]),
+        note=class_rows_[0]["class_note"],
         stereotype=stereotype,
     )

@@ -29,9 +29,9 @@ class Slot(NamedTuple):
 class Enum(NamedTuple):
     name: str
     enum_uri: URI | CURIE
+    permissible_values: dict[EnumValName, dict[str, PermissibleValue]]
     description: Optional[str] = None
     from_schema: Optional[URI] = None
-    permissible_values: Optional[dict[EnumValName, PermissibleValue]] = None
 
 
 class Class(NamedTuple):
