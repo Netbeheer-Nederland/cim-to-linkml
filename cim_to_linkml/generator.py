@@ -239,8 +239,7 @@ def _map_primitive_data_type(val):
         raise TypeError(f"Data type `{val}` is not a CIM Primitive.")
 
 
-def _generate_curie(name: str, prefix: str) -> str:  # TODO: Implement and move.
-    # Also escape characters.
+def _generate_curie(name: str, prefix: str) -> str:
     return f"{prefix}:{quote(name)}"
 
 
