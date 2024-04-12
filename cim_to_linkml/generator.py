@@ -12,6 +12,9 @@ GITHUB_BASE_URL = "https://github.com/"
 GITHUB_REPO_URL = "https://github.com/bartkl/cim-to-linkml"
 
 
+merge_dict = partial(reduce, or_)
+
+
 def gen_schema_id(uml_package: uml_model.Package, uml_project: uml_model.Project) -> linkml_model.URI:
     """
     Example:
@@ -97,17 +100,14 @@ def _gen_class_with_deps(
 def gen_schema_for_package(
     uml_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
 ) -> linkml_model.Schema:
-    # print(uml_classes)
-    merge_dict = partial(reduce, or_)
     gen_class_with_deps = partial(_gen_class_with_deps, uml_project=uml_project)
-    # xxx = zip(*map(gen_class_with_deps, uml_classes))
-    # ^ This object is empty?! But iterating through the thing yields more than two items, which is also weird...
-    # for x in xxx:
-    #     print(x)
-    #     input()
 
-    results = zip(*map(gen_class_with_deps, uml_classes))  # WHY CAN IT BE EMPTY?
-    classes, enums = map(merge_dict, results) if results else {}, {}  # WHY ARE THE RESULTS SO WEIRD AND BIG IN SIZE
+    results = zip(*map(gen_class_with_deps, uml_classes))
+    try:
+        classes, enums = map(merge_dict, results)
+    except ValueError:
+        classes, enums = {}, {}
+
     # classes = {}
     # enums = {}
 
