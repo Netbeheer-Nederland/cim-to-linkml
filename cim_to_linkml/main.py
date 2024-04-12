@@ -121,6 +121,7 @@ def cli(
             dir_path = os.path.join(output_dir, os.path.sep.join(package_path[:-1]))
             file_name = package_path[-1] + ".yml"
             out_file = os.path.join(dir_path, file_name)
+
             os.makedirs(dir_path, exist_ok=True)
             write_schema(schema, out_file)
 
