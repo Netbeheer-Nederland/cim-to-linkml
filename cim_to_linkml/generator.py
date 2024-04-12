@@ -100,9 +100,9 @@ def gen_schema_for_package(
     enums = {}
 
     for uml_class in uml_classes:
-        results = _gen_class_with_deps(uml_class, uml_project)
-        classes.update(results[0])
-        enums.update(results[1])
+        _classes, _enums = _gen_class_with_deps(uml_class, uml_project)
+        classes.update(_classes)
+        enums.update(_enums)
 
     schema = linkml_model.Schema(
         id=gen_schema_id(uml_package, uml_project),
