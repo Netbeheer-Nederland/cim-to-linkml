@@ -98,7 +98,6 @@ def cli(
     else:
         uml_packages = [p for qname, p in uml_project.packages.by_qualified_name.items() if qname.startswith(package)]
 
-    # generator = LinkMLGenerator(uml_project)
     os.makedirs(output_dir, exist_ok=True)
 
     if single_schema:
