@@ -1,7 +1,6 @@
 from datetime import datetime
-from functools import lru_cache, reduce, partial
+from functools import lru_cache
 from typing import Optional
-from operator import or_
 from urllib.parse import quote
 
 import cim_to_linkml.linkml_model as linkml_model
@@ -10,9 +9,6 @@ import cim_to_linkml.uml_model as uml_model
 LINKML_METAMODEL_VERSION = "1.7.0"
 GITHUB_BASE_URL = "https://github.com/"
 GITHUB_REPO_URL = "https://github.com/bartkl/cim-to-linkml"
-
-
-merge_dict = partial(reduce, or_)
 
 
 def gen_schema_id(uml_package: uml_model.Package, uml_project: uml_model.Project) -> linkml_model.URI:
@@ -100,21 +96,13 @@ def _gen_class_with_deps(
 def gen_schema_for_package(
     uml_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
 ) -> linkml_model.Schema:
-    gen_class_with_deps = partial(_gen_class_with_deps, uml_project=uml_project)
+    classes = {}
+    enums = {}
 
-    results = zip(*map(gen_class_with_deps, uml_classes))
-    try:
-        classes, enums = map(merge_dict, results)
-    except ValueError:
-        classes, enums = {}, {}
-
-    # classes = {}
-    # enums = {}
-
-    # for uml_class in uml_classes:
-    #     results = _gen_class_with_deps(uml_class, uml_project)
-    #     classes.update(results[0])
-    #     enums.update(results[1])
+    for uml_class in uml_classes:
+        results = _gen_class_with_deps(uml_class, uml_project)
+        classes.update(results[0])
+        enums.update(results[1])
 
     schema = linkml_model.Schema(
         id=gen_schema_id(uml_package, uml_project),
