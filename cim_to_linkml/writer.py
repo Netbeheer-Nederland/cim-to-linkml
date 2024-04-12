@@ -51,6 +51,6 @@ def represent_linkml_slot(dumper, data):
     return dumper.represent_dict(d)
 
 
-def write_schema(schema: linkml_model.Schema, out_file: Optional[os.PathLike | str] = None) -> None:
+def write_schema(schema: linkml_model.Schema, out_file: os.PathLike | str) -> None:
     with open(out_file, "w") as f:
         yaml.dump(schema, f, indent=2, default_flow_style=False, sort_keys=False)
