@@ -5,4 +5,4 @@ schemas/
 sandbox/
 /.idea/
 /data/*
-/*.egg-info
+*.egg-info

@@ -22,6 +22,8 @@ dev = [
     "black>=25.1.0",
     "isort>=6.0.1",
     "pyright>=1.1.400",
+    "setuptools>=80.7.1",
+    "wheel>=0.45.1",
 ]
 
 [tool.setuptools.packages.find]
