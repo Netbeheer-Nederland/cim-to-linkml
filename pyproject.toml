@@ -3,18 +3,19 @@ name = "cim-to-linkml"
 version = "3.0.0-alpha1"
 description = "Generates a LinkML schema of the canonical CIM based on the official Sparx EA UML model."
 readme = "README.md"
+license = { text = "Apache-2.0" }
 requires-python = ">=3.12"
 authors = [{ name = "Bart Kleijngeld", email = "bartkl@gmail.com" }]
 dependencies = []
+
+[project.scripts]
+cim-to-linkml = "cim_to_linkml.main:cli"
 
 [tool.black]
 line-length = 120
 
 [tool.isort]
 profile = "black"
-
-[project.scripts]
-cim-to-linkml = "cim_to_linkml.main:cli"
 
 [dependency-groups]
 dev = [
@@ -23,9 +24,9 @@ dev = [
     "pyright>=1.1.400",
 ]
 
-[tool.setuptools]
-packages = [ "cim_to_linkml" ]
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"

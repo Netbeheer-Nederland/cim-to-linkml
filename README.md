@@ -1,5 +1,5 @@
 ## Installation
-Make sure you have Python (≥ 3.11) and Poetry installed.
+Make sure you have Python (≥ 3.12) and `uv` installed.
 
 Run `poetry install` to have it set up a virtual environment for you with the necessary dependencies installed and configuration taken care of.
 
