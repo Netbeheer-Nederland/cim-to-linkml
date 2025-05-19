@@ -3,3 +3,4 @@
 *.~
 schemas/
 sandbox/
+/.idea/
