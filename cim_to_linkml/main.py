@@ -1,4 +1,4 @@
-import cProfile
+# import cProfile
 import logging
 import os
 import sqlite3
@@ -12,7 +12,7 @@ from cim_to_linkml.parser import parse_uml_project
 from cim_to_linkml.read import read_uml_project
 from cim_to_linkml.writer import init_yaml_serializer, write_schema
 
-LOG_FORMAT = "[%(asctime)s] [%(levelname)s] %(message)s"
+LOG_FORMAT = "[%(asctime)s] [%(levelname)s] %(message)s"  # noqa
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format=LOG_FORMAT)
@@ -75,7 +75,7 @@ def cli(
     included and a schema file per package is created. A single schema file can also
     be created by passing `--single-schema'.
     Finally, it's possible to ignore all subpackages and create a single schema file
-    just for the specified package alone. To achieve this, pass `--ignore-subpackages'.
+    just for the specified package alone. To achieve this, pass `--ignore-subpackages`.
 
     """
 
@@ -126,5 +126,5 @@ def cli(
 
 
 if __name__ == "__main__":
-    # cProfile.run("main()", sort="tottime")
+    # cProfile.run("main()", sort="tottime")  # noqa
     cli.main()

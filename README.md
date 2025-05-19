@@ -6,7 +6,7 @@ Run `poetry install` to have it set up a virtual environment for you with the ne
 ## Running `cim2linkml`
 
 #### From within the virtual environment
-Activate your virtual environment and you should be able to use the `cim2linkml` script.
+Activate your virtual environment, and you should be able to use the `cim2linkml` script.
 
 ```
 $ poetry shell
@@ -75,7 +75,7 @@ $ cim2linkml data/cim.qea --single-schema
 ```
 
 #### Leaf package
-Leaf peackages by definition don't have subpackages and therefore always become a single schema.
+Leaf packages by definition don't have subpackages and therefore always become a single schema.
 
 ```shell
 $ cim2linkml data/cim.qea -p TC57CIM.IEC61970.Base.Wires
