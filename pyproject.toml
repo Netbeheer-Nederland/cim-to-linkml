@@ -6,7 +6,11 @@ readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.12"
 authors = [{ name = "Bart Kleijngeld", email = "bartkl@gmail.com" }]
-dependencies = []
+dependencies = [
+    "click>=8.2.0",
+    "pydantic>=2.11.4",
+    "pyyaml>=6.0.2",
+]
 
 [project.scripts]
 cim-to-linkml = "cim_to_linkml.main:cli"

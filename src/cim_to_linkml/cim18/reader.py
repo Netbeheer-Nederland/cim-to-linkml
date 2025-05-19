@@ -33,10 +33,7 @@ def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
             DestRoleNote AS dest_role_note
         FROM t_connector
 
-        WHERE type IN ("Aggregation", "Association", "Dependency", "Generalization"
-NoteLink
-Package
-
+        WHERE type  NOT IN ("Dependency", "NoteLink")
 
         ORDER BY id
         """
@@ -59,7 +56,7 @@ def read_uml_packages(conn: sqlite3.Connection) -> sqlite3.Cursor:
             Package.CreatedDate AS created_date,
             Package.ModifiedDate AS modified_date,
             Package.Notes AS note,
-            Object.author as author
+            Object.author as author,
         FROM t_package AS Package
 
         LEFT JOIN t_object AS Object
