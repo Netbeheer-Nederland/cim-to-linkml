@@ -4,3 +4,4 @@
 schemas/
 sandbox/
 /.idea/
+/*.egg.info
