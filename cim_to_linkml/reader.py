@@ -55,9 +55,8 @@ def read_uml_packages(conn: sqlite3.Connection) -> sqlite3.Cursor:
             Package.Parent_ID AS parent_id,
             Package.CreatedDate AS created_date,
             Package.ModifiedDate AS modified_date,
-            -- Package.Notes AS notes, -- TODO: Using `Object.note`, but which one is the better choice?
+            Package.Notes AS note,
             Object.author as author,
-            Object.Note as note
         FROM t_package AS Package
 
         LEFT JOIN t_object AS Object

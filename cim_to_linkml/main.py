@@ -9,7 +9,7 @@ import click
 
 from cim_to_linkml.generator import generate_schema
 from cim_to_linkml.parser import parse_uml_project
-from cim_to_linkml.read import read_uml_project
+from cim_to_linkml.reader import read_uml_project
 from cim_to_linkml.writer import init_yaml_serializer, write_schema
 
 LOG_FORMAT = "[%(asctime)s] [%(levelname)s] %(message)s"  # noqa

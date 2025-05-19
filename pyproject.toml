@@ -1,25 +1,31 @@
-[tool.poetry]
+[project]
 name = "cim-to-linkml"
-version = "2.0.0"
-description = ""
-authors = ["Bart Kleijngeld <bartkl@gmail.com>"]
+version = "3.0.0-alpha1"
+description = "Generates a LinkML schema of the canonical CIM based on the official Sparx EA UML model."
 readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Bart Kleijngeld", email = "bartkl@gmail.com" }]
+dependencies = []
 
 [tool.black]
 line-length = 120
 
-[tool.poetry.dependencies]
-python = "^3.11"
-pyyaml = "^6.0.1"
-click = "^8.1.7"
+[tool.isort]
+profile = "black"
 
-[tool.poetry.group.dev.dependencies]
-pyright = "^1.1.356"
-isort = "^5.13.2"
+[project.scripts]
+cim-to-linkml = "cim_to_linkml.main:cli"
 
-[tool.poetry.scripts]
-cim2linkml = "cim_to_linkml.main:cli"
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "pyright>=1.1.400",
+]
+
+[tool.setuptools]
+packages = [ "cim_to_linkml" ]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
