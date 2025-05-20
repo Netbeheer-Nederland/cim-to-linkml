@@ -7,46 +7,8 @@ import cim_to_linkml.cim18.linkml.model as linkml_model
 import cim_to_linkml.cim18.uml.package.query as uml_model
 from cim_to_linkml.cim18.uml.package.query import ObjectID
 
-LINKML_METAMODEL_VERSION = "1.7.0"  # TODO: Modify.
-GITHUB_BASE_URL = "https://github.com/"
-GITHUB_REPO_URL = "https://github.com//cim-to-linkml"
 
 
-def generate_schema(uml_project: uml_model.Project, root_package_id: ObjectID) -> linkml_model.Schema:
-    uml_root_package = uml_project.packages[root_package_id]
-
-    classes = {}
-    enums = {}
-
-    # for uml_class in uml_project.classes.values():
-    #     _classes, _enums = _generate_elements_for_class(uml_class, uml_project)
-    #     classes.update(_classes)
-    #     enums.update(_enums)
-
-    schema = linkml_model.Schema(
-        id=_generate_schema_id(uml_root_package, uml_project),
-        name=uml_project.packages.get_qualified_name(uml_root_package.id),
-        title=uml_root_package.name,
-        description=uml_root_package.notes,
-        contributors=["github:bartkl"],
-        created_by=GITHUB_REPO_URL,
-        generation_date=datetime.now(),
-        license="https://www.apache.org/licenses/LICENSE-2.0.txt",
-        metamodel_version=LINKML_METAMODEL_VERSION,
-        imports=["linkml:types"],
-        prefixes={
-            "linkml": "https://w3id.org/linkml/",
-            "github": "https://github.com/",
-            linkml_model.CIM_PREFIX: linkml_model.CIM_BASE_URI,
-        },
-        default_curi_maps=["semweb_context"],
-        default_prefix=linkml_model.CIM_PREFIX,
-        default_range="string",
-        classes=classes,
-        enums=enums,
-    )
-
-    return schema
 
 
 def _generate_elements_for_class(
@@ -210,16 +172,6 @@ def generate_slot_from_relation(
             raise TypeError(f"Provided direction value was invalid. (relation ID: {uml_relation.id})")
 
 
-def _generate_schema_id(uml_package: uml_model.Package, uml_project: uml_model.Project) -> linkml_model.URI:
-    """
-    Example:
-    TC57CIM.IEC61970.Dynamics.StandardModels
-        ->
-    https://cim.ucaiug.io/ns#TC57CIM.IEC61970.Dynamics.StandardModels
-    """
-
-    qname = uml_project.packages.get_qualified_name(uml_package.id)
-    return linkml_model.CIM_BASE_URI + qname
 
 
 def _map_primitive_data_type(val):

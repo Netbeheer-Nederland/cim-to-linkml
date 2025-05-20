@@ -1,1 +1,1 @@
-type ObjectID = str
+type ObjectID = int
