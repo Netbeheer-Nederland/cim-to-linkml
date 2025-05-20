@@ -12,7 +12,7 @@ GITHUB_REPO_URL = "https://github.com/bartkl/cim-to-linkml"
 
 
 def generate_schema(
-    uml_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
+    uml_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Model
 ) -> linkml_model.Schema:
     classes = {}
     enums = {}
@@ -49,7 +49,7 @@ def generate_schema(
 
 
 def _generate_elements_for_class(
-    uml_class: uml_model.Class, uml_project: uml_model.Project, results: tuple[dict, dict] | None = None
+    uml_class: uml_model.Class, uml_project: uml_model.Model, results: tuple[dict, dict] | None = None
 ) -> tuple[dict, dict]:
     """Generates the class or enum and its dependencies.
 
@@ -95,7 +95,7 @@ def _generate_elements_for_class(
 
 
 @lru_cache(maxsize=1942)
-def generate_class(uml_class: uml_model.Class, uml_project: uml_model.Project) -> linkml_model.Class:
+def generate_class(uml_class: uml_model.Class, uml_project: uml_model.Model) -> linkml_model.Class:
     super_class = _get_super_class(uml_class, uml_project)
     package = uml_project.packages.by_id[uml_class.package]
 
@@ -137,7 +137,7 @@ def generate_class(uml_class: uml_model.Class, uml_project: uml_model.Project) -
 
 
 @lru_cache(maxsize=1942)
-def generate_enum_class(uml_enum: uml_model.Class, uml_project: uml_model.Project) -> linkml_model.Enum:
+def generate_enum_class(uml_enum: uml_model.Class, uml_project: uml_model.Model) -> linkml_model.Enum:
     assert uml_enum.stereotype == uml_model.ClassStereotype.ENUMERATION
     package = uml_project.packages.by_id[uml_enum.package]
 
@@ -156,7 +156,7 @@ def generate_enum_class(uml_enum: uml_model.Class, uml_project: uml_model.Projec
 
 
 def generate_slot_from_attribute(
-    uml_attr: uml_model.Attribute, uml_class: uml_model.Class, uml_project: uml_model.Project
+    uml_attr: uml_model.Attribute, uml_class: uml_model.Class, uml_project: uml_model.Model
 ) -> linkml_model.Slot:
     type_class = uml_project.classes.by_name[uml_attr.type]
     if type_class.stereotype == uml_model.ClassStereotype.PRIMITIVE:
@@ -175,7 +175,7 @@ def generate_slot_from_attribute(
 
 
 def generate_slot_from_relation(
-    uml_relation: uml_model.Relation, uml_project: uml_model.Project, direction
+    uml_relation: uml_model.Relation, uml_project: uml_model.Model, direction
 ) -> linkml_model.Slot:
     source_class = uml_project.classes.by_id[uml_relation.source_class]
     dest_class = uml_project.classes.by_id[uml_relation.dest_class]
@@ -209,7 +209,7 @@ def generate_slot_from_relation(
             raise TypeError(f"Provided direction value was invalid. (relation ID: {uml_relation.id})")
 
 
-def _generate_schema_id(uml_package: uml_model.Package, uml_project: uml_model.Project) -> linkml_model.URI:
+def _generate_schema_id(uml_package: uml_model.Package, uml_project: uml_model.Model) -> linkml_model.URI:
     """
     Example:
     TC57CIM.IEC61970.Dynamics.StandardModels
@@ -244,7 +244,7 @@ def _generate_curie(name: str, prefix: str) -> str:
 
 
 @lru_cache(maxsize=1947)
-def _get_super_class(uml_class: uml_model.Class, uml_project: uml_model.Project) -> Optional[uml_model.Class]:
+def _get_super_class(uml_class: uml_model.Class, uml_project: uml_model.Model) -> Optional[uml_model.Class]:
     rels = uml_project.relations.by_source_class.get(uml_class.id, [])
     for uml_relation in rels:
         if uml_relation.type != uml_model.RelationType.GENERALIZATION:
@@ -262,7 +262,7 @@ def _get_super_class(uml_class: uml_model.Class, uml_project: uml_model.Project)
 
 
 @lru_cache(maxsize=1942)
-def _get_attribute_types(uml_class: uml_model.Class, uml_project: uml_model.Project) -> tuple[uml_model.Class]:
+def _get_attribute_types(uml_class: uml_model.Class, uml_project: uml_model.Model) -> tuple[uml_model.Class]:
     type_classes = tuple(
         class_
         for attr in uml_class.attributes
@@ -274,7 +274,7 @@ def _get_attribute_types(uml_class: uml_model.Class, uml_project: uml_model.Proj
 
 
 @lru_cache(maxsize=1942)
-def _get_related_classes(uml_class: uml_model.Class, uml_project: uml_model.Project) -> tuple[uml_model.Class]:
+def _get_related_classes(uml_class: uml_model.Class, uml_project: uml_model.Model) -> tuple[uml_model.Class]:
     from_classes = tuple()
     to_classes = tuple()
 

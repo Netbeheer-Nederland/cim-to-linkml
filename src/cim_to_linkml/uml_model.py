@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from functools import cached_property, lru_cache
 from itertools import groupby
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 from typing import Literal, NamedTuple, Optional
 
 ObjectID = int
@@ -204,7 +204,7 @@ class Packages:
         return self._get_package_path(package.parent, [package.name] + package_path)
 
 
-class Project:
+class Model:
     def __init__(self, packages: Packages, classes: Classes, relations: Relations) -> None:
         self.packages = packages
         self.classes = classes

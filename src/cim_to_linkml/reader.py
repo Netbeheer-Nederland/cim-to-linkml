@@ -63,7 +63,7 @@ def read_uml_packages(conn: sqlite3.Connection) -> sqlite3.Cursor:
         LEFT JOIN t_object AS Object
         ON Package.Package_ID = Object.Object_ID
         AND Object.Object_Type = "Package"
-
+        
         ORDER BY id
         """
     )

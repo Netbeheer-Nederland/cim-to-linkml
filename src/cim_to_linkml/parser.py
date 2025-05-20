@@ -39,14 +39,14 @@ def parse_uml_project(
     uml_package_results: sqlite3.Cursor,
     uml_class_results: sqlite3.Cursor,
     uml_relation_results: sqlite3.Cursor,
-) -> uml_model.Project:
+) -> uml_model.Model:
     uml_packages = uml_model.Packages({parse_uml_package(pkg_row) for pkg_row in uml_package_results})
     uml_classes = uml_model.Classes(
         {parse_uml_class(list(class_rows)) for _, class_rows in groupby(uml_class_results, itemgetter("class_id"))}
     )
     uml_relations = uml_model.Relations({parse_uml_relation(rel_row) for rel_row in uml_relation_results})
 
-    uml_project = uml_model.Project(classes=uml_classes, packages=uml_packages, relations=uml_relations)
+    uml_project = uml_model.Model(classes=uml_classes, packages=uml_packages, relations=uml_relations)
 
     return uml_project
 

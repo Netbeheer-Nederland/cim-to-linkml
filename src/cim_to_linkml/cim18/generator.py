@@ -4,20 +4,21 @@ from typing import Optional
 from urllib.parse import quote
 
 import cim_to_linkml.cim18.linkml_model as linkml_model
-import cim_to_linkml.cim18.uml_model as uml_model
+import cim_to_linkml.cim18.uml.model as uml_model
+from cim_to_linkml.cim18.uml.model import ObjectID
 
 LINKML_METAMODEL_VERSION = "1.7.0"  # TODO: Modify.
 GITHUB_BASE_URL = "https://github.com/"
 GITHUB_REPO_URL = "https://github.com//cim-to-linkml"
 
 
-def generate_schema(
-    uml_root_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
-) -> linkml_model.Schema:
+def generate_schema(uml_project: uml_model.Project, root_package_id: ObjectID) -> linkml_model.Schema:
+    uml_root_package = uml_project.packages[root_package_id]
+
     classes = {}
     enums = {}
 
-    for uml_class in uml_classes:
+    for uml_class in uml_project.classes.values():
         _classes, _enums = _generate_elements_for_class(uml_class, uml_project)
         classes.update(_classes)
         enums.update(_enums)
@@ -56,8 +57,8 @@ def _generate_elements_for_class(
     This method does the heavy lifting. It recursively traverses all dependencies
     of the given UML class, e.g. its ancestor classes, associated classes and
     enum types, etc. Every class dependency is either a class or enum class, and
-    once generated to LinkML elements they are accumulated and ultimately returend
-    in `results`
+    once generated to LinkML elements they are accumulated and ultimately returned
+    in `results`.
     """
 
     if results is None:

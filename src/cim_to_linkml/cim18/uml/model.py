@@ -1,10 +1,11 @@
 import os
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from functools import cached_property, lru_cache
 from itertools import groupby
 from operator import attrgetter
-from typing import Literal, NamedTuple, Optional
+from typing import Literal, Optional
 
 type ObjectID = int
 type ConnectorID = int
@@ -58,13 +59,10 @@ INFORMAL_PACKAGES = [
 DOCUMENTATION_PACKAGES = [5, 27, 49, 70, 104, 189]
 
 
-class Cardinality(NamedTuple):
+@dataclass
+class Cardinality:
     lower_bound: CardinalityValue = 0
     upper_bound: CardinalityValue = 1
-
-
-class RelationSubType(Enum):
-    WEAK = "Weak"
 
 
 class RelationDirection(Enum):
@@ -95,7 +93,8 @@ class AttributeStereotype(Enum):
     DEPRECATED = "deprecated"
 
 
-class Package(NamedTuple):
+@dataclass
+class Package:
     id: ObjectID
     name: PackageName
     notes: Optional[str] = None
@@ -107,7 +106,8 @@ class Package(NamedTuple):
     is_documentation: bool = False
 
 
-class Attribute(NamedTuple):
+@dataclass
+class Attribute:
     id: AttributeID
     class_: ObjectID
     name: AttributeName
@@ -119,7 +119,8 @@ class Attribute(NamedTuple):
     stereotype: Optional[AttributeStereotype] = None
 
 
-class Class(NamedTuple):
+@dataclass
+class Class:
     id: ObjectID
     name: ClassName
     package: ObjectID
@@ -131,17 +132,17 @@ class Class(NamedTuple):
     stereotype: Optional[ClassStereotype] = None
 
 
-class Relation(NamedTuple):
+@dataclass
+class Relation:
     id: ConnectorID
     type: RelationType
     source_class: ObjectID
     dest_class: ObjectID
     direction: Optional[RelationDirection] = None
-    # sub_type: Optional[RelationSubType] = None
-    source_card: Cardinality = Cardinality()
+    source_card: Cardinality = field(default_factory=Cardinality)
     source_role: Optional[str] = None
     source_role_note: Optional[str] = None
-    dest_card: Cardinality = Cardinality()
+    dest_card: Cardinality = field(default_factory=Cardinality)
     dest_role: Optional[str] = None
     dest_role_note: Optional[str] = None
 
@@ -242,8 +243,8 @@ class Packages:
         return self._get_package_path(package.parent, [package.name] + package_path)
 
 
-# TODO: This was a regular class for a reason I think. Let's see where this goes.
-class Project(NamedTuple):
+@dataclass
+class Project:
     packages: dict[ObjectID, Package]
     classes: dict[ObjectID, Class]
     relations: dict[ObjectID, Relation]

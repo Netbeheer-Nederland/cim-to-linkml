@@ -4,7 +4,7 @@ from itertools import groupby
 from operator import itemgetter
 from typing import Iterator
 
-import cim_to_linkml.cim18.uml_model as uml_model
+import cim_to_linkml.cim18.uml.model as uml_model
 
 
 def parse_cardinality(val: str | None) -> uml_model.Cardinality:
