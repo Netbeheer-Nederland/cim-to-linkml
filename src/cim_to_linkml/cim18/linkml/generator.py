@@ -3,9 +3,9 @@ from functools import lru_cache
 from typing import Optional
 from urllib.parse import quote
 
-import cim_to_linkml.cim18.linkml_model as linkml_model
-import cim_to_linkml.cim18.uml.model as uml_model
-from cim_to_linkml.cim18.uml.model import ObjectID
+import cim_to_linkml.cim18.linkml.model as linkml_model
+import cim_to_linkml.cim18.uml.package.query as uml_model
+from cim_to_linkml.cim18.uml.package.query import ObjectID
 
 LINKML_METAMODEL_VERSION = "1.7.0"  # TODO: Modify.
 GITHUB_BASE_URL = "https://github.com/"
@@ -18,10 +18,10 @@ def generate_schema(uml_project: uml_model.Project, root_package_id: ObjectID) -
     classes = {}
     enums = {}
 
-    for uml_class in uml_project.classes.values():
-        _classes, _enums = _generate_elements_for_class(uml_class, uml_project)
-        classes.update(_classes)
-        enums.update(_enums)
+    # for uml_class in uml_project.classes.values():
+    #     _classes, _enums = _generate_elements_for_class(uml_class, uml_project)
+    #     classes.update(_classes)
+    #     enums.update(_enums)
 
     schema = linkml_model.Schema(
         id=_generate_schema_id(uml_root_package, uml_project),
