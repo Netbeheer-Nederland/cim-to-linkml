@@ -2,14 +2,14 @@ import sqlite3
 import textwrap
 
 
-def read_uml_project(
-    conn: sqlite3.Connection,
-) -> tuple[sqlite3.Cursor, sqlite3.Cursor, sqlite3.Cursor]:
-    uml_package_results = read_uml_packages(conn)
-    uml_class_results = read_uml_classes(conn)
-    uml_relation_results = read_uml_relations(conn)
-
-    return uml_package_results, uml_class_results, uml_relation_results
+# def read_uml_project(
+#     conn: sqlite3.Connection,
+# ) -> tuple[sqlite3.Cursor, sqlite3.Cursor, sqlite3.Cursor]:
+#     uml_package_results = read_uml_packages(conn)
+#     uml_class_results = read_uml_classes(conn)
+#     uml_relation_results = read_uml_relations(conn)
+#
+#     return uml_package_results, uml_class_results, uml_relation_results
 
 
 def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
@@ -33,7 +33,7 @@ def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
             DestRoleNote AS dest_role_note
         FROM t_connector
 
-        WHERE type  NOT IN ("Dependency", "NoteLink")
+        WHERE type NOT IN ("Dependency", "NoteLink")
 
         ORDER BY id
         """
@@ -56,13 +56,13 @@ def read_uml_packages(conn: sqlite3.Connection) -> sqlite3.Cursor:
             Package.CreatedDate AS created_date,
             Package.ModifiedDate AS modified_date,
             Package.Notes AS note,
-            Object.author as author,
+            Object.author as author
         FROM t_package AS Package
-
+        
         LEFT JOIN t_object AS Object
         ON Package.Package_ID = Object.Object_ID
         AND Object.Object_Type = "Package"
-
+        
         ORDER BY id
         """
     )

@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from functools import cached_property, lru_cache
 from itertools import groupby
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 from typing import Literal, NamedTuple, Optional
 
 type ObjectID = int
@@ -13,9 +13,49 @@ type AttributeName = str
 type RelationName = str
 type ClassName = str
 type PackageName = str
-type Many = Literal["*"]
-type CardinalityValue = int | Many
+type CardinalityValue = int | Literal["*"]
 type QEAFile = os.PathLike | str
+
+
+INFORMAL_PACKAGES = [
+    29,
+    30,
+    31,
+    32,
+    50,
+    54,
+    59,
+    60,
+    62,
+    64,
+    66,
+    71,
+    75,
+    76,
+    88,
+    92,
+    94,
+    99,
+    100,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    142,
+    143,
+    144,
+    160,
+    188,
+    195,
+    224,
+]
+
+DOCUMENTATION_PACKAGES = [5, 27, 49, 70, 104, 189]
 
 
 class Cardinality(NamedTuple):
@@ -63,6 +103,8 @@ class Package(NamedTuple):
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()
     parent: Optional[ObjectID] = None
+    is_informal: bool = False
+    is_documentation: bool = False
 
 
 class Attribute(NamedTuple):
@@ -81,7 +123,7 @@ class Class(NamedTuple):
     id: ObjectID
     name: ClassName
     package: ObjectID
-    attributes: tuple[Attribute, ...]
+    attributes: dict[AttributeID, Attribute]
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()
     author: Optional[str] = None
@@ -188,9 +230,6 @@ class Packages:
     def get_qualified_name(self, package_id):
         return ".".join(self._get_package_path(package_id))
 
-    def is_leaf_package(self, qname: str):
-        return len([qn for qn in self.by_qualified_name if qn.startswith(qname)]) == 1
-
     def _get_package_path(self, start_pkg_id, package_path=None):
         if package_path is None:
             package_path = []
@@ -203,8 +242,8 @@ class Packages:
         return self._get_package_path(package.parent, [package.name] + package_path)
 
 
-class Model:
-    def __init__(self, packages: Packages, classes: Classes, relations: Relations) -> None:
-        self.packages = packages
-        self.classes = classes
-        self.relations = relations
+# TODO: This was a regular class for a reason I think. Let's see where this goes.
+class Project(NamedTuple):
+    packages: dict[ObjectID, Package]
+    classes: dict[ObjectID, Class]
+    relations: dict[ObjectID, Relation]

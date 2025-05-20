@@ -3,16 +3,16 @@ from functools import lru_cache
 from typing import Optional
 from urllib.parse import quote
 
-import cim_to_linkml.linkml_model as linkml_model
-import cim_to_linkml.uml_model as uml_model
+import cim_to_linkml.cim18.linkml_model as linkml_model
+import cim_to_linkml.cim18.uml_model as uml_model
 
-LINKML_METAMODEL_VERSION = "1.7.0"
+LINKML_METAMODEL_VERSION = "1.7.0"  # TODO: Modify.
 GITHUB_BASE_URL = "https://github.com/"
-GITHUB_REPO_URL = "https://github.com/bartkl/cim-to-linkml"
+GITHUB_REPO_URL = "https://github.com//cim-to-linkml"
 
 
 def generate_schema(
-    uml_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
+    uml_root_package: uml_model.Package, uml_classes: list[uml_model.Class], uml_project: uml_model.Project
 ) -> linkml_model.Schema:
     classes = {}
     enums = {}
@@ -23,10 +23,10 @@ def generate_schema(
         enums.update(_enums)
 
     schema = linkml_model.Schema(
-        id=_generate_schema_id(uml_package, uml_project),
-        name=uml_project.packages.get_qualified_name(uml_package.id),
-        title=uml_package.name,
-        description=uml_package.notes,
+        id=_generate_schema_id(uml_root_package, uml_project),
+        name=uml_project.packages.get_qualified_name(uml_root_package.id),
+        title=uml_root_package.name,
+        description=uml_root_package.notes,
         contributors=["github:bartkl"],
         created_by=GITHUB_REPO_URL,
         generation_date=datetime.now(),

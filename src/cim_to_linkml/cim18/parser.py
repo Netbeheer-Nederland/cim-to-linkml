@@ -2,8 +2,9 @@ import sqlite3
 from datetime import datetime
 from itertools import groupby
 from operator import itemgetter
+from typing import Iterator
 
-import cim_to_linkml.uml_model as uml_model
+import cim_to_linkml.cim18.uml_model as uml_model
 
 
 def parse_cardinality(val: str | None) -> uml_model.Cardinality:
@@ -35,36 +36,6 @@ def parse_iso_datetime_val(val: str | None) -> datetime:
     return datetime.fromisoformat(val)
 
 
-def parse_uml_project(
-    uml_package_results: sqlite3.Cursor,
-    uml_class_results: sqlite3.Cursor,
-    uml_relation_results: sqlite3.Cursor,
-) -> uml_model.Project:
-    uml_packages = uml_model.Packages({parse_uml_package(pkg_row) for pkg_row in uml_package_results})
-    uml_classes = uml_model.Classes(
-        {parse_uml_class(list(class_rows)) for _, class_rows in groupby(uml_class_results, itemgetter("class_id"))}
-    )
-    uml_relations = uml_model.Relations({parse_uml_relation(rel_row) for rel_row in uml_relation_results})
-
-    uml_project = uml_model.Project(classes=uml_classes, packages=uml_packages, relations=uml_relations)
-
-    return uml_project
-
-
-def parse_uml_package(package_row: sqlite3.Cursor) -> uml_model.Package:
-    uml_package = dict(package_row)
-
-    return uml_model.Package(
-        id=uml_package["id"],
-        name=uml_package["name"],
-        author=uml_package["author"],
-        parent=uml_package["parent_id"],
-        created_date=parse_iso_datetime_val(uml_package["created_date"]),
-        modified_date=parse_iso_datetime_val(uml_package["modified_date"]),
-        notes=uml_package["note"],
-    )
-
-
 def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
     uml_relation = dict(relation_row)
 
@@ -88,7 +59,7 @@ def parse_uml_relation(relation_row: sqlite3.Cursor) -> uml_model.Relation:
     )
 
 
-def _parse_uml_class_attr(attr: dict) -> uml_model.Attribute:
+def parse_uml_class_attribute(attr: dict) -> uml_model.Attribute:
     try:
         stereotype = uml_model.AttributeStereotype(attr["attr_stereotype"])
     except ValueError:
@@ -107,26 +78,95 @@ def _parse_uml_class_attr(attr: dict) -> uml_model.Attribute:
     )
 
 
-def parse_uml_class(class_rows: list[sqlite3.Cursor]) -> uml_model.Class:
-    class_rows_ = [dict(row) for row in class_rows]
+def parse_uml_attributes(rows: list[dict]) -> dict[uml_model.AttributeID, uml_model.Attribute]:
+    return {attr_id: parse_uml_class_attribute(attr)
+                for _, attr_ in groupby(rows, itemgetter("attr_name"))
+                if (attr := next(attr_))
+                if attr["attr_id"] is not None
+                if (attr_id := int(attr["attr_id"]))}
+
+
+# TODO: Improve type signature. `Iterator` says too little.
+def parse_uml_class(class_rows: Iterator) -> uml_model.Class:
+    class_rows = [dict(row) for row in class_rows]  # Materialize.
+
     try:
-        stereotype = uml_model.ClassStereotype(class_rows_[0]["class_stereotype"])
+        stereotype = uml_model.ClassStereotype(class_rows[0]["class_stereotype"])
     except ValueError:
         stereotype = None
 
     return uml_model.Class(
-        id=class_rows_[0]["class_id"],
-        name=class_rows_[0]["class_name"],
-        author=class_rows_[0]["class_author"],
-        package=class_rows_[0]["class_package_id"],
-        attributes=tuple(
-            _parse_uml_class_attr(attr)
-            for _, attr_ in groupby(class_rows_, itemgetter("attr_name"))
-            if (attr := next(attr_))
-            if attr["attr_id"] is not None
-        ),
-        created_date=parse_iso_datetime_val(class_rows_[0]["class_created_date"]),
-        modified_date=parse_iso_datetime_val(class_rows_[0]["class_modified_date"]),
-        note=class_rows_[0]["class_note"],
+        id=int(class_rows[0]["class_id"]),
+        name=class_rows[0]["class_name"],
+        author=class_rows[0]["class_author"],
+        package=int(class_rows[0]["class_package_id"]),
+        attributes=parse_uml_attributes(class_rows),
+        created_date=parse_iso_datetime_val(class_rows[0]["class_created_date"]),
+        modified_date=parse_iso_datetime_val(class_rows[0]["class_modified_date"]),
+        note=class_rows[0]["class_note"],
         stereotype=stereotype,
+    )
+
+
+def is_informal_package(package: sqlite3.Row, packages: list[sqlite3.Row]) -> bool:
+    if package["id"] in uml_model.INFORMAL_PACKAGES:
+        return True
+
+    try:
+        parent_package = [p for p in packages if p["id"] == package["parent_id"]][0]
+    except IndexError:
+        return False
+
+    return False or is_informal_package(parent_package, packages)
+
+
+def is_documentation_package(package: sqlite3.Row, packages: list[sqlite3.Row]) -> bool:
+    if package["id"] in uml_model.DOCUMENTATION_PACKAGES:
+        return True
+
+    try:
+        parent_package = [p for p in packages if p["id"] == package["parent_id"]][0]
+    except IndexError:
+        return False
+
+    return False or is_documentation_package(parent_package, packages)
+
+
+def parse_uml_package(package: sqlite3.Row, packages: list[sqlite3.Row]) -> uml_model.Package:
+    return uml_model.Package(
+        id=package["id"],
+        name=package["name"],
+        notes=package["note"],
+        author=package["author"],
+        created_date=parse_iso_datetime_val(package["created_date"]),
+        modified_date=parse_iso_datetime_val(package["modified_date"]),
+        parent=package["parent_id"],
+        is_informal=is_informal_package(package, packages),
+        is_documentation=is_documentation_package(package, packages),
+    )
+
+
+def parse_uml_relations(relations: sqlite3.Cursor) -> dict[uml_model.ObjectID, uml_model.Relation]:
+    return {relation_row["id"]: parse_uml_relation(relation_row) for relation_row in relations}
+
+
+def parse_uml_classes(classes: sqlite3.Cursor) -> dict[uml_model.ObjectID, uml_model.Class]:
+    return {class_id: parse_uml_class(class_rows) for class_id, class_rows in groupby(classes, itemgetter("class_id"))}
+
+
+def parse_uml_packages(packages: sqlite3.Cursor) -> dict[uml_model.ObjectID, uml_model.Package]:
+    packages = list(packages)  # Materialize for reuse for recursively checking for informal and documentation packages.
+
+    return {package_row["id"]: parse_uml_package(package_row, packages) for package_row in packages}
+
+
+def parse_uml_project(
+    packages: sqlite3.Cursor,
+    classes: sqlite3.Cursor,
+    relations: sqlite3.Cursor,
+) -> uml_model.Project:
+    return uml_model.Project(
+        packages=parse_uml_packages(packages),
+        classes=parse_uml_classes(classes),
+        relations=parse_uml_relations(relations),
     )

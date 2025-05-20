@@ -3,7 +3,7 @@ from typing import Optional
 
 import yaml
 
-import cim_to_linkml.linkml_model as linkml_model
+import cim_to_linkml.cim18.linkml_model as linkml_model
 
 
 def init_yaml_serializer():
