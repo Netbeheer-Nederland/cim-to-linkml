@@ -14,8 +14,8 @@ def parse_uml_class_attribute(attr: dict) -> Attribute:
         stereotype = None
 
     return Attribute(
-        id=attr["attr_id"],
-        class_=attr["class_id"],
+        id=int(attr["attr_id"]),
+        class_=int(attr["class_id"]),
         name=attr["attr_name"],
         lower_bound=parse_multiplicity_val(attr["attr_lower_bound"]),
         upper_bound=parse_multiplicity_val(attr["attr_upper_bound"]),

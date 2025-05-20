@@ -7,7 +7,7 @@ ClassName = str
 
 @dataclass
 class Class:
-    name: str
+    name: str  # ID
     class_uri: URI | CURIE
     is_a: str | None = None
     annotations: dict[str, str] | None = None
