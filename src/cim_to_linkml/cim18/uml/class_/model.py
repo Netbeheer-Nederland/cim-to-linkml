@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum
 
 from cim_to_linkml.cim18.uml.multiplicity.model import MultiplicityBound
+from cim_to_linkml.cim18.uml.type_.model import CIMPrimitive
 
 type ObjectID = int
 type AttributeID = int
@@ -28,9 +29,9 @@ class Attribute:
     id: AttributeID
     class_: ObjectID
     name: AttributeName
+    type: CIMPrimitive
     lower_bound: MultiplicityBound = 0
     upper_bound: MultiplicityBound = 1
-    type: ClassName | None = None  # `NULL` for enumeration values, a class name otherwise.
     default: str | None = None
     notes: str | None = None
     stereotype: AttributeStereotype | None = None
