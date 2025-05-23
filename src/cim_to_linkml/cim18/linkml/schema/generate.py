@@ -9,10 +9,11 @@ from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
 from cim_to_linkml.cim18.linkml.type_.generate import generate_type
 from cim_to_linkml.cim18.uml.class_.model import ClassStereotype
 from cim_to_linkml.cim18.uml.model import ObjectID as UMLObjectID
+from cim_to_linkml.cim18.uml.model import TOP_LEVEL_PACKAGE_ID
 from cim_to_linkml.cim18.uml.project.model import Project as UMLProject
 
 
-def generate_schema(uml_project: UMLProject, root_package_id: UMLObjectID) -> LinkMLSchema:
+def generate_schema(uml_project: UMLProject, root_package_id: UMLObjectID = TOP_LEVEL_PACKAGE_ID) -> LinkMLSchema:
     uml_root_package = uml_project.packages[root_package_id]
 
     classes, slots, enums, types = {}, {}, {}, {}
@@ -22,12 +23,13 @@ def generate_schema(uml_project: UMLProject, root_package_id: UMLObjectID) -> Li
             case ClassStereotype.PRIMITIVE:
                 continue
             case ClassStereotype.ENUMERATION:
-                continue  # TODO: Remove.
                 enums[uml_class.name] = generate_enumeration(uml_class)
-            case ClassStereotype.CIMDATATYPE:
-                continue  # TODO: Remove.
+            case ClassStereotype.CIM_DATATYPE:
                 types[uml_class.name] = generate_type(uml_class)
+            case ClassStereotype.COMPOUND:
+                continue  # TODO: Implement.
             case None | _:
+                print(uml_class.name)
                 classes[uml_class.name] = generate_class(uml_class)
 
     # inline()

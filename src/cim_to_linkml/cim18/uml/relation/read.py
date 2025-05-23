@@ -14,16 +14,15 @@ def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
             Start_Object_ID AS start_object_id,
             End_Object_ID AS end_object_id,
             Direction AS direction,
-            SubType AS sub_type,
-            SourceCard AS source_card,
             SourceRole AS source_role,
             SourceRoleNote AS source_role_note,
-            DestCard AS dest_card,
+            SourceCard AS source_card,
             DestRole AS dest_role,
-            DestRoleNote AS dest_role_note
+            DestRoleNote AS dest_role_note,
+            DestCard AS dest_card
         FROM t_connector
 
-        WHERE type NOT IN ("Dependency", "NoteLink")
+        WHERE type IN ("Aggregation", "Association", "Generalization")
 
         ORDER BY id
         """

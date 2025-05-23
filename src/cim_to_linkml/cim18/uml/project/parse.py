@@ -21,7 +21,7 @@ def parse_uml_classes(classes: sqlite3.Cursor) -> dict[ObjectID, Class]:
 
 
 def parse_uml_packages(packages: sqlite3.Cursor) -> dict[ObjectID, Package]:
-    packages = list(packages)  # Materialize for reuse for recursively checking for informal and documentation packages.
+    packages = list(packages)  # Materialize for reuse for recursively checking for package statuses.
 
     return {package_row["id"]: parse_uml_package(package_row, packages) for package_row in packages}
 

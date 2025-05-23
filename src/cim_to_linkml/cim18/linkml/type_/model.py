@@ -36,7 +36,7 @@ class Unit:
 
 
 @dataclass
-class Type:
+class CIMDataType:
     name: str
     uri: URI | CURIE
     base: PrimitiveType

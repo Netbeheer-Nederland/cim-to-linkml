@@ -3,17 +3,17 @@ from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
 from cim_to_linkml.cim18.linkml.generate import generate_curie
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
 from cim_to_linkml.cim18.linkml.type_.generate import map_primitive_data_type
-from cim_to_linkml.cim18.uml.class_.model import Attribute as UMLAttribute
+from cim_to_linkml.cim18.uml.class_.model import Attribute as UMLAttribute, ClassStereotype
 from cim_to_linkml.cim18.uml.class_.model import Class as UMLClass
 
 
 def generate_attribute(uml_attribute: UMLAttribute, uml_class: UMLClass) -> LinkMLSlot:
     return LinkMLSlot(
         name=uml_attribute.name,
-        range=map_primitive_data_type(uml_attribute.type) if uml_attribute.type else None,
+        range=map_primitive_data_type(uml_attribute.type) if uml_attribute.type .stereotype == ClassStereotype.PRIMITIVE .type else None,
         description=uml_attribute.notes,
-        required=is_slot_required(uml_attribute.lower_bound),
-        multivalued=is_slot_multivalued(uml_attribute.lower_bound),
+        required=is_slot_required(uml_attribute.multiplicity.lower_bound),
+        multivalued=is_slot_multivalued(uml_attribute.multiplicity.lower_bound),
         slot_uri=generate_curie(f"{uml_class.name}.{uml_attribute.name}"),
     )
 

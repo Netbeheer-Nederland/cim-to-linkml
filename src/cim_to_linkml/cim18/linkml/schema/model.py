@@ -5,7 +5,7 @@ from cim_to_linkml.cim18.linkml.class_.model import Class, ClassName
 from cim_to_linkml.cim18.linkml.enumeration.model import Enum, EnumName
 from cim_to_linkml.cim18.linkml.model import URI, CURIE, CIM_BASE_URI
 from cim_to_linkml.cim18.linkml.slot.model import SlotName, Slot
-from cim_to_linkml.cim18.linkml.type_.model import TypeName, Type
+from cim_to_linkml.cim18.linkml.type_.model import TypeName, CIMDataType
 
 LINKML_METAMODEL_VERSION = "1.7.0"  # TODO: Modify.
 
@@ -34,5 +34,5 @@ class Schema:
     default_range: str | None = None
     classes: dict[ClassName, Class] | None = None
     enums: dict[EnumName, Enum] | None = None
-    types: dict[TypeName, Type] | None = None
+    types: dict[TypeName, CIMDataType] | None = None
     slots: dict[SlotName, Slot] | None = None

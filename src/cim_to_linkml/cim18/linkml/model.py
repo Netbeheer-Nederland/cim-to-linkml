@@ -1,5 +1,4 @@
 from enum import Enum
-from urllib.parse import quote
 
 type URI = str
 type CURIE = str

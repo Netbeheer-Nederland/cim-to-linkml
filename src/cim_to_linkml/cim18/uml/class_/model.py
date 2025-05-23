@@ -1,40 +1,39 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
-from cim_to_linkml.cim18.uml.multiplicity.model import MultiplicityBound
+from cim_to_linkml.cim18.uml.model import ObjectID
+from cim_to_linkml.cim18.uml.multiplicity.model import Multiplicity
 from cim_to_linkml.cim18.uml.type_.model import CIMPrimitive
 
-type ObjectID = int
 type AttributeID = int
 type AttributeName = str
 type ClassName = str
 
 
 class ClassStereotype(Enum):
-    CIMDATATYPE = "CIMDatatype"
+    NONE = None
+    CIM_DATATYPE = "CIMDatatype"
     PRIMITIVE = "Primitive"
     ENUMERATION = "enumeration"
     COMPOUND = "Compound"
-    IMAGE = "Image"
 
 
 class AttributeStereotype(Enum):
+    NONE = None
     ENUM = "enum"
-    DEPRECATED = "deprecated"
 
 
 @dataclass
 class Attribute:
-    id: AttributeID
     class_: ObjectID
+    id: AttributeID
     name: AttributeName
-    type: CIMPrimitive
-    lower_bound: MultiplicityBound = 0
-    upper_bound: MultiplicityBound = 1
+    type: ClassName | None  # Enumeration values have type `None`
+    multiplicity: Multiplicity = field(default_factory=Multiplicity)
     default: str | None = None
     notes: str | None = None
-    stereotype: AttributeStereotype | None = None
+    stereotype: AttributeStereotype = AttributeStereotype.NONE
 
 
 @dataclass
@@ -47,6 +46,6 @@ class Class:
     modified_date: datetime = datetime.now()
     author: str | None = None
     note: str | None = None
-    stereotype: ClassStereotype | None = None
+    stereotype: ClassStereotype = ClassStereotype.NONE
 
 

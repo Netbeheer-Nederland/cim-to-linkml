@@ -8,6 +8,7 @@ type ConnectorID = int
 
 
 class RelationDirection(Enum):
+    NONE = None
     SOURCE_TO_DESTINATION = "Source -> Destination"
     UNSPECIFIED = "Unspecified"
     BI_DIRECTIONAL = "Bi-Directional"
@@ -16,10 +17,7 @@ class RelationDirection(Enum):
 class RelationType(Enum):
     AGGREGATION = "Aggregation"
     ASSOCIATION = "Association"
-    DEPENDENCY = "Dependency"
     GENERALIZATION = "Generalization"
-    NOTELINK = "NoteLink"
-    PACKAGE = "Package"
 
 
 @dataclass
@@ -28,10 +26,10 @@ class Relation:
     type: RelationType
     source_class: ObjectID
     dest_class: ObjectID
-    direction: RelationDirection | None = None
-    source_role: str | None = None
+    direction: RelationDirection
+    source_role: str | None = None  # `None` in case of `Generalization`.
     source_role_note: str | None = None
     source_card: Multiplicity = field(default_factory=Multiplicity)
-    dest_card: Multiplicity = field(default_factory=Multiplicity)
-    dest_role: str | None = None
+    dest_role: str | None = None  # `None` in case of `Generalization`.
     dest_role_note: str | None = None
+    dest_card: Multiplicity = field(default_factory=Multiplicity)
