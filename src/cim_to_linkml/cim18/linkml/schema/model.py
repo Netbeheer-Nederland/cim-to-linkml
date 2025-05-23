@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from cim_to_linkml.cim18.linkml.class_.model import Class, ClassName
-from cim_to_linkml.cim18.linkml.enumeration.model import Enum, EnumName
-from cim_to_linkml.cim18.linkml.model import URI, CURIE, CIM_BASE_URI
-from cim_to_linkml.cim18.linkml.slot.model import SlotName, Slot
-from cim_to_linkml.cim18.linkml.type_.model import TypeName, CIMDataType
+from cim_to_linkml.cim18.linkml.class_.model import Class
+from cim_to_linkml.cim18.linkml.enumeration.model import Enum
+from cim_to_linkml.cim18.linkml.model import URI, CURIE, CIM_BASE_URI, ClassName, SlotName, EnumName, TypeName
+from cim_to_linkml.cim18.linkml.slot.model import Slot
+from cim_to_linkml.cim18.linkml.type_.model import CIMDataType
 
 LINKML_METAMODEL_VERSION = "1.7.0"  # TODO: Modify.
 

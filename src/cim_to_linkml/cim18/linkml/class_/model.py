@@ -1,10 +1,8 @@
 from dataclasses import dataclass
 from typing import Any
 
-from cim_to_linkml.cim18.linkml.model import URI, CURIE
-from cim_to_linkml.cim18.linkml.slot.model import SlotName, Slot
-
-ClassName = str
+from cim_to_linkml.cim18.linkml.model import URI, CURIE, SlotName
+from cim_to_linkml.cim18.linkml.slot.model import Slot
 
 
 @dataclass

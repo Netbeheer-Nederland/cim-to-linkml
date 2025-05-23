@@ -4,7 +4,6 @@ from enum import Enum
 
 from cim_to_linkml.cim18.uml.model import ObjectID
 from cim_to_linkml.cim18.uml.multiplicity.model import Multiplicity
-from cim_to_linkml.cim18.uml.type_.model import CIMPrimitive
 
 type AttributeID = int
 type AttributeName = str
