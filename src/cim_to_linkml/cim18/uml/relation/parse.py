@@ -8,7 +8,7 @@ def parse_uml_relation(relation_row: sqlite3.Cursor) -> Relation:
     uml_relation = dict(relation_row)
 
     return Relation(
-        id=int(uml_relation["id"]),
+        id=uml_relation["id"],
         type=RelationType(uml_relation["type"]),
         source_class=uml_relation["start_object_id"],
         dest_class=uml_relation["end_object_id"],
