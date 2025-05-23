@@ -8,31 +8,52 @@ from cim_to_linkml.cim18.linkml.schema.model import GITHUB_REPO_URL, GITHUB_BASE
 from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
 from cim_to_linkml.cim18.linkml.type_.generate import generate_type
 from cim_to_linkml.cim18.uml.class_.model import ClassStereotype
-from cim_to_linkml.cim18.uml.model import ObjectID as UMLObjectID
 from cim_to_linkml.cim18.uml.model import TOP_LEVEL_PACKAGE_ID
+from cim_to_linkml.cim18.uml.package.model import PackageStatus
 from cim_to_linkml.cim18.uml.project.model import Project as UMLProject
+from cim_to_linkml.uml_model import Relation as UMLRelation
 
 
-def generate_schema(uml_project: UMLProject, root_package_id: UMLObjectID = TOP_LEVEL_PACKAGE_ID) -> LinkMLSchema:
-    uml_root_package = uml_project.packages[root_package_id]
+def _is_uml_relation_between_normative_classes(uml_relation: UMLRelation, uml_project: UMLProject) -> bool:
+    source_class = uml_project.classes[uml_relation.source_class]
+    source_class_package = uml_project.packages[source_class.package]
 
-    classes, slots, enums, types = {}, {}, {}, {}
+    dest_class = uml_project.classes[uml_relation.dest_class]
+    dest_class_package = uml_project.packages[dest_class.package]
+
+    return (source_class_package.status == PackageStatus.NORMATIVE and
+            dest_class_package.status == PackageStatus.NORMATIVE)
+
+
+def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> LinkMLSchema:
+    uml_root_package = uml_project.packages[TOP_LEVEL_PACKAGE_ID]
+
+    linkml_classes, linkml_slots, linkml_enums, linkml_types = {}, {}, {}, {}
 
     for uml_class in uml_project.classes.values():
+        uml_class_package = uml_project.packages[uml_class.package]
+        if only_normative and uml_class_package.status != PackageStatus.NORMATIVE:
+            continue
+
         match uml_class.stereotype:
             case ClassStereotype.PRIMITIVE:
                 continue
             case ClassStereotype.ENUMERATION:
-                enums[uml_class.name] = generate_enumeration(uml_class)
-            case ClassStereotype.CIM_DATATYPE:
-                types[uml_class.name] = generate_type(uml_class)
-            case ClassStereotype.COMPOUND:
                 continue  # TODO: Implement.
-            case None | _:
-                print(uml_class.name)
-                classes[uml_class.name] = generate_class(uml_class)
+                linkml_enums[uml_class.name] = generate_enumeration(uml_class)
+            case ClassStereotype.CIM_DATATYPE:
+                continue  # TODO: Implement.
+                linkml_types[uml_class.name] = generate_type(uml_class)
+            case ClassStereotype.COMPOUND | None | _:
+                linkml_classes[uml_class.name] = generate_class(uml_class, uml_project)
 
-    # inline()
+    for uml_relation in uml_project.relations.values():
+        if only_normative and not _is_uml_relation_between_normative_classes(uml_relation, uml_project):
+            continue
+
+        ...
+
+    # assemble() / inline()
 
     schema = LinkMLSchema(
         id=SCHEMA_ID,
@@ -53,10 +74,10 @@ def generate_schema(uml_project: UMLProject, root_package_id: UMLObjectID = TOP_
         default_curi_maps=["semweb_context"],
         default_prefix=CIM_PREFIX,
         default_range="string",
-        classes=classes,
-        slots=slots,
-        enums=enums,
-        types=types,
+        classes=linkml_classes,
+        slots=linkml_slots,
+        enums=linkml_enums,
+        types=linkml_types,
     )
 
     return schema

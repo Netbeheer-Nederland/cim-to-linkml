@@ -14,7 +14,6 @@ from cim_to_linkml.cim18.uml.project.parse import parse_uml_project
 from cim_to_linkml.cim18.uml.relation.read import read_uml_relations
 
 LOG_FORMAT = "[%(asctime)s] [%(levelname)s] %(message)s"  # noqa
-TOP_LEVEL_PACKAGE_ID = 3  # `CIM`
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format=LOG_FORMAT)
@@ -29,15 +28,13 @@ def _generate_linkml_schema(cim_db, output_dir):
     with sqlite3.connect(cim_db) as conn:
         uml_project = parse_uml_project(read_uml_packages(conn), read_uml_classes(conn), read_uml_relations(conn))
 
-    pass
-
     # Generate.
-    # linkml_schema = generate_schema(uml_project, TOP_LEVEL_PACKAGE_ID)
+    linkml_schema = generate_schema(uml_project)
 
     # Write.
-    # os.makedirs(output_dir, exist_ok=True)
-    # schema_path = os.path.join(output_dir, "CIM") + ".yml"
-    # write_schema(linkml_schema, schema_path)
+    os.makedirs(output_dir, exist_ok=True)
+    schema_path = os.path.join(output_dir, "CIM") + ".yml"
+    write_schema(linkml_schema, schema_path)
 
 
 @click.command()

@@ -12,3 +12,4 @@ class CIMPrimitive(Enum):
     DATE = "Date"
     TIME = "Time"
     DURATION = "Duration"
+    IRI = "IRI"

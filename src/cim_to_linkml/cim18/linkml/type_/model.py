@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from cim_to_linkml.cim18.linkml.model import URI, CURIE
+from cim_to_linkml.cim18.linkml.model import IRI, CURIE
 
 
 class PrimitiveType(Enum):
@@ -9,8 +9,11 @@ class PrimitiveType(Enum):
     INTEGER = "integer"
     FLOAT = "float"
     BOOLEAN = "boolean"
+    DOUBLE = "double"
     DATE = "date"
     DATETIME = "datetime"
+    TIME = "time"
+    IRI = "string"  # TODO: Custom type would be better, so we can even align it with a IRI IRI.
 
 
 class UCUMCode(Enum):
@@ -36,7 +39,7 @@ class Unit:
 @dataclass
 class CIMDataType:
     name: str
-    uri: URI | CURIE
+    uri: IRI | CURIE
     base: PrimitiveType
     required: bool = False
     description: str | None = None

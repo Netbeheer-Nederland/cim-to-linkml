@@ -46,5 +46,3 @@ class Class:
     author: str | None = None
     note: str | None = None
     stereotype: ClassStereotype = ClassStereotype.NONE
-
-

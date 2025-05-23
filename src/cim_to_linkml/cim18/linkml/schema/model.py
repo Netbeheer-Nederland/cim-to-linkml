@@ -3,7 +3,7 @@ from datetime import datetime
 
 from cim_to_linkml.cim18.linkml.class_.model import Class
 from cim_to_linkml.cim18.linkml.enumeration.model import Enum
-from cim_to_linkml.cim18.linkml.model import URI, CURIE, CIM_BASE_URI, ClassName, SlotName, EnumName, TypeName
+from cim_to_linkml.cim18.linkml.model import IRI, CURIE, CIM_BASE_URI, ClassName, SlotName, EnumName, TypeName
 from cim_to_linkml.cim18.linkml.slot.model import Slot
 from cim_to_linkml.cim18.linkml.type_.model import CIMDataType
 
@@ -18,12 +18,12 @@ SCHEMA_ID = CIM_BASE_URI + SCHEMA_NAME  # TODO: Determine.
 
 @dataclass
 class Schema:
-    id: URI | CURIE
+    id: IRI | CURIE
     name: str
     title: str | None = None
     description: str | None = None
-    contributors: list[URI | CURIE] | None = None
-    created_by: URI | CURIE | None = None
+    contributors: list[IRI | CURIE] | None = None
+    created_by: IRI | CURIE | None = None
     generation_date: datetime | None = None
     license: str | None = None
     metamodel_version: str | None = None

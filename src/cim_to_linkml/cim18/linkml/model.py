@@ -1,10 +1,11 @@
-type URI = str
+type IRI = str
 type CURIE = str
 
 type SlotName = str
 type ClassName = str
 type EnumName = str
 type TypeName = str
+type SubsetName = str
 
 
 CIM_PREFIX = "cim"
