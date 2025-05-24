@@ -1,8 +1,8 @@
 from urllib.parse import quote
 
 from cim_to_linkml.cim18.linkml.model import CIM_PREFIX
-from cim_to_linkml.cim18.linkml.type_.model import CIMDataType as LinkMLCIMDataType
-from cim_to_linkml.cim18.linkml.type_.model import PrimitiveType
+from cim_to_linkml.cim18.linkml.type_.model import CIMDataType as LinkMLCIMDataType, Symbol, UCUMCode, QuantityKind
+from cim_to_linkml.cim18.linkml.type_.model import PrimitiveType, Unit
 from cim_to_linkml.cim18.uml.class_.model import Class as UMLClass
 from cim_to_linkml.cim18.uml.project.model import Project as UMLProject
 from cim_to_linkml.cim18.uml.type_.model import CIMPrimitive
@@ -27,6 +27,14 @@ def map_primitive_data_type(val: CIMPrimitive):
         raise TypeError(f"Data type `{val}` is not a CIM Primitive.")
 
 
+def generate_unit(type_name: str, unit: UMLClass, Multiplier: UMLClass) -> Unit:
+    return Unit(
+        symbol=Symbol.ANG,
+        ucum_code=UCUMCode.DEG,
+        has_quantity_kind=QuantityKind.ANGLEDEGREES
+    )
+
+
 def generate_cim_datatype(uml_class: UMLClass, uml_project: UMLProject) -> LinkMLCIMDataType:
     uml_package_name = uml_project.packages[uml_class.package].name
 
@@ -36,7 +44,7 @@ def generate_cim_datatype(uml_class: UMLClass, uml_project: UMLProject) -> LinkM
         in_subset=[uml_package_name],
         uri=generate_curie(f"{uml_class.name}"),
         typeof=map_primitive_data_type(CIMPrimitive(uml_class.attributes.by_name("value").type)),
-        unit=None,  # TODO
+        unit=generate_unit(uml_class.name, uml_class.attributes.by_name("unit").type, uml_class.attributes.by_name("multiplier").type)
     )
     linkml_datatype._name = uml_class.name
 

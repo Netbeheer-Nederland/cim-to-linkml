@@ -1,3 +1,4 @@
+import enum
 import os
 from typing import Any
 
@@ -8,10 +9,7 @@ from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
 from cim_to_linkml.cim18.linkml.enumeration.model import Enum as LinkMLEnum, PermissibleValue as LinkMLPermissibleValue
 from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
-from cim_to_linkml.cim18.linkml.type_.model import (
-    CIMDataType as LinkMLCIMDataType,
-    PrimitiveType as LinkMLPrimitiveType,
-)
+from cim_to_linkml.cim18.linkml.type_.model import CIMDataType as LinkMLCIMDataType, Unit
 
 
 def order_dict(d: dict[str, Any], ordered_fields: list[str]) -> dict[str, Any]:
@@ -39,10 +37,11 @@ def init_yaml_serializer():
     yaml.add_representer(LinkMLSlot, represent_linkml_slot, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLClass, represent_linkml_class, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLCIMDataType, represent_linkml_cim_datatype, Dumper=SafeDumperNoAlias)
-    yaml.add_representer(LinkMLPrimitiveType, represent_linkml_primitive_type, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLEnum, represent_linkml_enum, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLPermissibleValue, represent_linkml_permissible_value, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLSchema, represent_linkml_schema, Dumper=SafeDumperNoAlias)
+    yaml.add_representer(Unit, represent_unit, Dumper=SafeDumperNoAlias)
+    yaml.add_multi_representer(enum.Enum, represent_enum, Dumper=SafeDumperNoAlias)
 
 
 def represent_none(self, _):
@@ -51,7 +50,7 @@ def represent_none(self, _):
     return self.represent_scalar("tag:yaml.org,2002:null", "")
 
 
-def represent_linkml_primitive_type(dumper, val):
+def represent_enum(dumper, val):
     return dumper.represent_scalar("tag:yaml.org,2002:str", str(val.value))
 
 
@@ -110,6 +109,12 @@ def represent_linkml_schema(dumper, data):
 
 
 def represent_linkml_permissible_value(dumper, data):
+    d = {k: v for k, v in dump_model(data).items() if v is not None}
+
+    return dumper.represent_dict(d)
+
+
+def represent_unit(dumper, data):
     d = {k: v for k, v in dump_model(data).items() if v is not None}
 
     return dumper.represent_dict(d)
