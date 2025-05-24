@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from cim_to_linkml.cim18.linkml.model import IRI, CURIE, ClassName, EnumName, TypeName, Element
+from cim_to_linkml.cim18.linkml.model import IRI, CURIE, ClassName, EnumName, TypeName, Element, SlotName
 from cim_to_linkml.cim18.linkml.type_.model import PrimitiveType
 
 
@@ -9,3 +9,5 @@ class Slot(Element):
     range: PrimitiveType | TypeName | EnumName | ClassName
     required: bool = Field(False)
     multivalued: bool = Field(False)
+    inverse: SlotName | None = Field(None)
+    alias: str | None = Field(None)
