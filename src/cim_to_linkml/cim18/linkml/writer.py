@@ -63,7 +63,8 @@ def represent_linkml_schema(dumper, data):
             "slots",
             "enums",
             "types",
-            "subsets"
+            "subsets",
+            "in_subset"
         ],
     )
 
@@ -86,6 +87,7 @@ def represent_linkml_schema(dumper, data):
         "slots",
         "enums",
         "types",
+        "in_subset",
         "subsets",
     )
 

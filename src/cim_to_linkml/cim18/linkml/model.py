@@ -1,5 +1,6 @@
-from pydantic import BaseModel, PrivateAttr, Field
 from typing import Any
+
+from pydantic import BaseModel, PrivateAttr, Field
 
 type IRI = str
 type CURIE = str
@@ -20,4 +21,8 @@ class Element(BaseModel):
     _name: str = PrivateAttr()
     description: str | None = Field(None)
     annotations: dict[str, Any] | None = Field(None)
-    subsets: list[SubsetName] | None = Field(None)
+    in_subset: list[SubsetName] | None = Field(None)
+
+
+class Subset(Element):
+    pass

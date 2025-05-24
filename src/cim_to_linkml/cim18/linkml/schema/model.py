@@ -4,8 +4,10 @@ from pydantic import Field
 
 from cim_to_linkml.cim18.linkml.class_.model import Class
 from cim_to_linkml.cim18.linkml.enumeration.model import Enum
-from cim_to_linkml.cim18.linkml.model import IRI, CURIE, CIM_BASE_URI, ClassName, SlotName, EnumName, TypeName, Element
+from cim_to_linkml.cim18.linkml.model import IRI, CURIE, CIM_BASE_URI, ClassName, SlotName, EnumName, TypeName, Element, \
+    SubsetName
 from cim_to_linkml.cim18.linkml.slot.model import Slot
+from cim_to_linkml.cim18.linkml.model import Subset
 from cim_to_linkml.cim18.linkml.type_.model import CIMDataType
 
 LINKML_METAMODEL_VERSION = "1.7.0"  # TODO: Modify.
@@ -35,3 +37,4 @@ class Schema(Element):
     enums: dict[EnumName, Enum] | None = Field(None)
     types: dict[TypeName, CIMDataType] | None = Field(None)
     slots: dict[SlotName, Slot] | None = Field(None)
+    subsets: dict[SubsetName, Subset] | None = Field(None)

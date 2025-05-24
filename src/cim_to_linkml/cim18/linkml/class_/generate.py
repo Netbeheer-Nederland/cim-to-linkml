@@ -2,7 +2,11 @@ from cim_to_linkml.cim18.linkml.cardinality.generate import is_slot_required, is
 from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
 from cim_to_linkml.cim18.linkml.model import EnumName as LinkMLEnumName
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
-from cim_to_linkml.cim18.linkml.type_.generate import map_primitive_data_type, PrimitiveType as LinkMLPrimitiveType, generate_curie
+from cim_to_linkml.cim18.linkml.type_.generate import (
+    map_primitive_data_type,
+    PrimitiveType as LinkMLPrimitiveType,
+    generate_curie,
+)
 from cim_to_linkml.cim18.uml.class_.model import Attribute as UMLAttribute, ClassStereotype as UMLClassStereotype
 from cim_to_linkml.cim18.uml.class_.model import Class as UMLClass
 from cim_to_linkml.cim18.uml.project.model import Project as UMLProject
@@ -42,10 +46,12 @@ def generate_attribute(uml_attribute: UMLAttribute, uml_project: UMLProject) -> 
 def generate_class(uml_class: UMLClass, uml_project: UMLProject) -> LinkMLClass:
     uml_package_name = uml_project.packages[uml_class.package].name
     linkml_class = LinkMLClass(
+        class_uri=generate_curie(f"{uml_class.name}"),
+        is_a=None,  # NOTE: Filled later when generating relations.
         description=uml_class.note,
-        annotations={"ea_guid": uml_class.id, "package": uml_package_name},
+        annotations={"ea_guid": uml_class.id},
         attributes={attr.name: generate_attribute(attr, uml_project) for attr in uml_class.attributes.values()},
-        subsets=[uml_package_name],
+        in_subset=[uml_package_name],  # NOTE: Just the immediate package, not the ancestors. That can be derived by logic.
     )
     linkml_class._name = uml_class.name
 
