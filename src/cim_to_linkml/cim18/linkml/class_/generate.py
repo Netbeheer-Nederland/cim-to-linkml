@@ -3,7 +3,7 @@ from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
 from cim_to_linkml.cim18.linkml.model import EnumName as LinkMLEnumName, TypeName as LinkMLTypeName
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
 from cim_to_linkml.cim18.linkml.type_.generate import (
-    map_primitive_data_type,
+    map_primitive_datatype,
     PrimitiveType as LinkMLPrimitiveType,
     generate_curie,
 )
@@ -20,7 +20,7 @@ def _generate_attribute_range(
 
     match uml_attribute_type_class.stereotype:
         case UMLClassStereotype.PRIMITIVE:
-            range_ = map_primitive_data_type(CIMPrimitive(uml_attribute.type)).value
+            range_ = map_primitive_datatype(CIMPrimitive(uml_attribute.type)).value
         case UMLClassStereotype.ENUMERATION | UMLClassStereotype.CIM_DATATYPE | UMLClassStereotype.COMPOUND:
             range_ = uml_attribute.type
         case _:

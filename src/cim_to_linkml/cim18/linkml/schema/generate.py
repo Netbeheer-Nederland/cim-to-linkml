@@ -39,8 +39,7 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
             case ClassStereotype.PRIMITIVE:
                 continue
             case ClassStereotype.ENUMERATION:
-                continue  # TODO: Implement.
-                linkml_enums[uml_class.name] = generate_enumeration(uml_class)
+                linkml_enums[uml_class.name] = generate_enumeration(uml_class, uml_project)
             case ClassStereotype.CIM_DATATYPE:
                 linkml_types[uml_class.name] = generate_cim_datatype(uml_class, uml_project)
             case ClassStereotype.COMPOUND:

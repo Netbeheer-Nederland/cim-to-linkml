@@ -6,9 +6,10 @@ type EnumValName = str
 
 
 class PermissibleValue(BaseModel):
-    meaning: IRI | CURIE | None = None
+    meaning: IRI | CURIE | None = Field(None)
+    description: str | None = Field(None)
 
 
 class Enum(Element):
     enum_uri: IRI | CURIE | None = Field(None)
-    permissible_values: dict[EnumValName, dict[str, PermissibleValue]] | None = Field(None)
+    permissible_values: dict[EnumValName, PermissibleValue] = Field(default_factory=dict)

@@ -7,7 +7,7 @@ from cim_to_linkml.cim18.linkml.schema.model import SCHEMA_ID, SCHEMA_NAME, LINK
     GITHUB_BASE_URL
 from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
-from cim_to_linkml.cim18.linkml.type_.generate import map_primitive_data_type, generate_curie
+from cim_to_linkml.cim18.linkml.type_.generate import map_primitive_datatype, generate_curie
 from cim_to_linkml.cim18.main import TOP_LEVEL_PACKAGE_ID
 from cim_to_linkml.cim18.uml.class_.model import Attribute as UMLAttribute, ClassStereotype as UMLClassStereotype
 from cim_to_linkml.cim18.uml.class_.model import Class as UMLClass
@@ -69,13 +69,13 @@ class CIMUMLToLinkML:
     def generate_attribute(self, uml_attribute: UMLAttribute, uml_parent_class: UMLClass) -> LinkMLSlot:
         type_class = [c for c in self.uml_project.classes.values() if c.name == uml_attribute.type][0]
         if type_class.stereotype == UMLClassStereotype.PRIMITIVE:
-            range_ = map_primitive_data_type(uml_attr.type)
+            range_ = map_primitive_datatype(uml_attr.type)
         else:
             range_ = type_class.name
 
         return LinkMLSlot(
             name=uml_attribute.name,
-            range=map_primitive_data_type(type_class.name) if uml_attribute.type .stereotype == ClassStereotype.PRIMITIVE .type else None,
+            range=map_primitive_datatype(type_class.name) if uml_attribute.type .stereotype == ClassStereotype.PRIMITIVE .type else None,
             description=uml_attribute.notes,
             required=is_slot_required(uml_attribute.multiplicity.lower_bound),
             multivalued=is_slot_multivalued(uml_attribute.multiplicity.lower_bound),

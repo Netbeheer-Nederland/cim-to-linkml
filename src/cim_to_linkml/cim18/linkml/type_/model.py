@@ -19,19 +19,15 @@ class PrimitiveType(Enum):
 
 class UCUMCode(Enum):
     DEG = "deg"
-    ...  # TODO: Fill out.
+    MW = "MW"
+    ...  # TODO: Fill out. It's hard though: non-alphabetic characters; and how to dynamically combine with multipliers.
 
 
 class QuantityKind(Enum):
     ANGLEDEGREES = "cim:AngleDegrees"
 
 
-class Symbol(Enum):
-    ANG = "Å"
-
-
 class Unit(BaseModel):
-    symbol: Symbol | None = Field(None)
     ucum_code: UCUMCode | None = Field(None)
     has_quantity_kind: QuantityKind | None = Field(None)
 
