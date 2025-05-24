@@ -1,20 +1,14 @@
-from dataclasses import dataclass
+from pydantic import BaseModel, Field
 
-from cim_to_linkml.cim18.linkml.model import IRI, CURIE
+from cim_to_linkml.cim18.linkml.model import IRI, CURIE, Element
 
 type EnumValName = str
 
 
-@dataclass
-class PermissibleValue:
+class PermissibleValue(BaseModel):
     meaning: IRI | CURIE | None = None
 
 
-@dataclass
-class Enum:
-    name: str
-    enum_uri: IRI | CURIE
-    permissible_values: dict[EnumValName, dict[str, PermissibleValue]]
-    description: str | None = None
-    from_schema: IRI | None = None
-
+class Enum(Element):
+    enum_uri: IRI | CURIE | None = Field(None)
+    permissible_values: dict[EnumValName, dict[str, PermissibleValue]] | None = Field(None)

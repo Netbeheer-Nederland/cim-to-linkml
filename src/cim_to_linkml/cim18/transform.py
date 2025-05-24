@@ -2,13 +2,12 @@ from datetime import datetime
 
 from cim_to_linkml.cim18.linkml.cardinality.generate import is_slot_required, is_slot_multivalued
 from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
-from cim_to_linkml.cim18.linkml.generate import generate_curie
 from cim_to_linkml.cim18.linkml.model import CIM_MODEL_LICENSE, CIM_PREFIX, CIM_BASE_URI
 from cim_to_linkml.cim18.linkml.schema.model import SCHEMA_ID, SCHEMA_NAME, LINKML_METAMODEL_VERSION, \
     GITHUB_BASE_URL
 from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
-from cim_to_linkml.cim18.linkml.type_.generate import map_primitive_data_type
+from cim_to_linkml.cim18.linkml.type_.generate import map_primitive_data_type, generate_curie
 from cim_to_linkml.cim18.main import TOP_LEVEL_PACKAGE_ID
 from cim_to_linkml.cim18.uml.class_.model import Attribute as UMLAttribute, ClassStereotype as UMLClassStereotype
 from cim_to_linkml.cim18.uml.class_.model import Class as UMLClass

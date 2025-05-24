@@ -1,7 +1,8 @@
 import os
-from dataclasses import is_dataclass, fields
+from typing import Any
 
 import yaml
+from pydantic import BaseModel
 
 from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
 from cim_to_linkml.cim18.linkml.enumeration.model import Enum as LinkMLEnum, PermissibleValue as LinkMLPermissibleValue
@@ -9,15 +10,19 @@ from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
 
 
-def asdict(obj):
-    # Non-recursive version of `dataclasses.asdict`.
-    # This prevents slots from being turned into dictionaries before its representer
-    # gets a chance to ever see it.
+def order_dict(d: dict[str, Any], ordered_fields: list[str]) -> dict[str, Any]:
+    if not set(d.keys()).issubset(set(ordered_fields)):
+        raise ValueError("Make sure to provide an order for at least all present fields.")
 
-    if not is_dataclass(obj):
-        raise TypeError("`asdict_non_recursive` should only be called on dataclass instances")
-    return {f.name: getattr(obj, f.name) for f in fields(obj)}
+    return {k: d[k] for k in ordered_fields if k in d}
 
+
+def dump_model(obj: BaseModel) -> dict[str, Any]:
+    return {k: getattr(obj, k) for k in obj.model_fields}
+
+
+def remove_from_dict_if_falsey(d: dict[str, Any], *keys: str) -> dict[str, Any]:
+    return {k: v for k, v in d.items() if (k not in keys) or (k in keys and bool(v))}
 
 
 def init_yaml_serializer():
@@ -36,26 +41,72 @@ def represent_none(self, _):
 
 
 def represent_linkml_schema(dumper, data):
-    d = {k: v for k, v in asdict(data).items() if v not in [[], {}, None]}
+    schema_dict = order_dict(
+        dump_model(data),
+        [
+            "id",
+            "name",
+            "title",
+            "description",
+            "created_by",
+            "generation_date",
+            "license",
+            "metamodel_version",
+            "contributors",
+            "annotations",
+            "imports",
+            "default_curie_maps",
+            "prefixes",
+            "default_prefix",
+            "default_range",
+            "classes",
+            "slots",
+            "enums",
+            "types",
+            "subsets"
+        ],
+    )
 
-    return dumper.represent_dict(d)
+    schema_dict = remove_from_dict_if_falsey(
+        schema_dict,
+        "title",
+        "description",
+        "created_by",
+        "generation_date",
+        "license",
+        "metamodel_version",
+        "contributors",
+        "annotations",
+        "imports",
+        "default_curie_maps",
+        "prefixes",
+        "default_prefix",
+        "default_range",
+        "classes",
+        "slots",
+        "enums",
+        "types",
+        "subsets",
+    )
+
+    return dumper.represent_dict(schema_dict)
 
 
 def represent_linkml_permissible_value(dumper, data):
-    d = {k: v for k, v in asdict(data).items() if v is not None}
+    d = {k: v for k, v in dump_model(data).items() if v is not None}
 
     return dumper.represent_dict(d)
 
 
 def represent_linkml_enum(dumper, data):
-    d = {k: v for k, v in asdict(data).items() if k not in ["name"] if v not in [[], {}, None]}
+    d = {k: v for k, v in dump_model(data).items() if k not in ["name"] if v not in [[], {}, None]}
 
     return dumper.represent_dict(d)
 
 
 def represent_linkml_class(dumper, data):
     d = {}
-    for field, value in asdict(data).items():
+    for field, value in dump_model(data).items():
         if field == "name":
             continue
         elif field in ["class_uri", "is_a"] and value is None:
@@ -69,7 +120,7 @@ def represent_linkml_class(dumper, data):
 
 
 def represent_linkml_slot(dumper, data):
-    d = {k: v for k, v in asdict(data).items() if k not in ["name"] if v not in [[], {}, None]}
+    d = {k: v for k, v in dump_model(data).items() if k not in ["name"] if v not in [[], {}, None]}
 
     return dumper.represent_dict(d)
 

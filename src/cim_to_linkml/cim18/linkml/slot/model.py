@@ -1,14 +1,11 @@
-from dataclasses import dataclass
+from pydantic import BaseModel, Field
 
-from cim_to_linkml.cim18.linkml.model import IRI, CURIE, ClassName, EnumName, TypeName
+from cim_to_linkml.cim18.linkml.model import IRI, CURIE, ClassName, EnumName, TypeName, Element
 from cim_to_linkml.cim18.linkml.type_.model import PrimitiveType
 
 
-@dataclass
-class Slot:
-    name: str
-    slot_uri: IRI | CURIE
+class Slot(Element):
+    slot_uri: IRI | CURIE | None = Field(None)
     range: PrimitiveType | TypeName | EnumName | ClassName
-    required: bool = False
-    multivalued: bool = False
-    description: str | None = None
+    required: bool = Field(False)
+    multivalued: bool = Field(False)

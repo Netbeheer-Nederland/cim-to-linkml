@@ -1,16 +1,17 @@
 from cim_to_linkml.cim18.linkml.cardinality.generate import is_slot_required, is_slot_multivalued
 from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
-from cim_to_linkml.cim18.linkml.generate import generate_curie
 from cim_to_linkml.cim18.linkml.model import EnumName as LinkMLEnumName
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
-from cim_to_linkml.cim18.linkml.type_.generate import map_primitive_data_type, PrimitiveType as LinkMLPrimitiveType
+from cim_to_linkml.cim18.linkml.type_.generate import map_primitive_data_type, PrimitiveType as LinkMLPrimitiveType, generate_curie
 from cim_to_linkml.cim18.uml.class_.model import Attribute as UMLAttribute, ClassStereotype as UMLClassStereotype
 from cim_to_linkml.cim18.uml.class_.model import Class as UMLClass
 from cim_to_linkml.cim18.uml.project.model import Project as UMLProject
 from cim_to_linkml.cim18.uml.type_.model import CIMPrimitive
 
 
-def _generate_attribute_range(uml_attribute: UMLAttribute, uml_project: UMLProject) -> LinkMLPrimitiveType | LinkMLEnumName:
+def _generate_attribute_range(
+    uml_attribute: UMLAttribute, uml_project: UMLProject
+) -> LinkMLPrimitiveType | LinkMLEnumName:
     uml_attribute_type_class = uml_project.classes.by_name(uml_attribute.type)
 
     match uml_attribute_type_class.stereotype:
@@ -27,8 +28,7 @@ def _generate_attribute_range(uml_attribute: UMLAttribute, uml_project: UMLProje
 def generate_attribute(uml_attribute: UMLAttribute, uml_project: UMLProject) -> LinkMLSlot:
     uml_owning_class = uml_project.classes[uml_attribute.class_]
 
-    return LinkMLSlot(
-        name=uml_attribute.name,
+    linkml_slot = LinkMLSlot(
         slot_uri=generate_curie(f"{uml_owning_class.name}.{uml_attribute.name}"),
         range=_generate_attribute_range(uml_attribute, uml_project),
         description=uml_attribute.notes,
@@ -36,11 +36,17 @@ def generate_attribute(uml_attribute: UMLAttribute, uml_project: UMLProject) -> 
         multivalued=is_slot_multivalued(uml_attribute.multiplicity.lower_bound),
     )
 
+    return linkml_slot
+
 
 def generate_class(uml_class: UMLClass, uml_project: UMLProject) -> LinkMLClass:
-    return LinkMLClass(
-        name=uml_class.name,
+    uml_package_name = uml_project.packages[uml_class.package].name
+    linkml_class = LinkMLClass(
         description=uml_class.note,
-        annotations={"ea_guid": uml_class.id, "package": uml_project.packages[uml_class.package].name},
-        attributes={attr.name: generate_attribute(attr, uml_project) for attr in uml_class.attributes.values()}
+        annotations={"ea_guid": uml_class.id, "package": uml_package_name},
+        attributes={attr.name: generate_attribute(attr, uml_project) for attr in uml_class.attributes.values()},
+        subsets=[uml_package_name],
     )
+    linkml_class._name = uml_class.name
+
+    return linkml_class
