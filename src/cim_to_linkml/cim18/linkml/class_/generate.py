@@ -1,6 +1,11 @@
 from cim_to_linkml.cim18.linkml.cardinality.generate import is_slot_required, is_slot_multivalued
 from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
-from cim_to_linkml.cim18.linkml.model import EnumName as LinkMLEnumName, TypeName as LinkMLTypeName
+from cim_to_linkml.cim18.linkml.model import (
+    EnumName as LinkMLEnumName,
+    TypeName as LinkMLTypeName,
+    ClassName as LinkMLClassName,
+    SlotName as LinkMLSlotName,
+)
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
 from cim_to_linkml.cim18.linkml.type_.generate import (
     map_primitive_datatype,
@@ -58,3 +63,11 @@ def generate_class(uml_class: UMLClass, uml_project: UMLProject) -> LinkMLClass:
     linkml_class._name = uml_class.name
 
     return linkml_class
+
+
+def add_slots(
+    linkml_classes: dict[LinkMLClassName, LinkMLClass], linkml_slots: dict[LinkMLSlotName, LinkMLSlot]
+) -> None:
+    for slot_name in linkml_slots:
+        class_name, _ = slot_name.split(".", maxsplit=1)
+        linkml_classes[class_name].slots.append(slot_name)

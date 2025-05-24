@@ -8,3 +8,4 @@ class Class(Element):
     class_uri: IRI | CURIE | None = Field(None)
     is_a: str | None = Field(None)
     attributes: dict[SlotName, Slot] | None = Field(None)
+    slots: list[SlotName] = Field(default_factory=list)
