@@ -14,7 +14,7 @@ def generate_relation_slots(uml_relation: UMLRelation, uml_project: UMLProject) 
 
     source_slot = LinkMLSlot(
         description=uml_relation.dest_role_note,
-        slot_uri=generate_curie(f"{source_class.name}.{uml_relation.dest_role or dest_class.name}"),
+        slot_uri=generate_curie(source_slot_name),
         range=dest_class.name,
         required=is_slot_required(uml_relation.dest_card.lower_bound),
         multivalued=is_slot_multivalued(uml_relation.dest_card.upper_bound),
@@ -27,7 +27,7 @@ def generate_relation_slots(uml_relation: UMLRelation, uml_project: UMLProject) 
 
     dest_slot = LinkMLSlot(
         description=uml_relation.source_role_note,
-        slot_uri=generate_curie(f"{dest_class.name}.{uml_relation.source_role or source_class.name}"),
+        slot_uri=generate_curie(dest_slot_name),
         range=source_class.name,
         required=is_slot_required(uml_relation.source_card.lower_bound),
         multivalued=is_slot_multivalued(uml_relation.source_card.upper_bound),
