@@ -30,7 +30,7 @@ class Schema(Element):
     metamodel_version: str | None = Field(None)
     imports: list[str] | None = Field(None)
     prefixes: dict[str, str] | None = Field(None)
-    default_curie_maps: list[str] | None = Field(None)
+    default_curi_maps: list[str] | None = Field(None)
     default_prefix: str | None = Field(None)
     default_range: str | None = Field(None)
     classes: dict[ClassName, Class] | None = Field(None)

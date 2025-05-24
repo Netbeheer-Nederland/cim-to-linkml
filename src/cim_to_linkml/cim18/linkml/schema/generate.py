@@ -91,7 +91,7 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
             "github": GITHUB_BASE_URL,
             CIM_PREFIX: CIM_BASE_URI,
         },
-        default_curie_maps=["semweb_context"],
+        default_curi_maps=["semweb_context"],
         default_prefix=CIM_PREFIX,
         default_range="string",
         classes=linkml_classes,
