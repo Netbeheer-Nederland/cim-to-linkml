@@ -1,6 +1,6 @@
 from cim_to_linkml.cim18.linkml.cardinality.generate import is_slot_required, is_slot_multivalued
 from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
-from cim_to_linkml.cim18.linkml.model import EnumName as LinkMLEnumName
+from cim_to_linkml.cim18.linkml.model import EnumName as LinkMLEnumName, TypeName as LinkMLTypeName
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
 from cim_to_linkml.cim18.linkml.type_.generate import (
     map_primitive_data_type,
@@ -15,16 +15,16 @@ from cim_to_linkml.cim18.uml.type_.model import CIMPrimitive
 
 def _generate_attribute_range(
     uml_attribute: UMLAttribute, uml_project: UMLProject
-) -> LinkMLPrimitiveType | LinkMLEnumName:
+) -> LinkMLPrimitiveType | LinkMLEnumName | LinkMLTypeName:
     uml_attribute_type_class = uml_project.classes.by_name(uml_attribute.type)
 
     match uml_attribute_type_class.stereotype:
         case UMLClassStereotype.PRIMITIVE:
             range_ = map_primitive_data_type(CIMPrimitive(uml_attribute.type)).value
-        case UMLClassStereotype.ENUMERATION:
+        case UMLClassStereotype.ENUMERATION | UMLClassStereotype.CIM_DATATYPE | UMLClassStereotype.COMPOUND:
             range_ = uml_attribute.type
         case _:
-            range_ = uml_attribute.type  # TODO: Or throw exception. This should never happen.
+            raise TypeError("Range of class attribute must be either a primitive, a CIM data type, or an enumeration.")
 
     return range_
 
@@ -51,7 +51,9 @@ def generate_class(uml_class: UMLClass, uml_project: UMLProject) -> LinkMLClass:
         description=uml_class.note,
         annotations={"ea_guid": uml_class.id},
         attributes={attr.name: generate_attribute(attr, uml_project) for attr in uml_class.attributes.values()},
-        in_subset=[uml_package_name],  # NOTE: Just the immediate package, not the ancestors. That can be derived by logic.
+        in_subset=[
+            uml_package_name
+        ],  # NOTE: Just the immediate package, not the ancestors. That can be derived by logic.
     )
     linkml_class._name = uml_class.name
 

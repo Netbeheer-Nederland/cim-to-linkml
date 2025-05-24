@@ -1,7 +1,8 @@
-from dataclasses import dataclass
 from enum import Enum
 
-from cim_to_linkml.cim18.linkml.model import IRI, CURIE
+from pydantic import BaseModel, Field
+
+from cim_to_linkml.cim18.linkml.model import IRI, CURIE, Element
 
 
 class PrimitiveType(Enum):
@@ -29,18 +30,17 @@ class Symbol(Enum):
     ANG = "Å"
 
 
-@dataclass
-class Unit:
-    symbol: Symbol
-    ucum_code: UCUMCode
-    has_quantity_kind: QuantityKind
+class Unit(BaseModel):
+    symbol: Symbol | None = Field(None)
+    ucum_code: UCUMCode | None = Field(None)
+    has_quantity_kind: QuantityKind | None = Field(None)
 
 
-@dataclass
-class CIMDataType:
-    name: str
-    uri: IRI | CURIE
-    base: PrimitiveType
-    required: bool = False
-    description: str | None = None
-    unit: Unit | None = None
+class Type(Element):
+    uri: IRI | CURIE | None = Field(None)
+    typeof: PrimitiveType | None = Field(None)
+    unit: Unit | None = Field(None)
+
+
+class CIMDataType(Type):
+    pass

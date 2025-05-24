@@ -6,7 +6,7 @@ from cim_to_linkml.cim18.linkml.model import CIM_PREFIX, CIM_BASE_URI, CIM_MODEL
 from cim_to_linkml.cim18.linkml.schema.model import GITHUB_REPO_URL, GITHUB_BASE_URL, LINKML_METAMODEL_VERSION, \
     SCHEMA_ID, SCHEMA_NAME
 from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
-from cim_to_linkml.cim18.linkml.type_.generate import generate_type
+from cim_to_linkml.cim18.linkml.type_.generate import generate_cim_datatype
 from cim_to_linkml.cim18.uml.class_.model import ClassStereotype
 from cim_to_linkml.cim18.uml.model import TOP_LEVEL_PACKAGE_ID
 from cim_to_linkml.cim18.uml.package.model import PackageStatus
@@ -42,9 +42,10 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
                 continue  # TODO: Implement.
                 linkml_enums[uml_class.name] = generate_enumeration(uml_class)
             case ClassStereotype.CIM_DATATYPE:
-                continue  # TODO: Implement.
-                linkml_types[uml_class.name] = generate_type(uml_class)
-            case ClassStereotype.COMPOUND | None | _:
+                linkml_types[uml_class.name] = generate_cim_datatype(uml_class, uml_project)
+            case ClassStereotype.COMPOUND:
+                ...
+            case None | _:
                 linkml_classes[uml_class.name] = generate_class(uml_class, uml_project)
 
     for uml_relation in uml_project.relations.values():
@@ -65,8 +66,6 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
         generation_date=datetime.now(),
         license=CIM_MODEL_LICENSE,
         metamodel_version=LINKML_METAMODEL_VERSION,
-        annotations={},
-        subsets={},
         imports=["linkml:types"],
         prefixes={
             "linkml": "https://w3id.org/linkml/",

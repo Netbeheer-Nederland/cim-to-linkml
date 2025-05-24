@@ -1,8 +1,6 @@
-import sqlite3
-from typing import Iterator, Any
+from typing import Iterator
 
-from cim_to_linkml.cim18.uml.class_.model import Attribute, AttributeStereotype, Class, ClassStereotype
-from cim_to_linkml.cim18.uml.model import ObjectID
+from cim_to_linkml.cim18.uml.class_.model import Attribute, Attributes, AttributeStereotype, Class, ClassStereotype
 from cim_to_linkml.cim18.uml.multiplicity.model import Multiplicity
 from cim_to_linkml.cim18.uml.multiplicity.parse import parse_multiplicity_val
 from cim_to_linkml.cim18.uml.type_.parse import parse_iso_datetime_val
@@ -31,9 +29,9 @@ def parse_uml_class(class_rows: Iterator) -> Class:
         id=class_rows[0]["class_id"],
         name=class_rows[0]["class_name"],
         package=class_rows[0]["class_package_id"],
-        attributes={attr["attr_id"]: parse_uml_class_attribute(attr)
+        attributes=Attributes({attr["attr_id"]: parse_uml_class_attribute(attr)
                     for attr in class_rows
-                    if attr["attr_id"] is not None},
+                    if attr["attr_id"] is not None}),
         created_date=parse_iso_datetime_val(class_rows[0]["class_created_date"]),
         modified_date=parse_iso_datetime_val(class_rows[0]["class_modified_date"]),
         author=class_rows[0]["class_author"],

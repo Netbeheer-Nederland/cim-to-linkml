@@ -1,3 +1,4 @@
+from collections import UserDict
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -35,12 +36,21 @@ class Attribute:
     stereotype: AttributeStereotype = AttributeStereotype.NONE
 
 
+class Attributes(UserDict[AttributeID, Attribute]):
+    def by_name(self, name: str) -> Attribute | None:
+        for attr_id, attr in self.items():
+            if attr.name == name:
+                return attr
+
+        return None
+
+
 @dataclass
 class Class:
     id: ObjectID
     name: ClassName
     package: ObjectID
-    attributes: dict[AttributeID, Attribute]
+    attributes: Attributes
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()
     author: str | None = None
