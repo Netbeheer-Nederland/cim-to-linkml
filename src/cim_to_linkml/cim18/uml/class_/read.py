@@ -37,6 +37,7 @@ def read_uml_classes(conn: sqlite3.Connection) -> sqlite3.Cursor:
             OR Class.Stereotype IS NULL)
         AND (Attribute.Stereotype == "enum"
             OR Attribute.Stereotype IS NULL)
+        AND Class.Name NOT IN ("GridCIMVersion", "IEC61968CIMVersion", "IEC62325CIMVersion")  -- Ignore version metadata classes
 
         ORDER BY Class.Object_ID, Attribute.Name
         """
