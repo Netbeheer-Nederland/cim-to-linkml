@@ -47,7 +47,7 @@ def generate_cim_datatype(uml_class: UMLClass, uml_project: UMLProject) -> LinkM
 
     linkml_datatype = LinkMLCIMDataType(
         description=uml_class.note,
-        annotations={"ea_guid": uml_class.id},
+        annotations={"ea_guid": uml_class.ea_guid},
         in_subset=[uml_package_name],
         uri=generate_curie(f"{uml_class.name}"),
         typeof=map_primitive_datatype(CIMPrimitive(uml_class.attributes.by_name("value").type)),

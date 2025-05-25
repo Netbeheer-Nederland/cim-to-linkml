@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
-from cim_to_linkml.cim18.uml.model import ObjectID
+from cim_to_linkml.cim18.uml.model import ObjectID, GUID
 
 INFORMAL_PACKAGES = [29, 30, 31, 32, 50, 54, 59, 60, 62, 64, 66, 71, 75,
                      76, 88, 92, 94, 99, 100, 132, 133, 134, 135, 136,
@@ -19,8 +19,10 @@ class PackageStatus(Enum):
 @dataclass
 class Package:
     id: ObjectID
+    ea_guid: GUID
     name: str
     status: PackageStatus
+    version: str | None
     parent: ObjectID | None = None
     created_date: datetime = datetime.now()
     modified_date: datetime = datetime.now()

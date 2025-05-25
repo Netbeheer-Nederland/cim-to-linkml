@@ -15,13 +15,23 @@ def read_uml_packages(conn: sqlite3.Connection) -> sqlite3.Cursor:
             Package.CreatedDate AS created_date,
             Package.ModifiedDate AS modified_date,
             Package.Notes AS note,
-            Object.author as author
+            Object.author as author,
+            Package.ea_guid AS ea_guid,
+            Version."Default" AS version
         FROM t_package AS Package
 
         LEFT JOIN t_object AS Object
         ON Package.Package_ID = Object.Object_ID
         AND Object.Object_Type = "Package"
-        
+
+        LEFT JOIN t_object AS VersionClass
+        ON Package.Package_ID = VersionClass.Package_ID
+        AND VersionClass.Name LIKE '%Version'
+
+        LEFT JOIN t_attribute AS Version
+        ON VersionClass.Object_ID = Version.Object_ID
+        AND Version.Name = 'version'
+
         ORDER BY id
         """
     )

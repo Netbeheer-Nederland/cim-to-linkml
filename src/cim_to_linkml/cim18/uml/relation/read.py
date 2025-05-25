@@ -19,7 +19,8 @@ def read_uml_relations(conn: sqlite3.Connection) -> sqlite3.Cursor:
             Relation.SourceCard AS source_card,
             Relation.DestRole AS dest_role,
             Relation.DestRoleNote AS dest_role_note,
-            Relation.DestCard AS dest_card
+            Relation.DestCard AS dest_card,
+            Relation.ea_guid AS ea_guid
         FROM t_connector AS Relation
         
         LEFT JOIN t_object AS SourceClass

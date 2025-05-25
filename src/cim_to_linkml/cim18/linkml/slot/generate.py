@@ -19,7 +19,7 @@ def generate_relation_slots(uml_relation: UMLRelation, uml_project: UMLProject) 
         required=is_slot_required(uml_relation.dest_card.lower_bound),
         multivalued=is_slot_multivalued(uml_relation.dest_card.upper_bound),
         in_subset=[uml_project.packages[source_class.package].name],
-        annotations={"ea_guid": uml_relation.id},
+        annotations={"ea_guid": uml_relation.ea_guid},
         inverse=dest_slot_name,
         alias=uml_relation.dest_role or dest_class.name,
     )
@@ -32,7 +32,7 @@ def generate_relation_slots(uml_relation: UMLRelation, uml_project: UMLProject) 
         required=is_slot_required(uml_relation.source_card.lower_bound),
         multivalued=is_slot_multivalued(uml_relation.source_card.upper_bound),
         in_subset=[uml_project.packages[dest_class.package].name],
-        annotations={"ea_guid": uml_relation.id},
+        annotations={"ea_guid": uml_relation.ea_guid},
         inverse=source_slot_name,
         alias=uml_relation.source_role or source_class.name,
     )

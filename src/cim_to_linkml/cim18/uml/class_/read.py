@@ -20,11 +20,13 @@ def read_uml_classes(conn: sqlite3.Connection) -> sqlite3.Cursor:
             Attribute."Default" AS attr_default,
             Attribute.Notes AS attr_notes,
             Attribute.Stereotype AS attr_stereotype,
+            Attribute.ea_guid AS attr_ea_guid,
             Class.CreatedDate AS class_created_date,
             Class.ModifiedDate AS class_modified_date,
             Class.Author AS class_author,
             Class.Note AS class_note,
-            Class.Stereotype AS class_stereotype
+            Class.Stereotype AS class_stereotype,
+            Class.ea_guid AS class_ea_guid
         FROM t_object AS Class
 
         LEFT JOIN t_attribute AS Attribute

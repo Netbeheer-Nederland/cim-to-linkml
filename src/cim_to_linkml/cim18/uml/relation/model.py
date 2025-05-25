@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
-from cim_to_linkml.cim18.uml.model import ObjectID
+from cim_to_linkml.cim18.uml.model import ObjectID, GUID
 from cim_to_linkml.cim18.uml.multiplicity.model import Multiplicity
 
 type ConnectorID = int
@@ -23,6 +23,7 @@ class RelationType(Enum):
 @dataclass
 class Relation:
     id: ConnectorID
+    ea_guid: GUID
     type: RelationType
     source_class: ObjectID
     dest_class: ObjectID

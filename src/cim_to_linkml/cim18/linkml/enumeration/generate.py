@@ -9,7 +9,7 @@ def generate_enumeration(uml_class: UMLClass, uml_project: UMLProject) -> LinkML
     linkml_enum = LinkMLEnumeration(
         enum_uri=generate_curie(f"{uml_class.name}"),
         description=uml_class.note,
-        annotations={"ea_guid": uml_class.id},
+        annotations={"ea_guid": uml_class.ea_guid},
         in_subset=[
             uml_package_name
         ],  # NOTE: Just the immediate package, not the ancestors. That can be derived by logic.

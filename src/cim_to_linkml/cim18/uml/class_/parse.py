@@ -10,6 +10,7 @@ def parse_uml_class_attribute(attr: dict) -> Attribute:
     return Attribute(
         class_=attr["class_id"],
         id=attr["attr_id"],
+        ea_guid=attr["attr_ea_guid"],
         name=attr["attr_name"],
         type=attr["attr_type"],
         multiplicity=Multiplicity(lower_bound=parse_multiplicity_val(attr["attr_lower_bound"]),
@@ -27,6 +28,7 @@ def parse_uml_class(class_rows: Iterator) -> Class:
     # TODO: Fix false positive type check error.
     return Class(
         id=class_rows[0]["class_id"],
+        ea_guid=class_rows[0]["class_ea_guid"],
         name=class_rows[0]["class_name"],
         package=class_rows[0]["class_package_id"],
         attributes=Attributes({attr["attr_id"]: parse_uml_class_attribute(attr)

@@ -15,7 +15,7 @@ from cim_to_linkml.cim18.linkml.subset.model import Subset as LinkMLSubset
 from cim_to_linkml.cim18.linkml.type_.generate import generate_cim_datatype
 from cim_to_linkml.cim18.linkml.type_.model import Type as LinkMLType
 from cim_to_linkml.cim18.uml.class_.model import ClassStereotype, ClassName
-from cim_to_linkml.cim18.uml.model import TOP_LEVEL_PACKAGE_ID
+from cim_to_linkml.cim18.uml.model import TOP_LEVEL_PACKAGE_ID, ROOT_LEVEL_PACKAGE_ID
 from cim_to_linkml.cim18.uml.package.model import PackageStatus
 from cim_to_linkml.cim18.uml.project.model import Project as UMLProject
 from cim_to_linkml.cim18.uml.relation.model import Relation as UMLRelation, RelationType
@@ -79,9 +79,10 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
     add_slots(linkml_classes, linkml_slots)
 
     # UML Packages.
-    linkml_subsets = {uml_package.name: generate_subset(uml_package)
+    linkml_subsets = {uml_package.name: generate_subset(uml_package, uml_project)
                       for uml_package in uml_project.packages.values()
-                      if uml_package.id != 2}
+                      if uml_package.id != ROOT_LEVEL_PACKAGE_ID
+                      if not only_normative or uml_package.status == PackageStatus.NORMATIVE}
 
     schema = LinkMLSchema(
         id=SCHEMA_ID,

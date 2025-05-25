@@ -41,6 +41,7 @@ def generate_attribute(uml_attribute: UMLAttribute, uml_project: UMLProject) -> 
         slot_uri=generate_curie(f"{uml_owning_class.name}.{uml_attribute.name}"),
         range=_generate_attribute_range(uml_attribute, uml_project),
         description=uml_attribute.notes,
+        annotations={"ea_guid": uml_attribute.ea_guid},
         required=is_slot_required(uml_attribute.multiplicity.lower_bound),
         multivalued=is_slot_multivalued(uml_attribute.multiplicity.lower_bound),
     )
@@ -54,7 +55,7 @@ def generate_class(uml_class: UMLClass, uml_project: UMLProject) -> LinkMLClass:
         class_uri=generate_curie(f"{uml_class.name}"),
         is_a=None,  # NOTE: Filled later when generating relations.
         description=uml_class.note,
-        annotations={"ea_guid": uml_class.id},
+        annotations={"ea_guid": uml_class.ea_guid},
         attributes={attr.name: generate_attribute(attr, uml_project) for attr in uml_class.attributes.values()},
         in_subset=[
             uml_package_name

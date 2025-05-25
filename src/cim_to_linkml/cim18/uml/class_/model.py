@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
-from cim_to_linkml.cim18.uml.model import ObjectID
+from cim_to_linkml.cim18.uml.model import ObjectID, GUID
 from cim_to_linkml.cim18.uml.multiplicity.model import Multiplicity
 
 type AttributeID = int
@@ -28,6 +28,7 @@ class AttributeStereotype(Enum):
 class Attribute:
     class_: ObjectID
     id: AttributeID
+    ea_guid: GUID
     name: AttributeName
     type: ClassName | None  # Enumeration values have type `None`
     multiplicity: Multiplicity = field(default_factory=Multiplicity)
@@ -48,6 +49,7 @@ class Attributes(UserDict[AttributeID, Attribute]):
 @dataclass
 class Class:
     id: ObjectID
+    ea_guid: GUID
     name: ClassName
     package: ObjectID
     attributes: Attributes

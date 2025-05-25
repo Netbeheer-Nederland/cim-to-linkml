@@ -23,8 +23,10 @@ def parse_uml_package_status(package: sqlite3.Row, packages: list[sqlite3.Row]) 
 def parse_uml_package(package: sqlite3.Row, packages: list[sqlite3.Row]) -> Package:
     return Package(
         id=package["id"],
+        ea_guid=package["ea_guid"],
         name=package["name"],
         status=parse_uml_package_status(package, packages),
+        version=package["version"],
         parent=package["parent_id"],
         created_date=parse_iso_datetime_val(package["created_date"]),
         modified_date=parse_iso_datetime_val(package["modified_date"]),

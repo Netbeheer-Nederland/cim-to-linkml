@@ -9,6 +9,7 @@ def parse_uml_relation(relation_row: sqlite3.Cursor) -> Relation:
 
     return Relation(
         id=uml_relation["id"],
+        ea_guid=uml_relation["ea_guid"],
         type=RelationType(uml_relation["type"]),
         source_class=uml_relation["start_object_id"],
         dest_class=uml_relation["end_object_id"],
