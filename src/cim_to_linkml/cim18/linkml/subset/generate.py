@@ -12,6 +12,7 @@ def generate_subset(uml_package: UMLPackage, uml_project: UMLProject) -> LinkMLS
             "parent_ea_guid": uml_parent_package.ea_guid,
             "version": uml_package.version,
         },
+        conforms_to=uml_package.standard,
     )
     linkml_subset._name = uml_package.name
 

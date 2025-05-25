@@ -22,3 +22,4 @@ class Element(BaseModel):
     description: str | None = Field(None)
     annotations: dict[str, Any] | None = Field(None)
     in_subset: list[SubsetName] | None = Field(None)
+    conforms_to: str | None = Field(None)

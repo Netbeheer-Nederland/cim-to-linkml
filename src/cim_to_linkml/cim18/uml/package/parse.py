@@ -1,6 +1,7 @@
 import sqlite3
 
-from cim_to_linkml.cim18.uml.package.model import INFORMAL_PACKAGES, DOCUMENTATION_PACKAGES, Package, PackageStatus
+from cim_to_linkml.cim18.uml.package.model import INFORMAL_PACKAGES, DOCUMENTATION_PACKAGES, Package, PackageStatus, \
+    PackageName
 from cim_to_linkml.cim18.uml.type_.parse import parse_iso_datetime_val
 
 
@@ -20,12 +21,24 @@ def parse_uml_package_status(package: sqlite3.Row, packages: list[sqlite3.Row]) 
     return parse_uml_package_status(parent_package, packages)
 
 
+def parse_cim_standard(package: sqlite3.Row, packages: list[sqlite3.Row]) -> PackageName:
+    if package["id"] == 2:
+        return ""
+
+    if package["name"] in ["Grid", "Market", "Enterprise"]:
+        return package["name"]
+
+    parent_package = [p for p in packages if p["id"] == package["parent_id"]][0]
+    return parse_cim_standard(parent_package, packages)
+
+
 def parse_uml_package(package: sqlite3.Row, packages: list[sqlite3.Row]) -> Package:
     return Package(
         id=package["id"],
         ea_guid=package["ea_guid"],
         name=package["name"],
         status=parse_uml_package_status(package, packages),
+        standard=parse_cim_standard(package, packages),
         version=package["version"],
         parent=package["parent_id"],
         created_date=parse_iso_datetime_val(package["created_date"]),

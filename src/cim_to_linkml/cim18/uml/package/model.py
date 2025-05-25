@@ -10,6 +10,8 @@ INFORMAL_PACKAGES = [29, 30, 31, 32, 50, 54, 59, 60, 62, 64, 66, 71, 75,
 
 DOCUMENTATION_PACKAGES = [5, 27, 49, 70, 104, 189]
 
+type PackageName = str
+
 
 class PackageStatus(Enum):
     NORMATIVE = 0
@@ -20,8 +22,9 @@ class PackageStatus(Enum):
 class Package:
     id: ObjectID
     ea_guid: GUID
-    name: str
+    name: PackageName
     status: PackageStatus
+    standard: PackageName
     version: str | None
     parent: ObjectID | None = None
     created_date: datetime = datetime.now()

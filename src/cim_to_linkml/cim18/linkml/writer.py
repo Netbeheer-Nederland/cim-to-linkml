@@ -90,6 +90,7 @@ def represent_linkml_schema(dumper, data):
             "types",
             "subsets",
             "in_subset",
+            "conforms_to",
         ],
     )
 
@@ -99,6 +100,7 @@ def represent_linkml_schema(dumper, data):
         "description",
         "created_by",
         "generation_date",
+        "conforms_to",
         "license",
         "metamodel_version",
         "contributors",
