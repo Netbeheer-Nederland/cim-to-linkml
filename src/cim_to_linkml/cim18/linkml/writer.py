@@ -9,6 +9,7 @@ from cim_to_linkml.cim18.linkml.class_.model import Class as LinkMLClass
 from cim_to_linkml.cim18.linkml.enumeration.model import Enum as LinkMLEnum, PermissibleValue as LinkMLPermissibleValue
 from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
+from cim_to_linkml.cim18.linkml.subset.model import Subset as LinkMLSubset
 from cim_to_linkml.cim18.linkml.type_.model import CIMDataType as LinkMLCIMDataType, Unit
 
 
@@ -34,14 +35,24 @@ class SafeDumperNoAlias(yaml.SafeDumper):
 
 def init_yaml_serializer():
     yaml.add_representer(type(None), represent_none, Dumper=SafeDumperNoAlias)
+    yaml.add_representer(str, represent_str, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLSlot, represent_linkml_slot, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLClass, represent_linkml_class, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLCIMDataType, represent_linkml_cim_datatype, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLEnum, represent_linkml_enum, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLPermissibleValue, represent_linkml_permissible_value, Dumper=SafeDumperNoAlias)
+    yaml.add_representer(LinkMLSubset, represent_linkml_subset, Dumper=SafeDumperNoAlias)
     yaml.add_representer(LinkMLSchema, represent_linkml_schema, Dumper=SafeDumperNoAlias)
     yaml.add_representer(Unit, represent_unit, Dumper=SafeDumperNoAlias)
     yaml.add_multi_representer(enum.Enum, represent_enum, Dumper=SafeDumperNoAlias)
+
+
+def represent_str(dumper, data):
+    if data.count("\n") > 0:
+        data = "\n".join(line.rstrip() for line in data.splitlines())  # Remove any trailing spaces, then put it back together again
+        return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=">")
+
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data)
 
 
 def represent_none(self, _):
@@ -69,7 +80,7 @@ def represent_linkml_schema(dumper, data):
             "contributors",
             "annotations",
             "imports",
-            "default_curie_maps",
+            "default_curi_maps",
             "prefixes",
             "default_prefix",
             "default_range",
@@ -93,7 +104,7 @@ def represent_linkml_schema(dumper, data):
         "contributors",
         "annotations",
         "imports",
-        "default_curie_maps",
+        "default_curi_maps",
         "prefixes",
         "default_prefix",
         "default_range",
@@ -106,6 +117,12 @@ def represent_linkml_schema(dumper, data):
     )
 
     return dumper.represent_dict(schema_dict)
+
+
+def represent_linkml_subset(dumper, data):
+    d = {k: v for k, v in dump_model(data).items() if v is not None}
+
+    return dumper.represent_dict(d)
 
 
 def represent_linkml_permissible_value(dumper, data):

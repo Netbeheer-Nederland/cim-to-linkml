@@ -22,7 +22,3 @@ class Element(BaseModel):
     description: str | None = Field(None)
     annotations: dict[str, Any] | None = Field(None)
     in_subset: list[SubsetName] | None = Field(None)
-
-
-class Subset(Element):
-    pass

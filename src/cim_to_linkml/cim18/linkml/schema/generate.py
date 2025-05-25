@@ -10,6 +10,8 @@ from cim_to_linkml.cim18.linkml.schema.model import GITHUB_REPO_URL, GITHUB_BASE
 from cim_to_linkml.cim18.linkml.schema.model import Schema as LinkMLSchema
 from cim_to_linkml.cim18.linkml.slot.generate import generate_relation_slots
 from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
+from cim_to_linkml.cim18.linkml.subset.generate import generate_subset
+from cim_to_linkml.cim18.linkml.subset.model import Subset as LinkMLSubset
 from cim_to_linkml.cim18.linkml.type_.generate import generate_cim_datatype
 from cim_to_linkml.cim18.linkml.type_.model import Type as LinkMLType
 from cim_to_linkml.cim18.uml.class_.model import ClassStereotype, ClassName
@@ -39,6 +41,7 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
     linkml_slots: dict[SlotName, LinkMLSlot] = {}
     linkml_enums: dict[EnumName, LinkMLEnum] = {}
     linkml_types: dict[TypeName, LinkMLType] = {}
+    linkml_subsets: dict[TypeName, LinkMLSubset] = {}
 
     # UML Classes.
     for uml_class in uml_project.classes.values():
@@ -75,6 +78,11 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
 
     add_slots(linkml_classes, linkml_slots)
 
+    # UML Packages.
+    linkml_subsets = {uml_package.name: generate_subset(uml_package)
+                      for uml_package in uml_project.packages.values()
+                      if uml_package.id != 2}
+
     schema = LinkMLSchema(
         id=SCHEMA_ID,
         name=SCHEMA_NAME,
@@ -98,6 +106,7 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
         slots=linkml_slots,
         enums=linkml_enums,
         types=linkml_types,
+        subsets=linkml_subsets,
     )
 
     return schema

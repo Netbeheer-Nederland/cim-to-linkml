@@ -7,7 +7,7 @@ from cim_to_linkml.cim18.linkml.enumeration.model import Enum
 from cim_to_linkml.cim18.linkml.model import IRI, CURIE, CIM_BASE_URI, ClassName, SlotName, EnumName, TypeName, Element, \
     SubsetName
 from cim_to_linkml.cim18.linkml.slot.model import Slot
-from cim_to_linkml.cim18.linkml.model import Subset
+from cim_to_linkml.cim18.linkml.subset.model import Subset
 from cim_to_linkml.cim18.linkml.type_.model import CIMDataType
 
 LINKML_METAMODEL_VERSION = "1.7.0"  # TODO: Modify.
