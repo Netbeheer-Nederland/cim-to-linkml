@@ -12,6 +12,25 @@ from cim_to_linkml.cim18.linkml.slot.model import Slot as LinkMLSlot
 from cim_to_linkml.cim18.linkml.subset.model import Subset as LinkMLSubset
 from cim_to_linkml.cim18.linkml.type_.model import CIMDataType as LinkMLCIMDataType, Unit
 
+LF = "\n"
+CRLF = "\r\n"
+CR = "\r"
+
+
+def _normalize_line_endings(lines, line_ending="unix"):
+    r"""Normalize line endings to unix (\n), windows (\r\n) or mac (\r).
+    :param lines: The lines to normalize.
+    :param line_ending: The line ending format.
+    Acceptable values are 'unix' (default), 'windows' and 'mac'.
+    :return: Line endings normalized.
+    """
+    lines = lines.replace(CRLF, LF).replace(CR, LF)
+    if line_ending == "windows":
+        lines = lines.replace(LF, CRLF)
+    elif line_ending == "mac":
+        lines = lines.replace(LF, CR)
+    return lines
+
 
 def order_dict(d: dict[str, Any], ordered_fields: list[str]) -> dict[str, Any]:
     if not set(d.keys()).issubset(set(ordered_fields)):
@@ -48,8 +67,11 @@ def init_yaml_serializer():
 
 
 def represent_str(dumper, data):
+    data = _normalize_line_endings(data, line_ending="unix")
     if data.count("\n") > 0:
-        data = "\n".join(line.rstrip() for line in data.splitlines())  # Remove any trailing spaces, then put it back together again
+        data = "\n".join(
+            line.rstrip() for line in data.splitlines()
+        )  # Remove any trailing spaces, then put it back together again
         return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=">")
 
     return dumper.represent_scalar("tag:yaml.org,2002:str", data)
