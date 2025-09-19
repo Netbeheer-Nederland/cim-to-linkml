@@ -41,7 +41,7 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
     linkml_slots: dict[SlotName, LinkMLSlot] = {}
     linkml_enums: dict[EnumName, LinkMLEnum] = {}
     linkml_types: dict[TypeName, LinkMLType] = {}
-    linkml_subsets: dict[TypeName, LinkMLSubset] = {}
+
 
     # UML Classes.
     for uml_class in uml_project.classes.values():
@@ -57,7 +57,7 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
             case ClassStereotype.CIM_DATATYPE:
                 linkml_types[uml_class.name] = generate_cim_datatype(uml_class, uml_project)
             case ClassStereotype.COMPOUND:
-                ...
+                linkml_classes[uml_class.name] = generate_class(uml_class, uml_project)  # TODO: This might not be right.
             case None | _:
                 linkml_classes[uml_class.name] = generate_class(uml_class, uml_project)
 
@@ -79,10 +79,12 @@ def generate_schema(uml_project: UMLProject, only_normative: bool = True) -> Lin
     add_slots(linkml_classes, linkml_slots)
 
     # UML Packages.
-    linkml_subsets = {uml_package.name: generate_subset(uml_package, uml_project)
-                      for uml_package in uml_project.packages.values()
-                      if uml_package.id != ROOT_LEVEL_PACKAGE_ID
-                      if not only_normative or uml_package.status == PackageStatus.NORMATIVE}
+    linkml_subsets: dict[TypeName, LinkMLSubset] = {
+        uml_package.name: generate_subset(uml_package, uml_project)
+        for uml_package in uml_project.packages.values()
+        if uml_package.id != ROOT_LEVEL_PACKAGE_ID
+        if not only_normative or uml_package.status == PackageStatus.NORMATIVE
+    }
 
     schema = LinkMLSchema(
         id=SCHEMA_ID,
